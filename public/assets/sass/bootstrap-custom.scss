@@ -1,0 +1,563 @@
+// 1) Bootstrap functions (needed for some variables/maps)
+@import "../../../node_modules/bootstrap/scss/functions";
+
+// 2) Monochromatic overrides — black, white, and neutral grays only
+
+// ── Palette ──────────────────────────────────────────────────────────────────
+$white:    #fff;
+$black:    #000;
+
+$gray-100: #f2f2f2;
+$gray-200: #e6e6e6;
+$gray-300: #cccccc;
+$gray-400: #b3b3b3;
+$gray-500: #999999;
+$gray-600: #666666;
+$gray-700: #4d4d4d;
+$gray-800: #333333;
+$gray-900: #1a1a1a;
+
+// ── Theme colours ─────────────────────────────────────────────────────────────
+// Primary/secondary/light/dark remain monochromatic.
+// Success/danger/warning/info use semantic colours for UX clarity.
+$primary:   $black;
+$secondary: $gray-600;
+$success:   #8BC34A; // MD Green 500
+$info:      #05A9F4; // MD Blue 500
+$warning:   #FFC107; // MD Amber 500
+$danger:    #F44336; // MD Red 500
+$light:     $gray-100;
+$dark:      $black;
+
+// ── Light-mode body ───────────────────────────────────────────────────────────
+$body-bg:              $white;
+$body-color:           $black;
+$body-secondary-color: $gray-600;
+$body-secondary-bg:    $gray-100;
+$body-tertiary-color:  $gray-500;
+$body-tertiary-bg:     $gray-200;
+$body-emphasis-color:  $black;
+
+// ── Dark-mode body ────────────────────────────────────────────────────────────
+$body-bg-dark:              #0F0F0F;
+$body-secondary-bg-dark:    $gray-900;
+$body-tertiary-bg-dark:     $gray-800;
+$body-color-dark:           $white;
+$body-secondary-color-dark: $gray-300;
+$body-tertiary-color-dark:  $gray-500;
+$body-emphasis-color-dark:  $white;
+$heading-color-dark:        $white;
+
+// ── Borders ───────────────────────────────────────────────────────────────────
+$border-color:                   $gray-300;
+$border-color-translucent:       $gray-300;
+$border-color-dark:              $gray-700;
+$border-color-translucent-dark:  $gray-700;
+
+// ── Links ─────────────────────────────────────────────────────────────────────
+$link-color:            $black;
+$link-hover-color:      $gray-700;
+$link-color-dark:       $white;
+$link-hover-color-dark: $gray-300;
+
+// ── Dark-mode theme-colour maps (alerts, badges, etc.) ───────────────────────
+$theme-colors-bg-subtle-dark: (
+  "primary":   $gray-800,
+  "secondary": $gray-800,
+  "success":   shade-color($success, 80%),
+  "info":      shade-color($info,    80%),
+  "warning":   shade-color($warning, 80%),
+  "danger":    shade-color($danger,  80%),
+  "light":     $gray-800,
+  "dark":      $gray-900
+);
+
+$theme-colors-text-dark: (
+  "primary":   $gray-200,
+  "secondary": $gray-300,
+  "success":   tint-color($success, 40%),
+  "info":      tint-color($info,    40%),
+  "warning":   tint-color($warning, 40%),
+  "danger":    tint-color($danger,  40%),
+  "light":     $gray-100,
+  "dark":      $gray-300
+);
+
+// ── Light-mode text-emphasis ──────────────────────────────────────────────────
+$primary-text-emphasis:   $gray-900;
+$secondary-text-emphasis: $gray-700;
+$success-text-emphasis:   shade-color($success, 60%);
+$info-text-emphasis:      shade-color($info,    60%);
+$warning-text-emphasis:   shade-color($warning, 60%);
+$danger-text-emphasis:    shade-color($danger,  60%);
+$light-text-emphasis:     $gray-600;
+$dark-text-emphasis:      $black;
+
+// ── Light-mode bg-subtle ──────────────────────────────────────────────────────
+$primary-bg-subtle:   $gray-200;
+$secondary-bg-subtle: $gray-200;
+$success-bg-subtle:   tint-color($success, 80%);
+$info-bg-subtle:      tint-color($info,    80%);
+$warning-bg-subtle:   tint-color($warning, 80%);
+$danger-bg-subtle:    tint-color($danger,  80%);
+$light-bg-subtle:     $gray-100;
+$dark-bg-subtle:      $gray-300;
+
+// ── Light-mode border-subtle ──────────────────────────────────────────────────
+$primary-border-subtle:   $gray-400;
+$secondary-border-subtle: $gray-400;
+$success-border-subtle:   tint-color($success, 60%);
+$info-border-subtle:      tint-color($info,    60%);
+$warning-border-subtle:   tint-color($warning, 60%);
+$danger-border-subtle:    tint-color($danger,  60%);
+$light-border-subtle:     $gray-200;
+$dark-border-subtle:      $gray-500;
+
+// ── Checkboxes, radios, switches ──────────────────────────────────────────────
+$form-check-input-checked-color:        $white;
+$form-check-input-checked-bg-color:     $black;
+$form-check-input-checked-border-color: $black;
+$form-switch-checked-color:             $white;
+$form-switch-color:                     rgba($black, .25);
+
+// ── Form validation ───────────────────────────────────────────────────────────
+$form-feedback-valid-color:      $success;
+$form-feedback-invalid-color:    $danger;
+$form-valid-color:               $success;
+$form-valid-border-color:        $success;
+$form-invalid-color:             $danger;
+$form-invalid-border-color:      $danger;
+$form-valid-color-dark:          tint-color($success, 40%);
+$form-valid-border-color-dark:   tint-color($success, 40%);
+$form-invalid-color-dark:        tint-color($danger,  40%);
+$form-invalid-border-color-dark: tint-color($danger,  40%);
+
+// ── Progress bar ─────────────────────────────────────────────────────────────
+$progress-bar-color: $white;
+
+// ── Nav active states ─────────────────────────────────────────────────────────
+$nav-tabs-link-active-color:  $black;
+$nav-pills-link-active-color: $white;
+
+// ── List group ────────────────────────────────────────────────────────────────
+$list-group-active-color: $white;
+
+// ── Pagination ────────────────────────────────────────────────────────────────
+$pagination-active-color: $white;
+
+// ── Typography ───────────────────────────────────────────────────────────────
+$font-family-sans-serif: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+$font-family-base:       $font-family-sans-serif;
+$headings-font-family:   $font-family-sans-serif;
+$display-font-family:    $font-family-sans-serif;
+
+// ── Close button ─────────────────────────────────────────────────────────────
+$btn-close-color:  $black;
+$btn-close-filter: none;
+
+// ── Tables ───────────────────────────────────────────────────────────────────
+$table-striped-bg-factor: .03;
+
+// ── Code / kbd ───────────────────────────────────────────────────────────────
+$code-color:      $black;
+$code-color-dark: $white;
+$code-font-size:  .875em;
+$kbd-color:       $white;
+$kbd-bg:          $black;
+
+// ── Mark ─────────────────────────────────────────────────────────────────────
+$mark-bg:       $gray-300;
+$mark-color:    $black;
+$mark-bg-dark:  $gray-700;
+$mark-color-dark: $white;
+
+// ── Modal / offcanvas backdrop ────────────────────────────────────────────────
+$modal-backdrop-opacity:    .9;
+$offcanvas-backdrop-opacity: .9;
+
+// ── Toasts ───────────────────────────────────────────────────────────────────
+$toast-background-color: rgba($white, 1);
+
+// ── Carousel ─────────────────────────────────────────────────────────────────
+$carousel-control-color:            $black;
+$carousel-indicator-active-bg:      $black;
+$carousel-indicator-active-bg-dark: $white;
+$carousel-control-icon-filter-dark: none;
+
+// ── Accordion ────────────────────────────────────────────────────────────────
+$accordion-icon-color:        $black;
+$accordion-icon-active-color: $black;
+$accordion-icon-color-dark:        $white;
+$accordion-icon-active-color-dark: $white;
+
+// 3) Inter Variable — self-hosted
+// Files copied from node_modules/@fontsource-variable/inter/files/
+// Path is relative to the compiled CSS at public/assets/css/vendor/bootstrap.css
+@font-face {
+  font-family: 'Inter Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('fonts/inter-latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+@font-face {
+  font-family: 'Inter Variable';
+  font-style: italic;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('fonts/inter-latin-wght-italic.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+// 4) Bootstrap required
+@import "../../../node_modules/bootstrap/scss/variables";
+@import "../../../node_modules/bootstrap/scss/variables-dark";
+@import "../../../node_modules/bootstrap/scss/maps";
+@import "../../../node_modules/bootstrap/scss/mixins";
+@import "../../../node_modules/bootstrap/scss/utilities";
+
+// 4) Full Bootstrap
+@import "../../../node_modules/bootstrap/scss/bootstrap";
+
+// ── Nav / navbar link colours ─────────────────────────────────────────────────
+.nav {
+  --bs-nav-link-color:        #{$black};
+  --bs-nav-link-active-color: #{$black};
+}
+
+.navbar {
+  --bs-navbar-color:        #{$black};
+  --bs-navbar-hover-color:  #{$gray-700};
+  --bs-navbar-active-color: #{$black};
+}
+
+// ── Dark mode component overrides ─────────────────────────────────────────────
+// SCSS variables don't cover dark-mode button inversion or nav active colours,
+// so we patch those via CSS custom properties.
+[data-bs-theme="dark"] {
+  // Primary button: invert to white-on-black
+  .btn-primary {
+    --bs-btn-color: #{$black};
+    --bs-btn-bg: #{$white};
+    --bs-btn-border-color: #{$white};
+    --bs-btn-hover-color: #{$black};
+    --bs-btn-hover-bg: #{$gray-200};
+    --bs-btn-hover-border-color: #{$gray-200};
+    --bs-btn-active-color: #{$black};
+    --bs-btn-active-bg: #{$gray-300};
+    --bs-btn-active-border-color: #{$gray-300};
+    --bs-btn-focus-shadow-rgb: 255, 255, 255;
+    --bs-btn-disabled-color: #{$gray-600};
+    --bs-btn-disabled-bg: #{$gray-800};
+    --bs-btn-disabled-border-color: #{$gray-800};
+  }
+
+  .btn-outline-primary {
+    --bs-btn-color: #{$white};
+    --bs-btn-border-color: #{$white};
+    --bs-btn-hover-color: #{$black};
+    --bs-btn-hover-bg: #{$white};
+    --bs-btn-hover-border-color: #{$white};
+    --bs-btn-active-color: #{$black};
+    --bs-btn-active-bg: #{$gray-200};
+    --bs-btn-active-border-color: #{$gray-200};
+  }
+
+  // Dark button also needs inversion on dark background
+  .btn-dark {
+    --bs-btn-color: #{$black};
+    --bs-btn-bg: #{$white};
+    --bs-btn-border-color: #{$white};
+    --bs-btn-hover-color: #{$black};
+    --bs-btn-hover-bg: #{$gray-200};
+    --bs-btn-hover-border-color: #{$gray-200};
+    --bs-btn-active-color: #{$black};
+    --bs-btn-active-bg: #{$gray-300};
+    --bs-btn-active-border-color: #{$gray-300};
+  }
+
+  // Bootstrap sets nav CSS vars on the component element itself, so ancestor
+  // [data-bs-theme] declarations lose. Scope overrides onto the elements.
+  .nav {
+    --bs-nav-link-color:        #{$white};
+    --bs-nav-link-active-color: #{$white};
+  }
+
+  .navbar {
+    --bs-navbar-color:        #{$white};
+    --bs-navbar-hover-color:  #{$gray-300};
+    --bs-navbar-active-color: #{$white};
+  }
+
+  .pagination {
+    --bs-pagination-active-color:        #{$black};
+    --bs-pagination-active-bg:           #{$white};
+    --bs-pagination-active-border-color: #{$white};
+  }
+
+  .progress {
+    --bs-progress-bar-color: #{$black};
+    --bs-progress-bar-bg:    #{$white};
+  }
+
+  .list-group {
+    --bs-list-group-active-color:        #{$black};
+    --bs-list-group-active-bg:           #{$white};
+    --bs-list-group-active-border-color: #{$white};
+  }
+
+  .nav-pills {
+    --bs-nav-pills-link-active-bg:    #{$white};
+    --bs-nav-pills-link-active-color: #{$black};
+  }
+
+  .nav-tabs {
+    --bs-nav-tabs-link-active-color: #{$white};
+  }
+
+  // Close button: white ×
+  .btn-close {
+    filter: invert(1);
+  }
+
+  // Toast background
+  .toast {
+    --bs-toast-bg: #{$gray-900};
+    --bs-toast-header-bg: #{$gray-800};
+  }
+
+  // ── Form controls: invert checked states ────────────────────────────────────
+  // $form-check-input-checked-bg-color is black (compiled for both themes),
+  // so in dark mode we must flip to white bg with black icons.
+
+  // Checkbox checked: white fill, black checkmark
+  .form-check-input[type="checkbox"]:checked {
+    background-color: #{$white};
+    border-color: #{$white};
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
+  }
+
+  // Radio checked: white fill, black dot
+  .form-check-input[type="radio"]:checked {
+    background-color: #{$white};
+    border-color: #{$white};
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='2' fill='%23000'/%3e%3c/svg%3e");
+  }
+
+  // Switch OFF: semi-transparent white thumb so the track outline is visible
+  // ($form-switch-color: rgba(black,.25) is invisible on a dark background)
+  .form-switch .form-check-input {
+    --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba%28255%2C255%2C255%2C.5%29'/%3e%3c/svg%3e");
+  }
+
+  // Switch ON: white track, black thumb
+  // Must come after the checkbox:checked rule above (same specificity — last wins).
+  .form-switch .form-check-input:checked {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23000'/%3e%3c/svg%3e");
+    --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23000'/%3e%3c/svg%3e");
+  }
+}
+
+// ── Solid alert backgrounds ───────────────────────────────────────────────────
+// Replaces Bootstrap's washed-out bg-subtle approach with full-colour fills.
+// color-contrast() auto-selects black or white text based on the background.
+// Placed after [data-bs-theme="dark"] so it wins for both themes.
+@each $color, $value in $theme-colors {
+  .alert-#{$color} {
+    --bs-alert-bg:           #{$value};
+    --bs-alert-border-color: #{shade-color($value, 15%)};
+    --bs-alert-color:        #{color-contrast($value)};
+    --bs-alert-link-color:   #{color-contrast($value)};
+
+    .btn-close {
+      @if color-contrast($value) == $white {
+        filter: invert(1) grayscale(100%) brightness(200%);
+      } @else {
+        filter: none;
+      }
+    }
+  }
+}
+
+// ── Dark-mode primary alert: white background, black text ────────────────────
+[data-bs-theme="dark"] .alert-primary {
+  --bs-alert-bg:           #{$white};
+  --bs-alert-border-color: #{$gray-200};
+  --bs-alert-color:        #{$black};
+  --bs-alert-link-color:   #{$black};
+
+  .btn-close {
+    filter: none;
+  }
+}
+
+// ── Frosted glass utility (.glass) ───────────────────────────────────────────
+// Light mode: semi-transparent white over a white body.
+// Dark mode:  very subtle white veil over a black body.
+// Combine with Bootstrap's .rounded-*, .p-*, etc. as needed.
+.glass {
+  --glass-bg:     rgba(255, 255, 255, 0.65);
+  --glass-border: rgba(0, 0, 0, 0.06);
+  --glass-shadow: 0 4px 4px rgba(0, 0, 0, 0.03);
+
+  background:              var(--glass-bg);
+  backdrop-filter:         blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  border:     1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+
+  [data-bs-theme="dark"] & {
+    --glass-bg:     rgba(255, 255, 255, 0.01);
+    --glass-border: rgba(255, 255, 255, 0.09);
+    --glass-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+  }
+}
+
+// ── Image invert utility (.invert) ───────────────────────────────────────────
+// Inverts an image in dark mode — useful for dark logos/icons on white bg.
+[data-bs-theme="dark"] .invert {
+  filter: invert(1);
+}
+
+[data-bs-theme="light"] .invert-light {
+  filter: invert(1);
+}
+
+// ── Autofill — defeat browser yellow/blue injection ───────────────────────────
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px $white inset !important;
+  box-shadow: 0 0 0px 1000px $white inset !important;
+  -webkit-text-fill-color: $black !important;
+  caret-color: $black;
+  border-color: $border-color !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+[data-bs-theme="dark"] {
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover,
+  textarea:-webkit-autofill:focus,
+  select:-webkit-autofill,
+  select:-webkit-autofill:hover,
+  select:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0px 1000px $black inset !important;
+    box-shadow: 0 0 0px 1000px $black inset !important;
+    -webkit-text-fill-color: $white !important;
+    caret-color: $white;
+    border-color: $gray-700 !important;
+  }
+}
+
+// ── Blockquote ────────────────────────────────────────────────────────────────
+blockquote {
+  border-left: 2px solid $border-color;
+  padding: 0 0 0 1rem;
+  font-style: italic;
+}
+
+[data-bs-theme="dark"] blockquote {
+  border-left-color: $border-color-dark;
+}
+
+// ── Code: black bg / white text in light; white bg / black text in dark ──────
+code {
+  color: $black;
+  background-color: $gray-200;
+  padding: .2em .45em;
+  border-radius: .25rem;
+}
+
+// ── Pre: always black bg / white text + border ────────────────────────────────
+pre {
+  color: $white;
+  background-color: $black;
+  padding: 1rem 1.25rem;
+  border-radius: .375rem;
+  border: 1px solid $border-color;
+
+  code {
+    color: inherit;
+    background-color: transparent;
+    padding: 0;
+    border-radius: 0;
+  }
+}
+[data-bs-theme="dark"] pre {
+  border: 1px solid $border-color-dark;
+}
+
+// Dark mode: only inline code inverts — pre is excluded via :not(pre) > code
+[data-bs-theme="dark"] :not(pre) > code {
+  color: $white;
+  background-color: $gray-700;
+}
+
+// ── Border dashed utility ─────────────────────────────────────────────────────
+.border-dashed {
+  border: 1px dashed var(--bs-border-color);
+}
+
+// ── Range input: dark mode ────────────────────────────────────────────────────
+// Bootstrap compiles range thumb/track colors from $primary at build time,
+// so dark mode ends up with black-on-black. Override via pseudo-elements.
+[data-bs-theme="dark"] .form-range {
+  &::-webkit-slider-thumb {
+    background-color: $white;
+
+    &:active {
+      background-color: $gray-300;
+    }
+  }
+
+  &::-webkit-slider-runnable-track {
+    background-color: $gray-700;
+  }
+
+  &::-moz-range-thumb {
+    background-color: $white;
+
+    &:active {
+      background-color: $gray-300;
+    }
+  }
+
+  &::-moz-range-track {
+    background-color: $gray-700;
+  }
+
+  &:disabled {
+    &::-webkit-slider-thumb { background-color: $gray-600; }
+    &::-moz-range-thumb     { background-color: $gray-600; }
+  }
+}
+
+// Flip an element horizontally (e.g. for RTL languages)
+.flip-horizontal {
+    display: inline-block; /* Required for transform to work on inline elements */
+    transform: scaleX(-1);
+}
+
+// ── Modal ─────────────────────────────────────────────────────────────────────
+.modal-header { border-bottom: 0; }
+.modal-footer { border-top: 0; }
+
+// ── HR ────────────────────────────────────────────────────────────────────────
+hr { opacity: 0.3; }
+
+// Import custom styles for templates
+@import "templates";

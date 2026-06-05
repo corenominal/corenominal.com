@@ -1,0 +1,137 @@
+html.sidebar-template, body.sidebar-template {
+    height: 100%;
+    overflow: hidden;
+}
+
+/* ── Sidebar ───────────────────────────────────────── */
+#sidebar {
+    width: 260px;
+    flex-shrink: 0;
+    overflow: hidden;
+    transition: width 0.22s ease;
+}
+
+#sidebar.collapsed {
+    width: 68px;
+}
+
+/* Hide text labels in collapsed state */
+#sidebar.collapsed .sidebar-label {
+    display: none;
+}
+
+/* Brand row */
+.sidebar-brand {
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    padding-inline: 12px;
+    gap: 8px;
+}
+
+#sidebar.collapsed .sidebar-brand {
+    justify-content: center;
+    padding-inline: 0;
+    gap: 0;
+}
+
+/* The logo link shrinks to icon-only when collapsed */
+.sidebar-logo-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--bs-emphasis-color);
+    cursor: pointer;
+    flex-grow: 1;
+    min-width: 0;
+    overflow: hidden;
+}
+
+#sidebar.collapsed .sidebar-logo-link {
+    flex-grow: 0;
+}
+
+/* ── Sidebar nav links ─────────────────────────────── */
+.sidebar-nav .nav-link {
+    color: var(--bs-body-color);
+    border-radius: 0.5rem;
+    padding: 0.45rem 0.75rem;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar-nav .nav-link:hover {
+    background-color: var(--bs-tertiary-bg);
+}
+
+.sidebar-nav .nav-link.active {
+    background-color: var(--bs-secondary-bg);
+    color: var(--bs-emphasis-color);
+    font-weight: 500;
+}
+
+.sidebar-nav .nav-link .bi {
+    flex-shrink: 0;
+}
+
+#sidebar.collapsed .sidebar-nav .nav-link {
+    justify-content: center;
+    padding-inline: 0;
+}
+
+/* Sidebar footer links */
+.sidebar-footer-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.5rem;
+    border-radius: 0.5rem;
+    color: var(--bs-body-secondary-color);
+    text-decoration: none;
+}
+
+.sidebar-footer-link:hover {
+    background-color: var(--bs-tertiary-bg);
+    color: var(--bs-body-color);
+}
+
+#sidebar.collapsed .sidebar-footer-link {
+    justify-content: center;
+    padding-inline: 0;
+}
+
+.sidebar-footer-link.dropdown-toggle::after {
+    display: none;
+}
+
+#sidebar.collapsed .dropdown-menu {
+    min-width: auto;
+}
+
+#sidebar.collapsed .dropdown-menu .dropdown-item {
+    padding: 0.4rem 0.75rem;
+    text-align: center;
+}
+
+#sidebar.collapsed .dropdown-menu .dropdown-item .bi {
+    margin-right: 0 !important;
+}
+
+.topbar {
+    min-height: 56px;
+}
+
+@media (min-width: 992px) {
+    .topbar {
+        display: none !important;
+    }
+    .scrollable-area {
+        padding-top: 56px;
+    }
+}
