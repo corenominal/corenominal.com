@@ -19,14 +19,12 @@ use CodeIgniter\Config\BaseService;
  */
 class Services extends BaseService
 {
-    /*
-     * public static function example($getShared = true)
-     * {
-     *     if ($getShared) {
-     *         return static::getSharedInstance('example');
-     *     }
-     *
-     *     return new \CodeIgniter\Example();
-     * }
-     */
+    public static function logit(bool $getShared = true): \App\Libraries\Logit
+    {
+        if ($getShared) {
+            return static::getSharedInstance('logit');
+        }
+
+        return new \App\Libraries\Logit();
+    }
 }
