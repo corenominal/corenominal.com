@@ -29,6 +29,16 @@ class App extends BaseConfig
     public string $siteName = 'CodeIgniter 4';
 
     /**
+     * --------------------------------------------------------------------------
+     * Allow New User Registration
+     * --------------------------------------------------------------------------
+     *
+     * Determines whether new users are allowed to register on the site.
+     * Set this to true to allow registration, or false to disable it.
+     */
+    public bool $allowNewUserRegistration = true;
+
+    /**
      * Allowed Hostnames in the Site URL other than the hostname in the baseURL.
      * If you want to accept multiple Hostnames, set this.
      *
