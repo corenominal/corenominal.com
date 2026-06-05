@@ -19,6 +19,16 @@ class App extends BaseConfig
     public string $baseURL = 'http://localhost:8080/';
 
     /**
+     * --------------------------------------------------------------------------
+     * Site Name
+     * --------------------------------------------------------------------------
+     *
+     * The name of your site. This is used in various places throughout the
+     * application, such as in the title tag and in email templates.
+     */
+    public string $siteName = 'CodeIgniter 4';
+
+    /**
      * Allowed Hostnames in the Site URL other than the hostname in the baseURL.
      * If you want to accept multiple Hostnames, set this.
      *
