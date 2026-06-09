@@ -19,12 +19,5 @@ use CodeIgniter\Config\BaseService;
  */
 class Services extends BaseService
 {
-    public static function logit(bool $getShared = true): \App\Libraries\Logit
-    {
-        if ($getShared) {
-            return static::getSharedInstance('logit');
-        }
 
-        return new \App\Libraries\Logit();
-    }
 }
