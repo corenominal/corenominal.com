@@ -5,7 +5,7 @@ use CodeIgniter\Router\RouteCollection;
 /** @var RouteCollection $routes */
 $routes->get('/', 'Home::index');
 
-// Grouping routes for the Auth module
+// Grouping routes for the Auth controllers
 $routes->group('auth', function($routes) {
     $routes->get('/', 'Auth\Login::index');
     $routes->post('/', 'Auth\Login::process');
@@ -17,6 +17,13 @@ $routes->group('auth', function($routes) {
     $routes->post('password-reset', 'Auth\PasswordReset::request');
     $routes->get('password-reset/confirm/(:segment)', 'Auth\PasswordReset::confirm/$1');
     $routes->post('password-reset/confirm', 'Auth\PasswordReset::update');
+});
+
+// Grouping routes for CLI commands
+$routes->group('cli', function($routes) {
+    $routes->cli('test/index/(:segment)', 'CLI\Test::index/$1');
+    $routes->cli('test/count', 'CLI\Test::count');
+    $routes->cli('sendmail/process', 'CLI\Sendmail::process');
 });
 
 // Unauthorised route
