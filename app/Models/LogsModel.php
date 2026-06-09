@@ -1,5 +1,5 @@
 <?php
-namespace Modules\Logs\Models;
+namespace App\Models;
 
 use CodeIgniter\Model;
 
