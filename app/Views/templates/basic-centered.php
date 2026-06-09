@@ -3,7 +3,8 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title><?= esc($title) ?> - <?= esc(config('App')->siteName) ?></title>
+        <?php $pageTitle = is_array($title) ? implode(' - ', $title) : $title; ?>
+        <title><?= esc($pageTitle) ?> - <?= esc(config('App')->siteName) ?></title>
         <meta name="theme-color" content="#0F0F0F">
         <!-- Favicon and touch icons -->
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -26,8 +27,8 @@
     </head>
 
     <body class="">
-        <main class="d-flex align-items-center justify-content-center min-vh-100">
-            <div class="text-center">
+        <main class="d-flex align-items-center justify-content-center min-vh-100 pt-3 pb-5 px-3">
+            <div class="text-center" style="max-width: <?= $templateMaxWidth ?? '68ch' ?>; margin-inline: auto;">
                 <?= $this->renderSection('content') ?>
             </div>
         </main>
