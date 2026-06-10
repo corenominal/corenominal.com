@@ -1,6 +1,13 @@
 <?= $this->extend('templates/default') ?>
 <?= $this->section('content') ?>
 
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/admin">Admin</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Auth</li>
+        </ol>
+    </nav>
+
     <h1 class="h3 text-uppercase mb-4">Auth</h1>
 
     <div class="row g-3">

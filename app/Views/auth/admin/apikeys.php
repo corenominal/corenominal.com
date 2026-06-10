@@ -1,6 +1,14 @@
 <?= $this->extend('templates/default') ?>
 <?= $this->section('content') ?>
 
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/admin">Admin</a></li>
+        <li class="breadcrumb-item"><a href="/admin/auth">Auth</a></li>
+        <li class="breadcrumb-item active" aria-current="page">API Keys</li>
+    </ol>
+</nav>
+
 <div class="d-flex align-items-center justify-content-between mb-3">
     <h1 class="h3 text-uppercase mb-0">API Keys</h1>
     <div class="d-flex gap-2">
