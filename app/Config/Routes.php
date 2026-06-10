@@ -23,6 +23,11 @@ $routes->group('auth', function($routes) {
 $routes->group('admin/auth', function($routes) {
     $routes->get('/', 'Auth\Admin\Dashboard::index');
     $routes->get('users', 'Auth\Admin\Users::index');
+    $routes->get('users/data', 'Auth\Admin\Users::getData');
+    $routes->post('users/bulk-delete', 'Auth\Admin\Users::bulkDelete');
+    $routes->get('users/(:num)', 'Auth\Admin\Users::getUser/$1');
+    $routes->post('users/(:num)', 'Auth\Admin\Users::updateUser/$1');
+    $routes->delete('users/(:num)', 'Auth\Admin\Users::deleteUser/$1');
     $routes->get('groups', 'Auth\Admin\Groups::index');
     $routes->get('apikeys', 'Auth\Admin\ApiKeys::index');
 });
