@@ -26,6 +26,13 @@ $routes->group('cli', function($routes) {
     $routes->cli('sendmail/process', 'CLI\Sendmail::process');
 });
 
+// Grouping routes for Debug controllers
+$routes->group('debug', function($routes) {
+    $routes->get('/', 'Debug\Home::index');
+    $routes->get('(:segment)', 'Debug\Rerouter::reroute/$1');
+    $routes->get('(:segment)/(:segment)', 'Debug\Rerouter::reroute/$1/$2');
+});
+
 // Unauthorised route
 $routes->get('/unauthorised', 'Unauthorised::index');
 // Custom 404 route
