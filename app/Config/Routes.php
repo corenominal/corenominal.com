@@ -30,6 +30,12 @@ $routes->group('admin/auth', function($routes) {
     $routes->delete('users/(:num)', 'Auth\Admin\Users::deleteUser/$1');
     $routes->get('groups', 'Auth\Admin\Groups::index');
     $routes->get('apikeys', 'Auth\Admin\ApiKeys::index');
+    $routes->get('apikeys/data', 'Auth\Admin\ApiKeys::getData');
+    $routes->post('apikeys/create', 'Auth\Admin\ApiKeys::createApikey');
+    $routes->post('apikeys/bulk-delete', 'Auth\Admin\ApiKeys::bulkDelete');
+    $routes->get('apikeys/(:num)', 'Auth\Admin\ApiKeys::getApikey/$1');
+    $routes->post('apikeys/(:num)', 'Auth\Admin\ApiKeys::updateApikey/$1');
+    $routes->delete('apikeys/(:num)', 'Auth\Admin\ApiKeys::deleteApikey/$1');
 });
 
 // Grouping routes for CLI commands
