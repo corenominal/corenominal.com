@@ -9,6 +9,7 @@ class Email extends BaseConfig
     public string $fromEmail  = '';
     public string $fromName   = '';
     public string $recipients = '';
+    public string $toEmail  = '';
 
     /**
      * The "user agent"
