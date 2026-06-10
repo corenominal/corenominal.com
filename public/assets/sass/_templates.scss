@@ -70,7 +70,8 @@ html.sidebar-template, body.sidebar-template {
     background-color: var(--bs-tertiary-bg);
 }
 
-.sidebar-nav .nav-link.active {
+.sidebar-nav .nav-link.active,
+.sidebar-footer-link.active {
     background-color: var(--bs-secondary-bg);
     color: var(--bs-emphasis-color);
     font-weight: 500;
