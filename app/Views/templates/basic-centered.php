@@ -21,6 +21,8 @@
         <script defer src="/assets/js/vendor/bootstrap.bundle.min.js<?= file_exists($fPath) ? '?v=' . filemtime($fPath) : '' ?>"></script>
         <?php $fPath = FCPATH . 'assets/js/theme-select.js'; ?>
         <script defer src="/assets/js/theme-select.js<?= file_exists($fPath) ? '?v=' . filemtime($fPath) : '' ?>"></script>
+        <?php $fPath = FCPATH . 'assets/js/common/metrics.js'; ?>
+        <script defer src="/assets/js/common/metrics.js<?= file_exists($fPath) ? '?v=' . filemtime($fPath) : '' ?>"></script>
         <?php if(isset($js)): foreach ($js as $file): $jsPath = FCPATH . 'assets/js/' . $file . '.js'; ?>
         <script defer src="/assets/js/<?= $file ?>.js<?= file_exists($jsPath) ? '?v=' . filemtime($jsPath) : '' ?>"></script>
         <?php endforeach; endif; ?>
