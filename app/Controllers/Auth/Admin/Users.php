@@ -9,7 +9,7 @@ class Users extends BaseController
     {
         $data['title']           = 'Auth Admin Users';
         $data['js']              = ['auth/admin/users'];
-        $data['templateMaxWidth'] = '96%';
+        $data['templateMaxWidth'] = '100%';
         $data['templateMenu']    = 'auth/admin/sidebar-menu';
         return view('auth/admin/users', $data);
     }

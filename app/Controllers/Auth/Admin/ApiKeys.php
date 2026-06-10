@@ -12,7 +12,7 @@ class ApiKeys extends BaseController
     {
         $data['title']           = 'Auth Admin API Keys';
         $data['js']              = ['auth/admin/apikeys'];
-        $data['templateMaxWidth'] = '96%';
+        $data['templateMaxWidth'] = '100%';
         $data['templateMenu']    = 'auth/admin/sidebar-menu';
         return view('auth/admin/apikeys', $data);
     }

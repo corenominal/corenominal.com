@@ -12,7 +12,7 @@ class Groups extends BaseController
     {
         $data['title']            = 'Auth Admin Groups';
         $data['js']               = ['auth/admin/groups'];
-        $data['templateMaxWidth'] = '96%';
+        $data['templateMaxWidth'] = '100%';
         $data['templateMenu']     = 'auth/admin/sidebar-menu';
         return view('auth/admin/groups', $data);
     }
