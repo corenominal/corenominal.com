@@ -133,7 +133,7 @@
         <div class="scrollable-area flex-grow-1 overflow-y-auto d-flex flex-column">
 
             <main class="pt-3 pb-5 px-3">
-                <div style="max-width: <?= $maxWidth ?? '68ch' ?>; margin-inline: auto;">
+                <div style="max-width: <?= $templateMaxWidth ?? '68ch' ?>; margin-inline: auto;">
                     <?= $this->renderSection('content') ?>
                 </div>
             </main>

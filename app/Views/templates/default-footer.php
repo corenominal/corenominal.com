@@ -1,5 +1,5 @@
 <footer class="mt-auto py-3 px-3">
-    <div style="max-width: <?= $maxWidth ?? '68ch' ?>; margin-inline: auto;" class="text-center">
+    <div style="max-width: <?= $templateMaxWidth ?? '68ch' ?>; margin-inline: auto;" class="text-center">
         <small>
             <strong class="d-block py-3">* * *</strong>
             <br>
