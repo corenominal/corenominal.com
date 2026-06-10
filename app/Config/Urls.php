@@ -9,4 +9,5 @@ class Urls extends BaseConfig
     public $tld = '';
     public $github = '';
     public $license = '';
+    public $readme = '';
 }
