@@ -3,9 +3,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const matches = document.getElementById('matches');
     const links = document.querySelectorAll('.list-group a');
 
-    // Focus on filter input
-    filterInput.focus();
-
     // On filter input event
     filterInput.addEventListener('keyup', handleFilter);
     filterInput.addEventListener('paste', handleFilter);
