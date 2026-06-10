@@ -1,6 +1,7 @@
 <?php
 namespace App\Controllers\Auth;
 
+use App\Models\LoginAttemptModel;
 use Ramsey\Uuid\Uuid;
 
 class Login extends BaseController
@@ -40,6 +41,12 @@ class Login extends BaseController
 
     public function process()
     {
+        $ip = $this->request->getIPAddress();
+        $attemptModel = new LoginAttemptModel();
+        if ($attemptModel->isBlocked($ip)) {
+            return $this->response->setStatusCode(429)->setJSON(['error' => 'Too many failed login attempts. Please try again later.']);
+        }
+
         // Capture JSON data
         $data = $this->request->getJSON(true);
         $email = $data['email'] ?? null;
@@ -61,6 +68,7 @@ class Login extends BaseController
                 ->where('banned', 0) // Ensure the user is not banned
                 ->first();
         if (!$user || !password_verify($password, $user['password'])) {
+            $attemptModel->record($ip, $email);
             logit("Failed login attempt for: {$email}", 1); // Log to database with WARNING level
             return $this->response->setStatusCode(401)->setJSON(['error' => 'Invalid email or password']);
         }
@@ -108,6 +116,7 @@ class Login extends BaseController
         // Set redirect URL from session or default to main site
         $redirect = $this->session->get('redirect') ?? site_url();
 
+        $attemptModel->clearForIp($ip);
         logit("User logged in: {$user['email']} ({$user['username']})", 0); // Log to database with INFO level
 
         // Return success response with redirect URL
