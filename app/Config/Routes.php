@@ -29,6 +29,14 @@ $routes->group('admin/auth', function($routes) {
     $routes->post('users/(:num)', 'Auth\Admin\Users::updateUser/$1');
     $routes->delete('users/(:num)', 'Auth\Admin\Users::deleteUser/$1');
     $routes->get('groups', 'Auth\Admin\Groups::index');
+    $routes->get('groups/data', 'Auth\Admin\Groups::getData');
+    $routes->get('groups/group-names', 'Auth\Admin\Groups::getGroupNames');
+    $routes->get('groups/users', 'Auth\Admin\Groups::getUsers');
+    $routes->post('groups/create', 'Auth\Admin\Groups::createGroup');
+    $routes->post('groups/bulk-delete', 'Auth\Admin\Groups::bulkDelete');
+    $routes->get('groups/(:num)', 'Auth\Admin\Groups::getGroup/$1');
+    $routes->post('groups/(:num)', 'Auth\Admin\Groups::updateGroup/$1');
+    $routes->delete('groups/(:num)', 'Auth\Admin\Groups::deleteGroup/$1');
     $routes->get('apikeys', 'Auth\Admin\ApiKeys::index');
     $routes->get('apikeys/data', 'Auth\Admin\ApiKeys::getData');
     $routes->post('apikeys/create', 'Auth\Admin\ApiKeys::createApikey');
