@@ -2,8 +2,7 @@
 
 namespace Config;
 
-use App\Filters\AdminFilter;
-use App\Filters\DebugFilter;
+use App\Filters\AuthFilter;
 use App\Filters\ApiFilter;
 use CodeIgniter\Config\Filters as BaseFilters;
 use CodeIgniter\Filters\Cors;
@@ -28,8 +27,7 @@ class Filters extends BaseFilters
      * or [filter_name => [classname1, classname2, ...]]
      */
     public array $aliases = [
-        'adminfilter'   => AdminFilter::class,
-        'debugfilter'   => DebugFilter::class,
+        'authfilter'    => AuthFilter::class,
         'apifilter'     => ApiFilter::class,
         'csrf'          => CSRF::class,
         'toolbar'       => DebugToolbar::class,
@@ -112,8 +110,7 @@ class Filters extends BaseFilters
      * @var array<string, array<string, list<string>>>
      */
     public array $filters = [
-        'adminfilter' => ['before' => ['admin', 'admin/*']],
-        'debugfilter' => ['before' => ['debug', 'debug/*']],
-        'apifilter'   => ['before' => ['api', 'api/*']],
+        'authfilter' => ['before' => ['admin', 'admin/*', 'debug', 'debug/*']],
+        'apifilter'  => ['before' => ['api', 'api/*']],
     ];
 }

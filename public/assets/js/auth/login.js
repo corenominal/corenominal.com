@@ -93,6 +93,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const email = emailInput ? emailInput.value.trim() : '';
         const password = passwordInput ? passwordInput.value.trim() : '';
         const csrfToken = csrfTokenInput ? csrfTokenInput.value : '';
+        const remember = document.getElementById('checkDefault')?.checked ?? false;
 
         // Basic client-side validation
         if (!email || !password) {
@@ -105,7 +106,8 @@ document.addEventListener('DOMContentLoaded', function () {
         // Prepare data for submission
         const data = {
             email: email,
-            password: password
+            password: password,
+            remember: remember,
         };
         if (csrfTokenInput && csrfTokenInput.name) data[csrfTokenInput.name] = csrfToken;
 

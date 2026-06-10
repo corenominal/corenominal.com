@@ -169,9 +169,9 @@ Configured in [app/Config/Session.php](app/Config/Session.php):
 
 Filters are registered in [app/Config/Filters.php](app/Config/Filters.php) and applied to route patterns.
 
-### `AdminFilter` — [app/Filters/AdminFilter.php](app/Filters/AdminFilter.php)
+### `AuthFilter` — [app/Filters/AuthFilter.php](app/Filters/AuthFilter.php)
 
-Applied to `admin` and `admin/*`. Checks `$session->get('is_admin')`. Redirects to `/unauthorised` if the value is falsy.
+Applied to `admin`, `admin/*`, `debug`, and `debug/*`. Authenticates the request via session or API key cookie, then checks `$session->get('is_admin')`. Redirects to `/auth` if unauthenticated, or to `/unauthorised` if the user is not an administrator.
 
 ### `ApiFilter` — [app/Filters/ApiFilter.php](app/Filters/ApiFilter.php)
 
@@ -223,7 +223,7 @@ CORS headers are set to allow all origins with `apikey`, `user-uuid`, and `email
 | [app/Models/PasswordResetModel.php](app/Models/PasswordResetModel.php) | Reset tokens |
 | [app/Models/GroupModel.php](app/Models/GroupModel.php) | Role assignments |
 | [app/Models/ApikeyModel.php](app/Models/ApikeyModel.php) | API keys |
-| [app/Filters/AdminFilter.php](app/Filters/AdminFilter.php) | Admin route protection |
+| [app/Filters/AuthFilter.php](app/Filters/AuthFilter.php) | Admin/debug route authentication and authorisation |
 | [app/Filters/ApiFilter.php](app/Filters/ApiFilter.php) | API route protection |
 | [app/Libraries/Sendmail.php](app/Libraries/Sendmail.php) | Email dispatch (verification, reset) |
 | [app/Config/App.php](app/Config/App.php) | `allowNewUserRegistration` flag |
