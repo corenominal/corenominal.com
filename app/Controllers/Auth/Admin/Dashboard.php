@@ -10,9 +10,9 @@ class Dashboard extends BaseController
 {
     public function index()
     {
-        $data['title']            = 'Auth Admin';
+        $data['title']        = 'Auth Admin';
         $data['templateMaxWidth'] = '100%';
-        $data['templateMenu']     = 'auth/admin/sidebar-menu';
+        $data['templateMenu'] = 'auth/admin/sidebar-menu';
         $data['userCount']        = (new UserModel())->countAllResults();
         $data['groupCount']       = (new GroupModel())->countAllResults();
         $data['apikeyCount']      = (new ApikeyModel())->countAllResults();

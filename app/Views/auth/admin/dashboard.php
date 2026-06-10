@@ -10,46 +10,19 @@
 
     <h1 class="h3 text-uppercase mb-4">Auth</h1>
 
-    <div class="row g-3">
-        <div class="col-sm-6 col-lg-4">
-            <a href="/admin/auth/users" class="text-decoration-none">
-                <div class="card h-100">
-                    <div class="card-body d-flex align-items-center gap-3">
-                        <i class="bi bi-person fs-2 text-secondary flex-shrink-0"></i>
-                        <div>
-                            <div class="fs-4 fw-semibold lh-1"><?= $userCount ?></div>
-                            <div class="text-muted small text-uppercase">Users</div>
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col-sm-6 col-lg-4">
-            <a href="/admin/auth/groups" class="text-decoration-none">
-                <div class="card h-100">
-                    <div class="card-body d-flex align-items-center gap-3">
-                        <i class="bi bi-collection fs-2 text-secondary flex-shrink-0"></i>
-                        <div>
-                            <div class="fs-4 fw-semibold lh-1"><?= $groupCount ?></div>
-                            <div class="text-muted small text-uppercase">Groups</div>
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col-sm-6 col-lg-4">
-            <a href="/admin/auth/apikeys" class="text-decoration-none">
-                <div class="card h-100">
-                    <div class="card-body d-flex align-items-center gap-3">
-                        <i class="bi bi-code-slash fs-2 text-secondary flex-shrink-0"></i>
-                        <div>
-                            <div class="fs-4 fw-semibold lh-1"><?= $apikeyCount ?></div>
-                            <div class="text-muted small text-uppercase">API Keys</div>
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
-    </div>
+    <ul class="list-group">
+        <a href="/admin/auth/users" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-person me-2"></i>Users</span>
+            <span class="badge bg-secondary rounded-pill"><?= $userCount ?></span>
+        </a>
+        <a href="/admin/auth/groups" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-collection me-2"></i>Groups</span>
+            <span class="badge bg-secondary rounded-pill"><?= $groupCount ?></span>
+        </a>
+        <a href="/admin/auth/apikeys" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-code-slash me-2"></i>API Keys</span>
+            <span class="badge bg-secondary rounded-pill"><?= $apikeyCount ?></span>
+        </a>
+    </ul>
 
 <?= $this->endSection() ?>
