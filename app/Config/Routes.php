@@ -33,6 +33,9 @@ $routes->group('debug', function($routes) {
     $routes->get('(:segment)/(:segment)', 'Debug\Rerouter::reroute/$1/$2');
 });
 
+// Metrics collection endpoint
+$routes->post('/metrics', 'Metrics::receive');
+
 // Unauthorised route
 $routes->get('/unauthorised', 'Unauthorised::index');
 // Custom 404 route
