@@ -12,6 +12,7 @@
     "require": {
         "php": "^8.2",
         "codeigniter4/framework": "^4.7",
+        "league/commonmark": "^2.8",
         "ramsey/uuid": "^4.9"
     },
     "require-dev": {
