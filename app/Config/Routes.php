@@ -19,6 +19,14 @@ $routes->group('auth', function($routes) {
     $routes->post('password-reset/confirm', 'Auth\PasswordReset::update');
 });
 
+// Grouping routes for the Auth Admin controllers
+$routes->group('admin/auth', function($routes) {
+    $routes->get('/', 'Auth\Admin\Dashboard::index');
+    $routes->get('users', 'Auth\Admin\Users::index');
+    $routes->get('groups', 'Auth\Admin\Groups::index');
+    $routes->get('apikeys', 'Auth\Admin\ApiKeys::index');
+});
+
 // Grouping routes for CLI commands
 $routes->group('cli', function($routes) {
     $routes->cli('test/index/(:segment)', 'CLI\Test::index/$1');
