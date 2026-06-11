@@ -78,6 +78,18 @@ $routes->group('status', function ($routes) {
     $routes->get('(:segment)', 'Status\Home::show/$1');
 });
 
+// Grouping routes for the Social Admin controllers
+$routes->group('admin/social', function($routes) {
+    $routes->get('/', static fn() => redirect()->to('/admin/social/tags'));
+    $routes->get('tags', 'Social\Admin\Tags::index');
+    $routes->get('tags/data', 'Social\Admin\Tags::getData');
+    $routes->post('tags/create', 'Social\Admin\Tags::createTag');
+    $routes->post('tags/bulk-delete', 'Social\Admin\Tags::bulkDelete');
+    $routes->get('tags/(:num)', 'Social\Admin\Tags::getTag/$1');
+    $routes->post('tags/(:num)', 'Social\Admin\Tags::updateTag/$1');
+    $routes->delete('tags/(:num)', 'Social\Admin\Tags::deleteTag/$1');
+});
+
 // Admin status routes (adminfilter + sessionfilter applied globally via Filters.php)
 $routes->group('admin/status', function ($routes) {
     $routes->get('/', 'Status\Admin\Home::index');

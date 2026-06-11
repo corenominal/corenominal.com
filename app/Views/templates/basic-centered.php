@@ -10,6 +10,8 @@
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
         <link rel="icon" type="image/png" sizes="32x32" href="/icon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="/icon-16x16.png">
+        <!-- Social verification -->
+        <?= social_verification_tags() ?>
         <!-- Stylesheets -->
         <?php $fPath = FCPATH . 'assets/css/vendor/bootstrap-corenominal.css'; ?>
         <link rel="stylesheet" href="/assets/css/vendor/bootstrap-corenominal.css<?= file_exists($fPath) ? '?v=' . filemtime($fPath) : '' ?>"/>
