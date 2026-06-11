@@ -71,12 +71,14 @@
                 <i class="bi bi-grid-3x3-gap-fill flex-shrink-0" aria-hidden="true"></i>
                 <span class="sidebar-label">App Menu</span>
             </a>
-            <?php if( session()->get('user_uuid') ): ?>
+            <?php if( user_in_group('administrators') ): ?>
             <a href="/admin" class="sidebar-footer-link"
                data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Admin">
                 <i class="bi bi-gear flex-shrink-0" aria-hidden="true"></i>
                 <span class="sidebar-label">Admin</span>
             </a>
+            <?php endif; ?>
+            <?php if( user_in_group('debug') ): ?>
             <a href="/debug" class="sidebar-footer-link"
                data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Debug">
                 <i class="bi bi-bug flex-shrink-0" aria-hidden="true"></i>
@@ -95,7 +97,7 @@
                     <li><button class="dropdown-item" type="button" data-theme="auto"><i class="bi bi-circle-half me-2" aria-hidden="true"></i><span class="sidebar-label">Auto</span></button></li>
                 </ul>
             </div>
-            <?php if( session()->get('user_uuid') ): ?>
+            <?php if( is_logged_in() ): ?>
             <a href="#" class="sidebar-footer-link trigger-logout"
                data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Sign out">
                 <i class="bi bi-box-arrow-right flex-shrink-0" aria-hidden="true"></i>
