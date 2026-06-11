@@ -14,7 +14,7 @@
                     name="q"
                     class="form-control"
                     placeholder="Search&hellip;"
-                    value="<?= esc($searchQuery) ?>"
+                    value="<?= esc((string)$searchQuery) ?>"
                     autocomplete="off"
                     style="width: 160px;"
                 >
@@ -93,7 +93,7 @@
         data-offset="<?= count($statuses) ?>"
         data-limit="<?= (int) $statusBatchSize ?>"
         data-has-more="<?= $hasMoreStatuses ? '1' : '0' ?>"
-        data-search="<?= esc($searchQuery) ?>"
+        data-search="<?= esc((string) $searchQuery) ?>"
     >
         <?= view('status/partials/timeline_items', [
             'statuses'        => $statuses,
@@ -117,7 +117,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-center pt-2">
-                <div id="timeline-image-modal-img-wrap">
+                <div id="timeline-image-modal-img-wrap" class="mx-auto">
                     <img id="timeline-image-modal-img" src="" alt="" class="img-fluid rounded" style="max-height: 80vh;">
                 </div>
                 <p id="timeline-image-modal-caption" class="text-secondary small mt-2 mb-0"></p>
