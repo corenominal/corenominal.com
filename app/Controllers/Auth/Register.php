@@ -151,6 +151,11 @@ class Register extends BaseController
                 'user_uuid' => $userUuid,
                 'group'     => 'administrators',
             ]);
+            $groupModel->insert([
+                'uuid'      => Uuid::uuid4()->toString(),
+                'user_uuid' => $userUuid,
+                'group'     => 'debug',
+            ]);
         } else {
             // Load email view and pass data
             $body = view('emails/auth-verify-account', ['user_uuid' => $userUuid]);
