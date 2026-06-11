@@ -19,6 +19,9 @@ $routes->group('auth', function($routes) {
     $routes->post('password-reset/confirm', 'Auth\PasswordReset::update');
 });
 
+// Main admin dashboard
+$routes->get('admin', 'Admin\Dashboard::index');
+
 // Grouping routes for the Auth Admin controllers
 $routes->group('admin/auth', function($routes) {
     $routes->get('/', 'Auth\Admin\Dashboard::index');
