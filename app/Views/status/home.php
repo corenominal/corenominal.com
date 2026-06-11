@@ -32,14 +32,14 @@
                     <i class="bi bi-journal-text me-1" aria-hidden="true"></i>Drafts <span class="badge text-bg-secondary ms-1" id="drafts-count-badge"><?= (int) $draftCount ?></span>
                 </button>
                 <?php endif; ?>
-                <div class="btn-group btn-group-sm" role="group" aria-label="AI actions">
-                    <button type="button" class="btn btn-outline-primary" id="ai-rewrite-btn" disabled>
+                <!-- <div class="btn-group btn-group-sm" role="group" aria-label="AI actions"> -->
+                    <button type="button" class="btn btn-sm btn-outline-primary" id="ai-rewrite-btn" disabled>
                         <i class="bi bi-stars me-1" aria-hidden="true"></i>AI
                     </button>
-                    <button type="button" class="btn btn-outline-primary" id="ai-settings-btn" title="AI model settings" disabled>
+                    <button type="button" class="btn btn-sm btn-outline-primary" id="ai-settings-btn" title="AI model settings" disabled>
                         <i class="bi bi-gear" aria-hidden="true"></i>
                     </button>
-                </div>
+                <!-- </div> -->
                 <button type="button" class="btn btn-sm btn-outline-primary d-none" id="compose-cancel-btn">Cancel edit</button>
             </div>
         </div>
