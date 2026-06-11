@@ -340,7 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			const item = document.createElement('li');
 			item.className    = 'list-group-item list-group-item-action d-flex align-items-center justify-content-between';
 			item.style.cursor = 'pointer';
-			item.innerHTML    = `<span>${model}</span>${model === selectedModel ? '<i class="bi bi-check-circle-fill text-success" aria-hidden="true"></i>' : ''}`;
+			item.innerHTML    = `<span>${model}</span>${model === selectedModel ? '<i class="bi bi-check-circle-fill text-primary" aria-hidden="true"></i>' : ''}`;
 			item.addEventListener('click', () => {
 				setSelectedModel(model);
 				renderModelList();
@@ -582,7 +582,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		item.innerHTML = `
 			${preview}
 			<span class="flex-grow-1 text-truncate small">${media.description || '<em class="text-secondary">No description</em>'}</span>
-			<button type="button" class="btn btn-sm btn-outline-danger" aria-label="Remove media">
+			<button type="button" class="btn btn-sm btn-outline-primary" aria-label="Remove media">
 				<i class="bi bi-x-lg" aria-hidden="true"></i>
 			</button>`;
 
@@ -672,7 +672,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				<img class="d-none w-100 rounded" src="" alt="">
 				<video class="d-none w-100 rounded" controls muted preload="none"></video>
 			</div>
-			<button type="button" class="btn btn-sm btn-outline-danger remove-pending-btn">Remove</button>`;
+			<button type="button" class="btn btn-sm btn-outline-primary remove-pending-btn">Remove</button>`;
 
 		const dropZone  = wrapper.querySelector('.drop-zone');
 		const fileInput = wrapper.querySelector('.drop-input');
@@ -1145,7 +1145,7 @@ document.addEventListener('DOMContentLoaded', () => {
 					</div>
 					<div class="d-flex gap-2 flex-shrink-0">
 						<button type="button" class="btn btn-sm btn-outline-primary drafts-edit-btn" data-draft-id="${draft.id}">Edit</button>
-						<button type="button" class="btn btn-sm btn-outline-danger drafts-delete-btn" data-draft-id="${draft.id}">Delete</button>
+						<button type="button" class="btn btn-sm btn-outline-primary drafts-delete-btn" data-draft-id="${draft.id}">Delete</button>
 					</div>
 				</div>`;
 
