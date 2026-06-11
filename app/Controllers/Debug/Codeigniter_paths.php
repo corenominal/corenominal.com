@@ -28,6 +28,7 @@ class Codeigniter_paths extends BaseController
             'SYSTEMPATH' => SYSTEMPATH,
             'WRITEPATH' => WRITEPATH,
             'TESTPATH' => TESTPATH,
+            'FCPATH' => FCPATH,
         ];
 
         $data['dump'] = $paths;

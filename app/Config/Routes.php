@@ -70,6 +70,38 @@ $routes->group('api/ai', function ($routes) {
     });
 });
 
+// Public status routes
+$routes->group('status', function ($routes) {
+    $routes->get('/', 'Status\Home::index');
+    $routes->get('feed/rss', 'Status\Feed::rss');
+    $routes->get('timeline/load', 'Status\Home::loadMoreStatuses');
+    $routes->get('(:segment)', 'Status\Home::show/$1');
+});
+
+// Admin status routes (adminfilter + sessionfilter applied globally via Filters.php)
+$routes->group('admin/status', function ($routes) {
+    $routes->get('/', 'Status\Admin\Home::index');
+    $routes->get('export', 'Status\Admin\Export::index');
+    $routes->get('export/(:segment)', 'Status\Admin\Export::download/$1');
+});
+
+// Status API routes (apifilter applied globally via Filters.php)
+$routes->group('api/status', function ($routes) {
+    $routes->options('(:any)', static function () { return ''; });
+    $routes->get('ping', 'Status\Api\Test::ping');
+    $routes->post('statuses', 'Status\Api\Statuses::create');
+    $routes->get('statuses/latest', 'Status\Api\Statuses::latest');
+    $routes->get('statuses/(:num)', 'Status\Api\Statuses::get/$1');
+    $routes->patch('statuses/(:num)', 'Status\Api\Statuses::update/$1');
+    $routes->delete('statuses/(:num)', 'Status\Api\Statuses::delete/$1');
+    $routes->post('media', 'Status\Api\Media::upload');
+    $routes->delete('media/(:num)', 'Status\Api\Media::delete/$1');
+    $routes->get('drafts', 'Status\Api\Drafts::index');
+    $routes->post('drafts', 'Status\Api\Drafts::create');
+    $routes->patch('drafts/(:num)', 'Status\Api\Drafts::update/$1');
+    $routes->delete('drafts/(:num)', 'Status\Api\Drafts::delete/$1');
+});
+
 // Grouping routes for CLI commands
 $routes->group('cli', function($routes) {
     $routes->cli('test/index/(:segment)', 'CLI\Test::index/$1');
