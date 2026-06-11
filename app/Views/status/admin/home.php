@@ -2,9 +2,8 @@
 
 <?= $this->section('content') ?>
 
-<div class="d-flex align-items-center justify-content-between mb-4">
+<div class="mb-4">
     <h1 class="h4 mb-0">Status Dashboard</h1>
-    <a href="<?= site_url('admin/status') ?>" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-clockwise me-1" aria-hidden="true"></i>Refresh</a>
 </div>
 
 <!-- Stat cards -->
@@ -90,7 +89,7 @@
                     <div class="d-flex flex-column align-items-center flex-grow-1 h-100" title="<?= esc(date('M Y', strtotime($month . '-01'))) ?>: <?= $count ?>">
                         <span class="text-secondary" style="font-size: 0.6rem;"><?= $count > 0 ? $count : '' ?></span>
                         <div class="mt-auto bg-primary rounded-top w-100" style="height: <?= max(2, $heightPct) ?>%;"></div>
-                        <span class="text-secondary text-center mt-1" style="font-size: 0.6rem; writing-mode: vertical-lr; transform: rotate(180deg);"><?= esc(date('M', strtotime($month . '-01'))) ?></span>
+                        <span class="text-secondary text-center mt-1 font-monospace" style="font-size: 0.6rem; writing-mode: vertical-lr; transform: rotate(180deg);"><?= esc(date('M', strtotime($month . '-01'))) ?></span>
                     </div>
                     <?php endforeach; ?>
                 </div>
