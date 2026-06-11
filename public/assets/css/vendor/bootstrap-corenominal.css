@@ -11959,6 +11959,10 @@ textarea.form-control-lg {
 [data-bs-theme=dark] .nav-tabs {
   --bs-nav-tabs-link-active-color: #fff;
 }
+[data-bs-theme=dark] .bg-primary {
+  background-color: #fff !important;
+  color: #000 !important;
+}
 [data-bs-theme=dark] .btn-close {
   filter: invert(1);
 }

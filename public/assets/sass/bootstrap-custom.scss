@@ -317,6 +317,12 @@ $accordion-icon-active-color-dark: $white;
     --bs-nav-tabs-link-active-color: #{$white};
   }
 
+  // bg-primary: invert to white background with black text
+  .bg-primary {
+    background-color: #{$white} !important;
+    color: #{$black} !important;
+  }
+
   // Close button: white ×
   .btn-close {
     filter: invert(1);
