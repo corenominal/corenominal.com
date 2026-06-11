@@ -28,19 +28,19 @@
             <h2 class="h6 mb-0 fw-semibold" id="compose-form-title">New Status</h2>
             <div class="d-flex align-items-center gap-2">
                 <?php if ($draftCount > 0): ?>
-                <button type="button" class="btn btn-sm btn-outline-secondary" id="drafts-btn" data-bs-toggle="modal" data-bs-target="#drafts-modal">
+                <button type="button" class="btn btn-sm btn-outline-primary" id="drafts-btn" data-bs-toggle="modal" data-bs-target="#drafts-modal">
                     <i class="bi bi-journal-text me-1" aria-hidden="true"></i>Drafts <span class="badge text-bg-secondary ms-1" id="drafts-count-badge"><?= (int) $draftCount ?></span>
                 </button>
                 <?php endif; ?>
                 <div class="btn-group btn-group-sm" role="group" aria-label="AI actions">
-                    <button type="button" class="btn btn-outline-secondary" id="ai-rewrite-btn" disabled>
+                    <button type="button" class="btn btn-outline-primary" id="ai-rewrite-btn" disabled>
                         <i class="bi bi-stars me-1" aria-hidden="true"></i>AI
                     </button>
-                    <button type="button" class="btn btn-outline-secondary" id="ai-settings-btn" title="AI model settings" disabled>
+                    <button type="button" class="btn btn-outline-primary" id="ai-settings-btn" title="AI model settings" disabled>
                         <i class="bi bi-gear" aria-hidden="true"></i>
                     </button>
                 </div>
-                <button type="button" class="btn btn-sm btn-outline-secondary d-none" id="compose-cancel-btn">Cancel edit</button>
+                <button type="button" class="btn btn-sm btn-outline-primary d-none" id="compose-cancel-btn">Cancel edit</button>
             </div>
         </div>
         <form id="compose-form" novalidate>
@@ -73,8 +73,8 @@
             <div id="compose-pending-uploads"></div>
             <div class="d-flex gap-2 align-items-center flex-wrap mt-2">
                 <button type="submit" class="btn btn-sm btn-primary" id="compose-submit-btn"><i class="bi bi-send me-1" aria-hidden="true"></i>Post</button>
-                <button type="button" class="btn btn-sm btn-outline-secondary" id="compose-add-video-btn"><i class="bi bi-paperclip me-1" aria-hidden="true"></i>Media</button>
-                <button type="button" class="btn btn-sm btn-outline-secondary" id="compose-save-draft-btn" formnovalidate><i class="bi bi-journal-plus me-1" aria-hidden="true"></i>Draft</button>
+                <button type="button" class="btn btn-sm btn-outline-primary" id="compose-add-video-btn"><i class="bi bi-paperclip me-1" aria-hidden="true"></i>Media</button>
+                <button type="button" class="btn btn-sm btn-outline-primary" id="compose-save-draft-btn" formnovalidate><i class="bi bi-journal-plus me-1" aria-hidden="true"></i>Draft</button>
                 <?php if ($mastodonEnabled): ?>
                 <div class="form-check form-switch ms-1">
                     <input class="form-check-input" type="checkbox" role="switch" id="compose-mastodon-switch" checked>
@@ -139,7 +139,7 @@
             <div class="modal-body">Are you sure you want to delete this status? This cannot be undone.</div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" id="delete-status-confirm-btn">Delete</button>
+                <button type="button" class="btn btn-primary" id="delete-status-confirm-btn">Delete</button>
             </div>
         </div>
     </div>

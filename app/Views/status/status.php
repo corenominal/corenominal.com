@@ -43,7 +43,7 @@
             <div class="modal-body">Are you sure you want to delete this status? This cannot be undone.</div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" id="delete-status-confirm-btn">Delete</button>
+                <button type="button" class="btn btn-primary" id="delete-status-confirm-btn">Delete</button>
             </div>
         </div>
     </div>
