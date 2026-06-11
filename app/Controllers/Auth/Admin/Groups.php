@@ -116,6 +116,8 @@ class Groups extends BaseController
             'group'     => $name,
         ]);
 
+        $this->refreshGroupsIfSelf($userUuid);
+
         logit("Admin created group \"{$name}\".");
 
         return $this->response->setJSON(['success' => true]);
@@ -144,6 +146,8 @@ class Groups extends BaseController
             'group'     => $name,
             'user_uuid' => $userUuid !== '' ? $userUuid : null,
         ]);
+
+        $this->refreshGroupsIfSelf($userUuid);
 
         logit("Admin updated group ID {$id} (\"{$name}\").");
 
@@ -186,5 +190,16 @@ class Groups extends BaseController
         logit('Admin bulk deleted ' . count($ids) . ' group(s): IDs ' . implode(', ', $ids) . '.', 1);
 
         return $this->response->setJSON(['success' => true, 'deleted' => count($ids)]);
+    }
+
+    private function refreshGroupsIfSelf(string $userUuid): void
+    {
+        if ($userUuid === '' || $userUuid !== session()->get('user_uuid')) {
+            return;
+        }
+
+        $groups = (new GroupModel())->where('user_uuid', $userUuid)->findColumn('group');
+        session()->set('groups', $groups);
+        session()->set('is_admin', in_array('administrators', (array) $groups, true));
     }
 }
