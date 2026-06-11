@@ -8,12 +8,12 @@ The debug system is a set of admin-only controllers, views, and a routing shim t
 
 ## Access Control
 
-All `/debug` routes are protected by `AuthFilter` — [app/Filters/AuthFilter.php](app/Filters/AuthFilter.php).
+All `/debug` routes are protected by `DebugFilter` — [app/Filters/DebugFilter.php](app/Filters/DebugFilter.php).
 
-The filter authenticates the request and checks `$session->get('is_admin')` before every request. Unauthenticated visitors are redirected to `/auth`; non-admin visitors are redirected to `/unauthorised`. The filter is applied in [app/Config/Filters.php](app/Config/Filters.php):
+The filter runs after `SessionFilter` has hydrated the session. It redirects to `/auth` if the user is not authenticated, or to `/unauthorised` if the user is not an administrator. The filter is applied in [app/Config/Filters.php](app/Config/Filters.php):
 
 ```
-'authfilter' => ['before' => ['admin', 'admin/*', 'debug', 'debug/*']],
+'debugfilter' => ['before' => ['debug', 'debug/*']],
 ```
 
 There is no publicly accessible debug output at any time.
@@ -98,7 +98,7 @@ No route changes are required.
 | [app/Controllers/Debug/Home.php](app/Controllers/Debug/Home.php) | Landing page — lists available controllers |
 | [app/Controllers/Debug/BaseController.php](app/Controllers/Debug/BaseController.php) | Base class — shared session, auto `index()` method list |
 | [app/Controllers/Debug/Rerouter.php](app/Controllers/Debug/Rerouter.php) | URL-to-class dispatch shim |
-| [app/Filters/AuthFilter.php](app/Filters/AuthFilter.php) | Admin-only access gate |
+| [app/Filters/DebugFilter.php](app/Filters/DebugFilter.php) | Admin-only access gate |
 | [app/Views/debug/home.php](app/Views/debug/home.php) | Controller list view |
 | [app/Views/debug/methods.php](app/Views/debug/methods.php) | Method list view |
 | [app/Views/debug/default.php](app/Views/debug/default.php) | Output dump view |

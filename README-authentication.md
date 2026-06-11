@@ -169,9 +169,13 @@ Configured in [app/Config/Session.php](app/Config/Session.php):
 
 Filters are registered in [app/Config/Filters.php](app/Config/Filters.php) and applied to route patterns.
 
-### `AuthFilter` — [app/Filters/AuthFilter.php](app/Filters/AuthFilter.php)
+### `SessionFilter` — [app/Filters/SessionFilter.php](app/Filters/SessionFilter.php)
 
-Applied to `admin`, `admin/*`, `debug`, and `debug/*`. Authenticates the request via session or API key cookie, then checks `$session->get('is_admin')`. Redirects to `/auth` if unauthenticated, or to `/unauthorised` if the user is not an administrator.
+Applied globally (before every request). If the session is not already populated and a valid `apikey` cookie is present, it hydrates the session with user data. Never redirects — public routes remain accessible to unauthenticated users.
+
+### `AdminFilter` — [app/Filters/AdminFilter.php](app/Filters/AdminFilter.php)
+
+Applied to `admin` and `admin/*`. Redirects to `/auth` if the session has no `user_uuid`; redirects to `/unauthorised` if `is_admin` is falsy.
 
 ### `ApiFilter` — [app/Filters/ApiFilter.php](app/Filters/ApiFilter.php)
 
@@ -223,7 +227,8 @@ CORS headers are set to allow all origins with `apikey`, `user-uuid`, and `email
 | [app/Models/PasswordResetModel.php](app/Models/PasswordResetModel.php) | Reset tokens |
 | [app/Models/GroupModel.php](app/Models/GroupModel.php) | Role assignments |
 | [app/Models/ApikeyModel.php](app/Models/ApikeyModel.php) | API keys |
-| [app/Filters/AuthFilter.php](app/Filters/AuthFilter.php) | Admin/debug route authentication and authorisation |
+| [app/Filters/SessionFilter.php](app/Filters/SessionFilter.php) | Global session hydration from API key cookie |
+| [app/Filters/AdminFilter.php](app/Filters/AdminFilter.php) | Admin route authentication and authorisation |
 | [app/Filters/ApiFilter.php](app/Filters/ApiFilter.php) | API route protection |
 | [app/Libraries/Sendmail.php](app/Libraries/Sendmail.php) | Email dispatch (verification, reset) |
 | [app/Config/App.php](app/Config/App.php) | `allowNewUserRegistration` flag |

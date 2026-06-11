@@ -2,7 +2,9 @@
 
 namespace Config;
 
-use App\Filters\AuthFilter;
+use App\Filters\AdminFilter;
+use App\Filters\SessionFilter;
+use App\Filters\DebugFilter;
 use App\Filters\ApiFilter;
 use CodeIgniter\Config\Filters as BaseFilters;
 use CodeIgniter\Filters\Cors;
@@ -27,7 +29,9 @@ class Filters extends BaseFilters
      * or [filter_name => [classname1, classname2, ...]]
      */
     public array $aliases = [
-        'authfilter'    => AuthFilter::class,
+        'adminfilter'   => AdminFilter::class,
+        'sessionfilter' => SessionFilter::class,
+        'debugfilter'   => DebugFilter::class,
         'apifilter'     => ApiFilter::class,
         'csrf'          => CSRF::class,
         'toolbar'       => DebugToolbar::class,
@@ -75,6 +79,7 @@ class Filters extends BaseFilters
      */
     public array $globals = [
         'before' => [
+            'sessionfilter',
             // 'honeypot',
             // 'csrf',
             // 'invalidchars',
@@ -110,7 +115,8 @@ class Filters extends BaseFilters
      * @var array<string, array<string, list<string>>>
      */
     public array $filters = [
-        'authfilter' => ['before' => ['admin', 'admin/*', 'debug', 'debug/*']],
-        'apifilter'  => ['before' => ['api', 'api/*']],
+        'adminfilter' => ['before' => ['admin', 'admin/*']],
+        'debugfilter' => ['before' => ['debug', 'debug/*']],
+        'apifilter'   => ['before' => ['api', 'api/*']],
     ];
 }
