@@ -1,7 +1,7 @@
 <footer class="mt-auto py-3 px-3">
     <div style="max-width: <?= $templateMaxWidth ?? '68ch' ?>; margin-inline: auto;" class="text-center">
         <small>
-            <span class="d-block py-3"><img class="img-32" src="/assets/img/bone.svg" alt=""></span>
+            <span class="d-block py-3"><img class="img-32 invert-light" src="/assets/img/bone.svg" alt=""></span>
             <br>
             <span class="flip-horizontal">&copy;</span> <?= date('Y') ?> corenominal. All rights reserved.<br>
             <a class="text-decoration-none me-2" href="<?= config('Urls')->github ?>"><i class="bi bi-github"></i> GitHub</a> <a class="text-decoration-none me-2" href="<?= config('Urls')->readme ?>"><i class="bi bi-file-text-fill"></i> README</a> <a class="text-decoration-none" href="<?= config('Urls')->license ?>"><i class="bi bi-file-earmark-text-fill"></i> License</a>
