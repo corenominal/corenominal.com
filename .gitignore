@@ -65,6 +65,8 @@ Vagrantfile
 
 php_errors.log
 
+/public/uploads/*
+
 #-------------------------
 # User Guide Temp Files
 #-------------------------
