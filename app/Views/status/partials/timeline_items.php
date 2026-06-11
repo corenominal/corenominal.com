@@ -1,7 +1,7 @@
 <?php if ($statuses !== []): ?>
     <?php foreach ($statuses as $status): ?>
         <article
-            class="py-3 border-bottom"
+            class="py-5"
             data-status-id="<?= (int) $status['id'] ?>"
             <?php if (user_in_group('administrators')): ?>
             data-status-content="<?= esc($status['content'] ?? '') ?>"
@@ -13,18 +13,8 @@
             ], $status['media'] ?? []), JSON_UNESCAPED_SLASHES)) ?>"
             <?php endif; ?>
         >
-            <div class="d-flex gap-3">
-                <img src="/icon.svg" class="rounded-circle flex-shrink-0" width="40" height="40" alt="">
+            <div>
                 <div class="flex-grow-1 min-w-0">
-
-                    <div class="d-flex align-items-baseline gap-2 mb-1">
-                        <span class="fw-semibold small"><?= esc((string)$mastodonDisplayname) ?></span>
-                        <?php if (! empty($mastodonProfile) && ! empty($mastodonHandle)): ?>
-                            <a href="<?= esc($mastodonProfile) ?>" class="text-secondary small text-decoration-none" target="_blank" rel="noopener noreferrer"><?= esc($mastodonHandle) ?></a>
-                        <?php elseif (! empty($mastodonHandle)): ?>
-                            <span class="text-secondary small"><?= esc($mastodonHandle) ?></span>
-                        <?php endif; ?>
-                    </div>
 
                     <div class="mb-2">
                         <?= $status['content_html'] ?>
@@ -47,7 +37,7 @@
                                     <?php else: ?>
                                         <img
                                             class="rounded img-fluid status-media-img"
-                                            style="max-height: 320px; cursor: pointer;"
+                                            style="cursor: pointer;"
                                             src="<?= esc($media['url']) ?>"
                                             alt="<?= esc(! empty($media['description']) ? $media['description'] : 'Status media') ?>"
                                             loading="lazy"
