@@ -9,3 +9,4 @@ Website live at https://corenominal.com
 - [Authentication](README-authentication.md)
 - [Debug](README-debug.md)
 - [Metrics](README-metrics.md)
+- [Status](README-status.md)
