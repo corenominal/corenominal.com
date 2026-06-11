@@ -10,11 +10,7 @@ class DebugFilter implements FilterInterface
 {
     public function before(RequestInterface $request, $arguments = null)
     {
-        $session = session();
-        if (!$session->get('user_uuid')) {
-            return redirect()->to('/auth?redirect=' . urlencode(current_url()));
-        }
-        if (!$session->get('is_admin')) {
+        if (!user_in_group('debug')) {
             return redirect()->to('/unauthorised');
         }
     }
