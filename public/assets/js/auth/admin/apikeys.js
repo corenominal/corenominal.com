@@ -30,7 +30,7 @@
             dir:      state.dir,
             search:   state.search,
         });
-        tbody.innerHTML = `<tr><td colspan="9" class="text-center text-muted py-4">Loading…</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="10" class="text-center text-muted py-4">Loading…</td></tr>`;
 
         fetch(`${BASE}/data?${params}`)
             .then(r => r.json())
@@ -39,7 +39,7 @@
                 renderPagination(data.total, data.page, data.pages, data.per_page);
             })
             .catch(() => {
-                tbody.innerHTML = `<tr><td colspan="9" class="text-center text-danger py-4">Failed to load API keys.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="10" class="text-center text-danger py-4">Failed to load API keys.</td></tr>`;
             });
     }
 
@@ -48,7 +48,7 @@
         selectAll.indeterminate = false;
 
         if (!keys || keys.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="9" class="text-center text-muted py-4">No API keys found.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="10" class="text-center text-muted py-4">No API keys found.</td></tr>`;
             updateBulkBtn();
             return;
         }
@@ -58,7 +58,14 @@
                 <td><input type="checkbox" class="form-check-input row-check" value="${k.id}"></td>
                 <td>${k.id}</td>
                 <td>${esc(k.email)}</td>
-                <td class="text-nowrap font-monospace" style="font-size:.75em">${esc(k.key ? k.key.substring(0, 16) + '…' : '')}</td>
+                <td class="text-nowrap">
+                    <span class="font-monospace" style="font-size:.75em">${esc(k.user_uuid ? k.user_uuid.substring(0, 8) + '…' : '')}</span>
+                    <button class="btn btn-sm btn-outline-primary btn-copy py-0 px-1 ms-1" data-copy="${esc(k.user_uuid)}" title="Copy User UUID"><i class="bi bi-clipboard" aria-hidden="true"></i></button>
+                </td>
+                <td class="text-nowrap">
+                    <span class="font-monospace" style="font-size:.75em">${esc(k.key ? k.key.substring(0, 16) + '…' : '')}</span>
+                    <button class="btn btn-sm btn-outline-primary btn-copy py-0 px-1 ms-1" data-copy="${esc(k.key)}" title="Copy Key"><i class="bi bi-clipboard" aria-hidden="true"></i></button>
+                </td>
                 <td>${k.is_admin == 1
                     ? '<span class="badge bg-success">Yes</span>'
                     : '<span class="badge bg-secondary">No</span>'}</td>
@@ -128,6 +135,14 @@
 
     function fmtDate(dt) {
         return dt ? dt.substring(0, 10) : '';
+    }
+
+    function copyToClipboard(btn, text) {
+        navigator.clipboard.writeText(text).then(() => {
+            const icon = btn.querySelector('i');
+            icon.className = 'bi bi-clipboard-check';
+            setTimeout(() => { icon.className = 'bi bi-clipboard'; }, 1500);
+        });
     }
 
     function checkedIds() {
@@ -262,6 +277,12 @@
     // ── Edit & delete row buttons ─────────────────────────────────────────────
 
     tbody.addEventListener('click', e => {
+        const copyBtn = e.target.closest('.btn-copy');
+        if (copyBtn) {
+            copyToClipboard(copyBtn, copyBtn.dataset.copy);
+            return;
+        }
+
         const editBtn = e.target.closest('.btn-edit');
         if (editBtn) {
             openEditModal(editBtn.dataset.id);
