@@ -1,6 +1,6 @@
 <?php if ($bookmarks !== []): ?>
     <?php foreach ($bookmarks as $bookmark): ?>
-        <article class="mb-4 pb-4 border-bottom" data-bookmark-id="<?= (int) $bookmark['id'] ?>">
+        <article class="mb-4 border border rounded p-3" data-bookmark-id="<?= (int) $bookmark['id'] ?>">
 
             <?php if (! empty($bookmark['image'])): ?>
                 <div class="mb-3 rounded overflow-hidden">

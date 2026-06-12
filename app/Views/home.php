@@ -26,7 +26,16 @@
         </div>
     <?php endif; ?>
 
-    <p>I also keep a collection of bookmarks to interesting articles, projects, and resources that I come across. You can check them out on my <a href="/bookmarks">bookmarks page</a>. My latest bookmark is:</p>
+    <p class="mb-3">I also keep a collection of bookmarks to interesting articles, projects, and resources that I come across. You can check them out on my <a href="/bookmarks">bookmarks page</a>. The latest bookmark is below:</p>
+
+    <?php if (isset($latestBookmark) && $latestBookmark !== null): ?>
+        <?= view('bookmarks/partials/bookmark_items', ['bookmarks' => [$latestBookmark]]) ?>
+        <div class="d-flex flex-column flex-lg-row gap-3 mt-3 mb-5">
+            <a class="btn btn-outline-primary w-100 w-lg-50" href="/bookmarks">
+                <i class="bi bi-arrow-right-circle me-1" aria-hidden="true"></i>View all bookmarks
+            </a>
+        </div>
+    <?php endif; ?>
 
     <p>I publish my open source projects on <a href="https://github.com/corenominal" target="_blank" rel="noopener noreferrer">GitHub</a>.</p>
 

@@ -6,7 +6,7 @@
     <a href="<?= esc((string) $backUrl) ?>" class="text-decoration-none text-secondary small">&larr; <?= esc((string) $backLabel) ?></a>
 </div>
 
-<article>
+<article class="mb-4 border border rounded p-3" data-bookmark-id="<?= (int) $bookmark['id'] ?>">
 
     <?php if (! empty($bookmark['image'])): ?>
         <div class="mb-3 rounded overflow-hidden">
