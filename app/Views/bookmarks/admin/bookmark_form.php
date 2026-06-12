@@ -4,7 +4,7 @@
 
 <div class="d-flex align-items-start justify-content-between gap-3 mb-4 pb-3 border-bottom">
     <div>
-        <h1 class="h4 mb-1"><?= esc($title) ?></h1>
+        <h1 class="h4 mb-1"><?= esc((string)$title) ?></h1>
         <p class="text-secondary small mb-0">
             <?= $action === 'create' ? 'Fill in the details below to save a new bookmark.' : 'Update the bookmark details below.' ?>
         </p>
@@ -21,7 +21,7 @@
 <form
     id="bookmark-form"
     novalidate
-    data-action="<?= esc($action) ?>"
+    data-action="<?= esc((string)$action) ?>"
     data-uuid="<?= esc($bookmark['uuid'] ?? '') ?>"
     data-image="<?= esc($bookmark['image'] ?? '') ?>"
     data-api-key="<?= esc(config('ApiKeys')->masterKey) ?>"
@@ -191,15 +191,14 @@
                     </div>
 
                     <!-- Preview card mirrors bookmark_items.php -->
-                    <article id="bookmark-preview" class="d-none" aria-label="Bookmark preview">
+                    <article id="bookmark-preview" class="border rounded p-3 d-none" aria-label="Bookmark preview">
 
                         <div id="preview-image-wrap" class="mb-3 rounded overflow-hidden d-none">
                             <img
                                 id="preview-image"
                                 src=""
                                 alt=""
-                                class="img-fluid w-100"
-                                style="object-fit: cover; max-height: 220px;"
+                                class="img-fluid"
                                 loading="lazy"
                                 decoding="async"
                             >

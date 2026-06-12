@@ -290,7 +290,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		if (tagItems.length > 0) {
 			previewTags.innerHTML = tagItems
 				.map(function (t) {
-					return '<span class="badge text-bg-secondary fw-normal">' + t.replace(/&/g,'&amp;').replace(/</g,'&lt;') + '</span>';
+					return '<span class="badge text-bg-secondary text-decoration-none fw-normal">' + t.replace(/&/g,'&amp;').replace(/</g,'&lt;') + '</span>';
 				})
 				.join('');
 			previewTags.classList.remove('d-none');
