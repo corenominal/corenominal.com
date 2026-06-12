@@ -66,6 +66,13 @@
                 <?php if (user_in_group('administrators') && ! empty($bookmark['private'])): ?>
                     <span class="badge text-bg-secondary">Private</span>
                 <?php endif; ?>
+                <?php if (user_in_group('administrators')): ?>
+                    <a
+                        href="<?= site_url('admin/bookmarks/' . esc($bookmark['uuid']) . '/edit') ?>"
+                        class="btn btn-sm btn-link text-secondary p-0 lh-1"
+                        aria-label="Edit bookmark"
+                    ><i class="bi bi-pencil" aria-hidden="true"></i></a>
+                <?php endif; ?>
             </div>
 
         </article>
