@@ -104,13 +104,13 @@
             <?php if( is_logged_in() ): ?>
             <a href="#" class="sidebar-footer-link trigger-logout"
                data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Sign out">
-                <i class="bi bi-box-arrow-right flex-shrink-0" aria-hidden="true"></i>
+                <i class="bi bi-shield-fill-x flex-shrink-0" aria-hidden="true"></i>
                 <span class="sidebar-label">Sign Out</span>
             </a>
             <?php else: ?>
             <a href="/auth?redirect=<?= urlencode(current_url()) ?>" class="sidebar-footer-link"
                data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Sign in">
-                <i class="bi bi-box-arrow-in-right flex-shrink-0" aria-hidden="true"></i>
+                <i class="bi bi-shield-lock-fill flex-shrink-0" aria-hidden="true"></i>
                 <span class="sidebar-label">Sign in</span>
             </a>
             <?php endif; ?>
