@@ -63,6 +63,7 @@
 
         <!-- Sidebar footer -->
         <div class="p-2">
+            <?php if( is_logged_in() ): ?>
             <a href="/" class="sidebar-footer-link"
                data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Home Page">
                 <i class="bi bi-slash-square flex-shrink-0" aria-hidden="true"></i>
@@ -73,6 +74,7 @@
                 <i class="bi bi-grid-3x3-gap-fill flex-shrink-0" aria-hidden="true"></i>
                 <span class="sidebar-label">App Menu</span>
             </a>
+            <?php endif; ?>
             <?php if( user_in_group('administrators') ): ?>
             <a href="/admin" class="sidebar-footer-link"
                data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Admin">
