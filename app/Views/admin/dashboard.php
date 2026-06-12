@@ -13,6 +13,9 @@
         <a href="/admin/status" class="list-group-item list-group-item-action">
             <i class="bi bi-broadcast me-2"></i>Status
         </a>
+        <a href="/admin/bookmarks" class="list-group-item list-group-item-action">
+            <i class="bi bi-bookmarks me-2"></i>Bookmarks
+        </a>
     </ul>
 
 <?= $this->endSection() ?>

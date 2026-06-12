@@ -27,4 +27,11 @@
             <span class="sidebar-label">Status</span>
         </a>
     </li>
+    <li>
+        <a href="/admin/bookmarks" class="nav-link"
+            data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Bookmarks">
+            <i class="bi bi-bookmarks"></i>
+            <span class="sidebar-label">Bookmarks</span>
+        </a>
+    </li>
 </ul>

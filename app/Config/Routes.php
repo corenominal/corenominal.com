@@ -131,6 +131,35 @@ $routes->group('debug', function($routes) {
     $routes->get('(:segment)/(:segment)', 'Debug\Rerouter::reroute/$1/$2');
 });
 
+// Public bookmarks routes
+$routes->group('bookmarks', function ($routes) {
+    $routes->get('/', 'Bookmarks\Home::index');
+    $routes->get('load', 'Bookmarks\Home::loadMore');
+    $routes->get('feed/rss', 'Bookmarks\Feed::rss');
+    $routes->get('(:segment)', 'Bookmarks\Home::show/$1');
+});
+
+// Admin bookmarks routes (adminfilter applied globally via Filters.php)
+$routes->group('admin/bookmarks', function ($routes) {
+    $routes->get('/', 'Bookmarks\Admin\Home::index');
+    $routes->post('delete', 'Bookmarks\Admin\Home::delete');
+    $routes->get('create', 'Bookmarks\Admin\BookmarkForm::create');
+    $routes->get('(:segment)/edit', 'Bookmarks\Admin\BookmarkForm::edit/$1');
+});
+
+// API bookmarks routes (apifilter applied globally via Filters.php)
+$routes->group('api/bookmarks', function ($routes) {
+    $routes->options('(:any)', static function () { return ''; });
+    $routes->post('/', 'Bookmarks\Api\Bookmarks::create');
+    $routes->get('latest', 'Bookmarks\Api\Bookmarks::latest');
+    $routes->get('check-url', 'Bookmarks\Api\Bookmarks::checkUrl');
+    $routes->get('tags', 'Bookmarks\Api\Tags::index');
+    $routes->post('markdown/preview', 'Bookmarks\Api\MarkdownPreview::convert');
+    $routes->get('screenshot/preview', 'Bookmarks\Api\ScreenshotPreview::url');
+    $routes->post('screenshot/capture', 'Bookmarks\Api\ScreenshotPreview::capture');
+    $routes->put('(:segment)', 'Bookmarks\Api\Bookmarks::update/$1');
+});
+
 // Metrics collection endpoint
 $routes->post('/metrics', 'Metrics::receive');
 
