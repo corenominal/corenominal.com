@@ -50,7 +50,7 @@ class Home extends BaseController
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Status not found.');
         }
 
-        $status['media'] = $this->buildMediaArray($status);
+        $status = status_with_media($status);
 
         $referer     = (string) $this->request->getHeaderLine('Referer');
         $timelineUrl = site_url('status');
@@ -135,7 +135,7 @@ class Home extends BaseController
                 ->findAll();
 
             foreach ($mediaRows as $row) {
-                $mediaById[(int) $row['id']] = $this->mediaRowToArray($row);
+                $mediaById[(int) $row['id']] = status_media_row_to_array($row);
             }
         }
 
@@ -154,44 +154,5 @@ class Home extends BaseController
         return ['statuses' => $statuses, 'hasMore' => $hasMore];
     }
 
-    private function buildMediaArray(array $status): array
-    {
-        $mediaIds = $status['media_ids'] ?? [];
 
-        if (empty($mediaIds)) {
-            return [];
-        }
-
-        $ids  = array_values(array_unique(array_map('intval', $mediaIds)));
-        $rows = (new StatusMediaModel())->whereIn('id', $ids)->findAll();
-
-        $byId = [];
-
-        foreach ($rows as $row) {
-            $byId[(int) $row['id']] = $this->mediaRowToArray($row);
-        }
-
-        $media = [];
-
-        foreach ($ids as $id) {
-            if (isset($byId[$id])) {
-                $media[] = $byId[$id];
-            }
-        }
-
-        return $media;
-    }
-
-    private function mediaRowToArray(array $row): array
-    {
-        return [
-            'id'          => (int) $row['id'],
-            'description' => (string) ($row['description'] ?? ''),
-            'url'         => '/uploads/status/media/' . ($row['file_name'] ?? ''),
-            'mimeType'    => (string) ($row['mime_type'] ?? ''),
-            'width'       => isset($row['width']) ? (int) $row['width'] : null,
-            'height'      => isset($row['height']) ? (int) $row['height'] : null,
-            'filesize'    => isset($row['filesize']) ? (int) $row['filesize'] : null,
-        ];
-    }
 }

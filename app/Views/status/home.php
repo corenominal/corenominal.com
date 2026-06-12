@@ -23,7 +23,7 @@
     </div>
 
     <?php if (user_in_group('administrators')): ?>
-    <div class="mb-4" id="timeline-compose">
+    <div class="mb-5" id="timeline-compose">
         <div class="d-flex align-items-center justify-content-between mb-2">
             <h2 class="h6 mb-0 fw-semibold" id="compose-form-title">New Status</h2>
             <div class="d-flex align-items-center gap-2">

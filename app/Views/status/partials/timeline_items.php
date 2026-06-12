@@ -1,7 +1,7 @@
 <?php if ($statuses !== []): ?>
     <?php foreach ($statuses as $status): ?>
         <article
-            class="py-5"
+            class="pb-5"
             data-status-id="<?= (int) $status['id'] ?>"
             <?php if (user_in_group('administrators')): ?>
             data-status-content="<?= esc($status['content'] ?? '') ?>"
