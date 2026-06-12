@@ -1,14 +1,14 @@
 <?= $this->extend('templates/default') ?>
 <?= $this->section('content') ?>
 
-    <h1 class="mb-4">~/ corenominal</h1>
+    <h1 class="mb-4"><span aria-hidden="true">~/ </span>corenominal</h1>
 
     <p class="lead">Hello, World! Welcome to my website. I'm a tech enthusiast and web developer. When I'm not sat in front of my computer, I can be found reading Warhammer 40,000 fiction, performing grumpa duties or riding my bike.</p>
 
     <p>I write about technology, programming, and my personal projects on the <a href="/blog">blog</a>. My latest blog post is titled <strong>"<a href="/blog/my-latest-post">Exploring AI tooling, model runners, cloud gateways, and local setups</a>"</strong>.</p>
 
     <?php if (isset($status) && $status !== null): ?>
-        <p class="mb-3">I write short updates about my life and work. The latest one is below:</p>
+        <p class="mb-3">I write short updates about my life and work and syndicate them to my <strong><a href="<?= esc(config('Mastodon')->profile) ?>" target="_blank" rel="noopener noreferrer">Mastodon profile</a></strong>. The latest update is below:</p>
         <div id="timeline-items">
             <?= view('status/partials/timeline_items', [
                 'statuses'        => [$status],
