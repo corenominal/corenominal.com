@@ -3,7 +3,7 @@
 
     <h1 class="mb-4"><span aria-hidden="true">~/ </span>corenominal</h1>
 
-    <p class="lead">Hello, World! Welcome to my website. I'm a tech enthusiast and web developer. When I'm not sat in front of my computer, I can be found reading Warhammer 40,000 fiction, performing grumpa duties or riding my bike.</p>
+    <p class="lead">Hello, World! Welcome to my website. I'm a tech enthusiast and web developer. When I'm not sat in front of my computer, I can be found reading Warhammer 40,000 fiction, performing grumpa duties, listening to tech podcasts, or riding my bike.</p>
 
     <p>I write about technology, programming, and my personal projects on the <a href="/blog">blog</a>. My latest blog post is titled <strong>"<a href="/blog/my-latest-post">Exploring AI tooling, model runners, cloud gateways, and local setups</a>"</strong>.</p>
 
@@ -16,7 +16,7 @@
                 'mastodonProfile' => $mastodonProfile ?? '',
             ]) ?>
         </div>
-        <div class="d-flex flex-column flex-lg-row gap-3 mt-3">
+        <div class="d-flex flex-column flex-lg-row gap-3 mt-3 mb-5">
             <a class="btn btn-outline-primary w-100 w-lg-50" href="/status">
                 <i class="bi bi-arrow-right-circle me-1" aria-hidden="true"></i>View all status updates
             </a>
@@ -25,6 +25,10 @@
             </a>
         </div>
     <?php endif; ?>
+
+    <p>I also keep a collection of bookmarks to interesting articles, projects, and resources that I come across. You can check them out on my <a href="/bookmarks">bookmarks page</a>. My latest bookmark is:</p>
+
+    <p>I publish my open source projects on <a href="https://github.com/corenominal" target="_blank" rel="noopener noreferrer">GitHub</a>.</p>
 
 <!-- Image preview modal -->
 <div class="modal fade" id="timeline-image-modal" tabindex="-1" aria-labelledby="timeline-image-modal-label" aria-hidden="true">
