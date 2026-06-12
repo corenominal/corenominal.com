@@ -2,7 +2,7 @@
     <li>
         <a href="/" class="nav-link"
             data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Home">
-            <i class="bi bi-house"></i>
+            <i class="bi bi-slash-square"></i>
             <span class="sidebar-label">Home</span>
         </a>
     </li>

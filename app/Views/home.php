@@ -1,11 +1,14 @@
 <?= $this->extend('templates/default') ?>
 <?= $this->section('content') ?>
 
-    <h1 class="d-none">corenominal</h1>
-    <p class="lead mb-5">Hello, World! Welcome to my website. I'm a tech enthusiast and web developer. When I'm not sat in front of my computer, I can be found reading Warhammer 40,000 fiction, performing grumpa duties or riding my bike.</p>
+    <h1 class="mb-4"><i class="bi bi-slash-square"></i> corenominal</h1>
+
+    <p class="lead">Hello, World! Welcome to my website. I'm a tech enthusiast and web developer. When I'm not sat in front of my computer, I can be found reading Warhammer 40,000 fiction, performing grumpa duties or riding my bike.</p>
+
+    <p>I write about technology, programming, and my personal projects on the <a href="/blog">blog</a>. My latest blog post is titled <strong>"<a href="/blog/my-latest-post">Exploring AI tooling, model runners, cloud gateways, and local setups</a>"</strong>.</p>
 
     <?php if (isset($status) && $status !== null): ?>
-        <h2 class="mb-3 h4">Latest Status Update</h2>
+        <p class="mb-3">I write short updates about my life and work. The latest one is below:</p>
         <div id="timeline-items">
             <?= view('status/partials/timeline_items', [
                 'statuses'        => [$status],
