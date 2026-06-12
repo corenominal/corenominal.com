@@ -68,21 +68,21 @@
                     name="q"
                     class="form-control"
                     placeholder="Search bookmarks&hellip;"
-                    value="<?= esc($search) ?>"
+                    value="<?= esc((string) $search) ?>"
                     autocomplete="off"
                     style="width: 220px;"
                 >
             </div>
         </form>
-        <button type="button" class="btn btn-sm btn-outline-danger" id="btn-delete" disabled>
+        <button type="button" class="btn btn-sm btn-outline-primary" id="btn-delete" disabled>
             <i class="bi bi-trash3-fill me-1" aria-hidden="true"></i>Delete Selected
         </button>
     </div>
 
     <!-- Bookmarks table -->
     <div class="table-responsive">
-        <table class="table table-hover table-sm align-middle mb-0">
-            <thead class="table-secondary">
+        <table class="table table-hover table-bordered table-striped align-middle mb-0">
+            <thead class="">
                 <tr>
                     <th style="width: 32px;">
                         <input type="checkbox" id="select-all" class="form-check-input" aria-label="Select all">
@@ -147,7 +147,7 @@
                                     </a>
                                     <button
                                         type="button"
-                                        class="btn btn-sm btn-outline-danger btn-delete-single"
+                                        class="btn btn-sm btn-outline-primary btn-delete-single"
                                         data-id="<?= (int) $bookmark['id'] ?>"
                                         data-title="<?= esc($bookmark['title']) ?>"
                                         title="Delete"
@@ -170,7 +170,7 @@
     <!-- Pagination -->
     <?php if ($pager): ?>
         <div class="mt-3">
-            <?= $pager->links() ?>
+            <?= $pager->links('default', 'bootstrap_full') ?>
         </div>
     <?php endif; ?>
 
