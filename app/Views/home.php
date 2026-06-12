@@ -5,7 +5,7 @@
     <p class="lead mb-5">Hello, World! Welcome to my website. I'm a tech enthusiast and web developer. When I'm not sat in front of my computer, I can be found reading Warhammer 40,000 fiction, performing grumpa duties or riding my bike.</p>
 
     <?php if (isset($status) && $status !== null): ?>
-        <h2 class="mb-3">Latest Status Update</h2>
+        <h2 class="mb-3 h4">Latest Status Update</h2>
         <div id="timeline-items">
             <?= view('status/partials/timeline_items', [
                 'statuses'        => [$status],
