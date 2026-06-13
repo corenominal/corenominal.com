@@ -37,6 +37,15 @@ document.addEventListener('DOMContentLoaded', () => {
 		`).join('');
 	};
 
+	const infoBtn = document.getElementById('github-activity-info');
+	if (infoBtn && window.bootstrap) {
+		new window.bootstrap.Popover(infoBtn, {
+			trigger: 'focus',
+			placement: 'top',
+			content: 'This graph only shows activity to public GitHub repositories. Private repository activity is not included.',
+		});
+	}
+
 	if (heatmapCells.length && activityDate && activityList) {
 		const latestActiveDate = Object.keys(activityData)[0];
 

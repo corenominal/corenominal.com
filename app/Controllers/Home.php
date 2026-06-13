@@ -33,9 +33,9 @@ class Home extends BaseController
             $data['mastodonHandle']  = config('Mastodon')->account;
             $data['mastodonProfile'] = config('Mastodon')->profile;
             $githubModel             = new GitHubActivityModel();
-            $githubGrouped           = $githubModel->getGroupedByDate(56);
+            $githubGrouped           = $githubModel->getGroupedByDate(98);
             $heatmap                 = [];
-            for ($i = 55; $i >= 0; $i--) {
+            for ($i = 97; $i >= 0; $i--) {
                 $d             = date('Y-m-d', strtotime("-{$i} days"));
                 $heatmap[$d]   = count($githubGrouped[$d] ?? []);
             }

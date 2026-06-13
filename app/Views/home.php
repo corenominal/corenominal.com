@@ -59,7 +59,7 @@
                      aria-label="<?= esc($label) ?>"></div>
             <?php endforeach; ?>
         </div>
-        <p class="text-secondary small mt-1 mb-0">GitHub activity — last 56 days</p>
+        <p class="text-secondary small mt-2 mb-0">Public GitHub activity — last 14 weeks <button type="button" class="btn btn-link p-0 border-0 text-secondary align-baseline" id="github-activity-info" tabindex="0" aria-label="About this graph"><i class="bi bi-info-circle" aria-hidden="true"></i></button></p>
         <?php
         $latestDate   = array_key_first($githubActivity ?? []);
         $latestEvents = $latestDate ? ($githubActivity[$latestDate] ?? []) : [];
