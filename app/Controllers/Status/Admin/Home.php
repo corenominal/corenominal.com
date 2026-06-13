@@ -69,6 +69,8 @@ class Home extends BaseController
         return view('status/admin/home', [
             'title'             => 'Status — Admin',
             'js'                => ['status/admin/home'],
+            'templateMenu'      => 'admin/sidebar-menu',
+            'templateMaxWidth'  => '100%',
             'totalStatuses'     => $totalStatuses,
             'statusesWithMedia' => $statusesWithMedia,
             'textOnly'          => $textOnly,

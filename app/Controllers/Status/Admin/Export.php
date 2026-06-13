@@ -13,9 +13,11 @@ class Export extends BaseController
         $totalStatuses = (new StatusModel())->countAllResults();
 
         return view('status/admin/export', [
-            'title'         => 'Status — Export Data',
-            'js'            => ['status/admin/export'],
-            'totalStatuses' => $totalStatuses,
+            'title'            => 'Status — Export Data',
+            'js'               => ['status/admin/export'],
+            'templateMenu'     => 'admin/sidebar-menu',
+            'templateMaxWidth' => '100%',
+            'totalStatuses'    => $totalStatuses,
         ]);
     }
 
