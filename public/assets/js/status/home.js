@@ -1097,17 +1097,17 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 
 		if (count > 0) {
-			const aiGroup = document.querySelector('#ai-rewrite-btn')?.closest('.btn-group');
+			const aiBtn = document.querySelector('#ai-rewrite-btn');
 
-			if (aiGroup) {
+			if (aiBtn) {
 				const btn = document.createElement('button');
 				btn.type             = 'button';
-				btn.className        = 'btn btn-sm btn-outline-secondary';
+				btn.className        = 'btn btn-sm btn-outline-primary';
 				btn.id               = 'drafts-btn';
 				btn.dataset.bsToggle = 'modal';
 				btn.dataset.bsTarget = '#drafts-modal';
 				btn.innerHTML        = '<i class="bi bi-journal-text me-1" aria-hidden="true"></i>Drafts <span class="badge text-bg-secondary ms-1" id="drafts-count-badge">' + count + '</span>';
-				aiGroup.before(btn);
+				aiBtn.before(btn);
 			}
 		}
 	};
@@ -1216,13 +1216,15 @@ document.addEventListener('DOMContentLoaded', () => {
 						throw new Error(body.error || `Delete failed (${response.status})`);
 					}
 
+					const idx = drafts.findIndex((d) => Number(d.id) === draftId);
+					if (idx !== -1) drafts.splice(idx, 1);
+
 					const li = list.querySelector(`li[data-draft-id="${draftId}"]`);
 					if (li) li.remove();
 
-					const remaining = list.querySelectorAll('li').length;
-					updateDraftsBadge(remaining);
+					updateDraftsBadge(drafts.length);
 
-					if (remaining === 0) {
+					if (drafts.length === 0) {
 						draftsModalBody.innerHTML = '<p class="text-secondary mb-0">You have no saved drafts.</p>';
 					}
 				} catch (error) {
