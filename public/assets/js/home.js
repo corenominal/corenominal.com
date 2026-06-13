@@ -1,4 +1,62 @@
 document.addEventListener('DOMContentLoaded', () => {
+	// -------------------------------------------------------------------------
+	// GitHub activity heatmap
+	// -------------------------------------------------------------------------
+
+	const heatmapCells = document.querySelectorAll('.heatmap-cell[data-date]');
+	const activityDate = document.getElementById('github-activity-date');
+	const activityList = document.getElementById('github-activity-list');
+	const activityData = window.githubActivityData || {};
+
+	const escHtml = (str) => {
+		const d = document.createElement('div');
+		d.textContent = String(str ?? '');
+		return d.innerHTML;
+	};
+
+	const renderActivityPanel = (date) => {
+		const events  = activityData[date] || [];
+		const dateObj = new Date(`${date}T12:00:00`);
+		activityDate.textContent = dateObj.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+
+		if (events.length === 0) {
+			activityList.innerHTML = '<p class="small text-secondary mb-0">No activity on this day.</p>';
+			return;
+		}
+
+		activityList.innerHTML = events.map((e) => `
+			<a href="${escHtml(e.link)}" target="_blank" rel="noopener noreferrer"
+			   class="d-flex align-items-start gap-2 py-1 text-body text-decoration-none">
+				<i class="bi bi-${escHtml(e.icon)} mt-1 flex-shrink-0" aria-hidden="true"></i>
+				<div class="small">
+					<span class="badge text-bg-${escHtml(e.label_class)} me-1">${escHtml(e.label)}</span>
+					<span class="text-secondary">${escHtml(e.repo)}</span>
+					<div>${e.description}</div>
+				</div>
+			</a>
+		`).join('');
+	};
+
+	if (heatmapCells.length && activityDate && activityList) {
+		const latestActiveDate = Object.keys(activityData)[0];
+
+		if (latestActiveDate) {
+			const latestCell = document.querySelector(`.heatmap-cell[data-date="${latestActiveDate}"]`);
+			if (latestCell) {
+				latestCell.classList.add('heatmap-cell--selected');
+			}
+		}
+
+		heatmapCells.forEach((cell) => {
+			cell.addEventListener('click', () => {
+				heatmapCells.forEach((c) => c.classList.remove('heatmap-cell--selected'));
+				cell.classList.add('heatmap-cell--selected');
+				renderActivityPanel(cell.dataset.date);
+			});
+		});
+	}
+
+
 	const getCookie = (name) => {
 		const match = document.cookie.match(new RegExp('(?:^|;\\s*)' + name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '=([^;]*)'));
 		return match ? decodeURIComponent(match[1]) : '';

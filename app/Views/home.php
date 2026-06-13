@@ -39,6 +39,70 @@
 
     <p>I publish my open source projects on <a href="https://github.com/corenominal" target="_blank" rel="noopener noreferrer">GitHub</a>.</p>
 
+    <?php if (!empty($githubHeatmap)): ?>
+    <div class="github-heatmap-wrap mb-4">
+        <div class="github-heatmap">
+            <?php foreach ($githubHeatmap as $date => $count):
+                $level = match(true) {
+                    $count === 0 => 0,
+                    $count <= 2  => 1,
+                    $count <= 5  => 2,
+                    $count <= 9  => 3,
+                    default      => 4,
+                };
+                $label = $count === 0
+                    ? 'No activity on ' . date('j M', strtotime($date))
+                    : $count . ' event' . ($count === 1 ? '' : 's') . ' on ' . date('j M', strtotime($date));
+            ?>
+                <div class="heatmap-cell heatmap-cell--level-<?= $level ?>"
+                     data-date="<?= $date ?>"
+                     aria-label="<?= esc($label) ?>"></div>
+            <?php endforeach; ?>
+        </div>
+        <p class="text-secondary small mt-1 mb-0">GitHub activity — last 56 days</p>
+        <?php
+        $latestDate   = array_key_first($githubActivity ?? []);
+        $latestEvents = $latestDate ? ($githubActivity[$latestDate] ?? []) : [];
+        ?>
+        <div id="github-activity-panel" class="mt-3">
+            <p class="small text-secondary mb-2" id="github-activity-date">
+                <?= $latestDate ? date('l, j F', strtotime($latestDate)) : '' ?>
+            </p>
+            <div id="github-activity-list">
+                <?php if (!empty($latestEvents)): ?>
+                    <?php foreach ($latestEvents as $event): ?>
+                    <a href="<?= esc($event['link']) ?>" target="_blank" rel="noopener noreferrer"
+                       class="d-flex align-items-start gap-2 py-1 text-body text-decoration-none">
+                        <i class="bi bi-<?= esc($event['icon']) ?> mt-1 flex-shrink-0" aria-hidden="true"></i>
+                        <div class="small">
+                            <span class="badge text-bg-<?= esc($event['label_class']) ?> me-1"><?= esc($event['label']) ?></span>
+                            <span class="text-secondary"><?= esc($event['repo']) ?></span>
+                            <div><?= $event['description'] ?></div>
+                        </div>
+                    </a>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p class="small text-secondary mb-0">No recent GitHub activity.</p>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php
+        $activityForJs = [];
+        foreach (($githubActivity ?? []) as $d => $events) {
+            $activityForJs[$d] = array_map(fn($ev) => [
+                'icon'        => $ev['icon'],
+                'label'       => $ev['label'],
+                'label_class' => $ev['label_class'],
+                'repo'        => $ev['repo'],
+                'description' => $ev['description'],
+                'link'        => $ev['link'],
+            ], $events);
+        }
+        ?>
+        <script>window.githubActivityData = <?= json_encode($activityForJs, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;</script>
+    </div>
+    <?php endif; ?>
+
 <!-- Image preview modal -->
 <div class="modal fade" id="timeline-image-modal" tabindex="-1" aria-labelledby="timeline-image-modal-label" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl">

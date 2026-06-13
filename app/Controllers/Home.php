@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\BookmarkModel;
+use App\Models\GitHubActivityModel;
 
 class Home extends BaseController
 {
@@ -31,8 +32,17 @@ class Home extends BaseController
             $data['latestBookmark']  = $latestBookmarkRow !== null ? bookmark_with_tags($latestBookmarkRow) : null;
             $data['mastodonHandle']  = config('Mastodon')->account;
             $data['mastodonProfile'] = config('Mastodon')->profile;
+            $githubModel             = new GitHubActivityModel();
+            $githubGrouped           = $githubModel->getGroupedByDate(56);
+            $heatmap                 = [];
+            for ($i = 55; $i >= 0; $i--) {
+                $d             = date('Y-m-d', strtotime("-{$i} days"));
+                $heatmap[$d]   = count($githubGrouped[$d] ?? []);
+            }
+            $data['githubHeatmap']   = $heatmap;
+            $data['githubActivity']  = $githubGrouped;
             $data['js']              = ['home'];
-            $data['css']             = ['status/timeline'];
+            $data['css']             = ['status/timeline', 'github-heatmap'];
             $data['title']           = 'Tech Enthusiast and Web Developer';
             return view('home', $data);
         } else {

@@ -45,6 +45,50 @@ class GitHubActivityModel extends Model
     }
 
     /**
+     * Returns all events for the last $days days grouped by Y-m-d date (most recent date first).
+     */
+    public function getGroupedByDate(int $days = 7): array
+    {
+        $rows = $this->where("github_created_at >= DATE_SUB(CURDATE(), INTERVAL {$days} DAY)")
+                     ->orderBy('github_created_at', 'DESC')
+                     ->findAll();
+
+        $grouped = [];
+        foreach ($rows as $row) {
+            $date             = substr($row['github_created_at'], 0, 10);
+            $grouped[$date][] = $row;
+        }
+
+        return $grouped;
+    }
+
+    /**
+     * Returns activity counts keyed by Y-m-d for the last $days days (oldest first).
+     * Days with no events have a count of 0.
+     */
+    public function getHeatmapData(int $days = 30): array
+    {
+        $db     = \Config\Database::connect();
+        $result = $db->query(
+            "SELECT DATE(github_created_at) AS activity_date, COUNT(*) AS cnt
+             FROM github_activity
+             WHERE github_created_at >= DATE_SUB(CURDATE(), INTERVAL ? DAY)
+             GROUP BY DATE(github_created_at)",
+            [$days]
+        )->getResultArray();
+
+        $counts = array_column($result, 'cnt', 'activity_date');
+
+        $data = [];
+        for ($i = $days - 1; $i >= 0; $i--) {
+            $date        = date('Y-m-d', strtotime("-{$i} days"));
+            $data[$date] = (int) ($counts[$date] ?? 0);
+        }
+
+        return $data;
+    }
+
+    /**
      * Returns true if a record with the given GitHub event ID already exists.
      */
     public function existsByGitHubEventId(string $eventId): bool
@@ -80,7 +124,7 @@ class GitHubActivityModel extends Model
             }
 
             return 'just now';
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return '';
         }
     }
