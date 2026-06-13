@@ -122,6 +122,7 @@ $routes->group('cli', function($routes) {
     $routes->cli('test/index/(:segment)', 'CLI\Test::index/$1');
     $routes->cli('test/count', 'CLI\Test::count');
     $routes->cli('sendmail/process', 'CLI\Sendmail::process');
+    $routes->cli('fetch-github-activity', 'CLI\FetchGitHubActivity::index');
 });
 
 // Grouping routes for Debug controllers
