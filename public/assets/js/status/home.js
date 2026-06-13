@@ -275,9 +275,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	const composeMastodonSwitch = document.querySelector('#compose-mastodon-switch');
 	const composeCharCount     = document.querySelector('#compose-char-count');
 
-	// Focus textarea on page load so admin can start typing immediately.
-	composeContentEl?.focus();
-
 	const CHAR_LIMIT = 500;
 
 	const updateCharCount = () => {
