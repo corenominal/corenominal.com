@@ -1,0 +1,2020 @@
+/* global bootstrap */
+
+document.addEventListener('DOMContentLoaded', function () {
+  'use strict';
+
+  // ── Element refs ─────────────────────────────────────────────────────────
+  const form          = document.getElementById('post-editor-form');
+  const titleInput    = document.getElementById('field-title');
+  const slugInput     = document.getElementById('field-slug');
+  const bodyTextarea  = document.getElementById('field-body');
+  const tagsInput     = document.getElementById('field-tags');
+  const tagsEntry     = document.getElementById('field-tags-input');
+  const tagBadges     = document.getElementById('tag-badges');
+  const pubAtInput    = document.getElementById('field-published-at');
+  const statusSelect  = document.getElementById('field-status');
+  const charCount         = document.getElementById('body-char-count');
+  const excerptTextarea   = document.getElementById('field-excerpt');
+  const excerptCharCount  = document.getElementById('excerpt-char-count');
+
+  const btnAiAnalyse  = document.getElementById('btn-ai-analyse');
+  const btnAiRewrite  = document.getElementById('btn-ai-rewrite');
+  const btnAiOutline  = document.getElementById('btn-ai-outline');
+  const btnAiCreative = document.getElementById('btn-ai-creative');
+  const btnAiTags     = document.getElementById('btn-ai-tags');
+  const btnAiExcerpt  = document.getElementById('btn-ai-excerpt');
+
+  const btnGenerateSlug = document.getElementById('btn-generate-slug');
+  const btnCopySlug     = document.getElementById('btn-copy-slug');
+  const btnQuickPublish = document.getElementById('btn-quick-publish');
+  const saveSuccessAlert = document.getElementById('save-message-success');
+  const saveSuccessText = document.getElementById('save-message-success-text');
+  const saveErrorsAlert = document.getElementById('save-message-errors');
+  const saveErrorsList = document.getElementById('save-message-errors-list');
+  const submitButtons = form ? form.querySelectorAll('button[type="submit"]') : [];
+
+  const previewUrl      = form.dataset.previewUrl;
+
+  const previewLoading  = document.getElementById('preview-loading');
+  const previewEmpty    = document.getElementById('preview-empty');
+  const previewArticle  = document.getElementById('preview-article');
+  const previewTitle    = document.getElementById('preview-title');
+  const previewDate     = document.getElementById('preview-date');
+  const previewBody     = document.getElementById('preview-body');
+  const previewTagsWrap = document.getElementById('preview-tags-wrap');
+  const previewTags     = document.getElementById('preview-tags');
+  const previewVideoWrap   = document.getElementById('preview-video-wrap');
+  const previewVideoPlayer = document.getElementById('preview-video-player');
+
+  const uploadUrl = form ? form.dataset.uploadUrl : null;
+  const removeUrl = form ? form.dataset.removeUrl : null;
+  const featuredDropzone = document.getElementById('featured-dropzone');
+  const featuredFileInput = document.getElementById('field-featured-file');
+  const featuredInput = document.getElementById('field-featured-image');
+  const featuredPreview = document.getElementById('featured-preview');
+  const featuredThumb = document.getElementById('featured-thumb');
+  const btnRemoveFeatured = document.getElementById('btn-remove-featured-image');
+
+  const unsavedToast    = bootstrap.Toast.getOrCreateInstance(
+    document.getElementById('unsaved-toast'),
+  );
+  const saveSuccessToast = saveSuccessAlert ? bootstrap.Toast.getOrCreateInstance(saveSuccessAlert) : null;
+  const saveErrorsToast = saveErrorsAlert ? bootstrap.Toast.getOrCreateInstance(saveErrorsAlert) : null;
+
+  // ── State ────────────────────────────────────────────────────────────────
+  let isDirty        = false;
+  let previewDirty   = true;  // preview needs a refresh
+  let previewTimer   = null;
+  let slugUserEdited = slugInput.value.trim() !== '';
+  let isSaving       = false;
+  // tags array state (derived from hidden CSV input)
+  let tagsArray = [];
+
+  // ── Slug helpers ─────────────────────────────────────────────────────────
+  function slugify(text) {
+    return text
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[̀-ͯ]/g, '')   // strip combining diacritics
+      .replace(/[^a-z0-9\s-]/g, '')
+      .trim()
+      .replace(/[\s_]+/g, '-')
+      .replace(/-{2,}/g, '-');
+  }
+
+  titleInput.addEventListener('input', function () {
+    if (!slugUserEdited) {
+      slugInput.value = slugify(titleInput.value);
+    }
+    markDirty();
+    schedulePreview();
+  });
+
+  slugInput.addEventListener('input', function () {
+    slugUserEdited = slugInput.value.trim() !== '';
+    markDirty();
+  });
+
+  btnGenerateSlug.addEventListener('click', function () {
+    slugInput.value = slugify(titleInput.value);
+    slugUserEdited  = false;
+    markDirty();
+  });
+
+  btnCopySlug.addEventListener('click', function () {
+    const base = window.location.origin + '/blog/posts/';
+    const url  = base + (slugInput.value.trim() || slugify(titleInput.value));
+    navigator.clipboard.writeText(url).then(function () {
+      const icon = btnCopySlug.querySelector('i');
+      icon.className = 'bi bi-clipboard-check';
+      setTimeout(function () { icon.className = 'bi bi-clipboard'; }, 1500);
+    });
+  });
+
+  // ── Excerpt character count ─────────────────────────────────────────────
+  function updateExcerptCharCount() {
+    const len = excerptTextarea.value.length;
+    excerptCharCount.firstChild.textContent = len + ' char' + (len === 1 ? '' : 's') + ' ';
+    excerptCharCount.className = 'small';
+    if (len === 0) {
+      excerptCharCount.classList.add('text-secondary');
+    } else if (len < 40 || len > 160) {
+      excerptCharCount.classList.add('text-danger');
+    } else if (len >= 110 && len <= 135) {
+      excerptCharCount.classList.add('text-success');
+    } else {
+      excerptCharCount.classList.add('text-warning');
+    }
+  }
+
+  excerptTextarea.addEventListener('input', function () {
+    updateExcerptCharCount();
+    markDirty();
+  });
+
+  // ── Body editor ──────────────────────────────────────────────────────────
+  function updateCharCount() {
+    const len = bodyTextarea.value.length;
+    charCount.textContent = len.toLocaleString() + ' char' + (len === 1 ? '' : 's');
+  }
+
+  function updateAiButtons() {
+    const empty = bodyTextarea.value.trim() === '';
+    if (btnAiAnalyse)  btnAiAnalyse.disabled  = empty;
+    if (btnAiRewrite)  btnAiRewrite.disabled  = empty;
+    if (btnAiCreative) btnAiCreative.disabled = empty;
+  }
+
+  bodyTextarea.addEventListener('input', function () {
+    updateCharCount();
+    updateAiButtons();
+    markDirty();
+    schedulePreview();
+  });
+
+  // Tab key inserts spaces instead of shifting focus
+  bodyTextarea.addEventListener('keydown', function (e) {
+    // Helper to replace a range and set caret
+    function replaceRange(el, start, end, text, caretOffsetAfter) {
+      const before = el.value.substring(0, start);
+      const after = el.value.substring(end);
+      el.value = before + text + after;
+      const pos = before.length + (caretOffsetAfter == null ? text.length : caretOffsetAfter);
+      el.selectionStart = el.selectionEnd = pos;
+    }
+
+    // Tab: insert 4 spaces
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const start = this.selectionStart;
+      const end   = this.selectionEnd;
+      replaceRange(this, start, end, '    ', 4);
+      markDirty();
+      updateCharCount();
+      schedulePreview();
+      return;
+    }
+
+    // Bold / Italic shortcuts: Ctrl/Cmd+B and Ctrl/Cmd+I
+    if ((e.ctrlKey || e.metaKey) && !e.altKey) {
+      const k = ('' + e.key).toLowerCase();
+      if (k === 'b' || k === 'i') {
+        e.preventDefault();
+        const selStart = this.selectionStart;
+        const selEnd = this.selectionEnd;
+        const selected = this.value.substring(selStart, selEnd);
+        const wrapper = k === 'b' ? ['**', '**'] : ['*', '*'];
+        if (selStart === selEnd) {
+          // insert markers and put caret between
+          replaceRange(this, selStart, selEnd, wrapper[0] + wrapper[1], wrapper[0].length);
+        } else {
+          replaceRange(this, selStart, selEnd, wrapper[0] + selected + wrapper[1], wrapper[0].length + selected.length);
+          // reselect the original text (without wrappers)
+          this.selectionStart = selStart + wrapper[0].length;
+          this.selectionEnd = selStart + wrapper[0].length + selected.length;
+        }
+        markDirty();
+        updateCharCount();
+        schedulePreview();
+        return;
+      }
+    }
+
+    // Backtick handling: wrap selection in inline code, or expand `` + ` -> fenced block
+    if (e.key === '`' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      const selStart = this.selectionStart;
+      const selEnd = this.selectionEnd;
+      const selected = this.value.substring(selStart, selEnd);
+
+      if (selStart !== selEnd) {
+        // wrap selection in single backticks
+        e.preventDefault();
+        replaceRange(this, selStart, selEnd, '`' + selected + '`', 1 + selected.length);
+        this.selectionStart = selStart + 1;
+        this.selectionEnd = selStart + 1 + selected.length;
+        markDirty();
+        schedulePreview();
+        updateCharCount();
+        return;
+      }
+
+      // If the two chars immediately before caret are `` then expand into a fenced block
+      const prev2 = this.value.substring(Math.max(0, selStart - 2), selStart);
+      if (prev2 === '``') {
+        e.preventDefault();
+        const before = this.value.substring(0, selStart - 2);
+        const after = this.value.substring(selEnd);
+        const insert = '```\n\n```';
+        this.value = before + insert + after;
+        // place caret on the blank line inside the fenced block
+        const caretPos = before.length + 4; // 3 backticks + newline
+        this.selectionStart = this.selectionEnd = caretPos;
+        markDirty();
+        schedulePreview();
+        updateCharCount();
+        return;
+      }
+
+      // otherwise allow the backtick to be typed normally
+      return;
+    }
+
+    // Auto-continue lists when pressing Enter on a list item
+    if (e.key === 'Enter' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      const selStart = this.selectionStart;
+      const selEnd = this.selectionEnd;
+      const val = this.value;
+      const lineStart = val.lastIndexOf('\n', selStart - 1) + 1;
+      const line = val.substring(lineStart, selStart);
+      // Match bullets (-, *, +), numbered lists (1.), and task lists (- [ ] / - [x])
+      const m = line.match(/^(\s*)([-*+]|(\d+)\.)\s+(\[[ xX]\]\s*)?/);
+      if (m) {
+        e.preventDefault();
+        const indent = m[1] || '';
+        const marker = m[2];
+        let nextMarker = marker;
+        if (/^\d+\.$/.test(marker)) {
+          // increment numbered list
+          const num = parseInt(m[3], 10) || 0;
+          nextMarker = (num + 1) + '.';
+        }
+        // preserve task-box prefix if present
+        const task = m[4] || '';
+        const insert = '\n' + indent + nextMarker + ' ' + task;
+        replaceRange(this, selStart, selEnd, insert, insert.length);
+        markDirty();
+        schedulePreview();
+        updateCharCount();
+        return;
+      }
+    }
+  });
+
+  // ── Preview ──────────────────────────────────────────────────────────────
+  function schedulePreview() {
+    previewDirty = true;
+    clearTimeout(previewTimer);
+    previewTimer = setTimeout(function () {
+      // Only auto-refresh if the preview pane is visible
+      if (document.getElementById('pane-preview').classList.contains('show')) {
+        fetchPreview();
+      }
+    }, 800);
+  }
+
+  function fetchPreview() {
+    const markdown = bodyTextarea.value.trim();
+
+    if (!markdown) {
+      showPreviewEmpty();
+      previewDirty = false;
+      return;
+    }
+
+    showPreviewLoading();
+
+    fetch(previewUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ markdown }),
+    })
+      .then(function (res) {
+        if (!res.ok) { throw new Error('Preview request failed'); }
+        return res.json();
+      })
+      .then(function (data) {
+        renderPreview(data.body_html || '');
+        previewDirty = false;
+      })
+      .catch(function () {
+        renderPreview('<p class="text-danger"><i class="bi bi-exclamation-triangle-fill me-1"></i>Preview unavailable.</p>');
+        previewDirty = false;
+      });
+  }
+
+  function showPreviewLoading() {
+    previewLoading.hidden  = false;
+    previewEmpty.hidden    = true;
+    previewArticle.hidden  = true;
+  }
+
+  function showPreviewEmpty() {
+    previewLoading.hidden = true;
+    previewEmpty.hidden   = false;
+    previewArticle.hidden = true;
+  }
+
+  function renderPreview(bodyHtml) {
+    previewLoading.hidden = true;
+    previewEmpty.hidden   = true;
+    previewArticle.hidden = false;
+
+    // Title
+    previewTitle.textContent = titleInput.value || '(No title)';
+
+    // Date: use published_at if set, otherwise today
+    let dateStr = '';
+    if (pubAtInput && pubAtInput.value) {
+      const d = new Date(pubAtInput.value);
+      dateStr = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+      previewDate.setAttribute('datetime', d.toISOString());
+    } else {
+      const now = new Date();
+      dateStr = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+      previewDate.setAttribute('datetime', now.toISOString());
+    }
+    previewDate.textContent = dateStr;
+
+    // Body HTML (server-rendered)
+    // DOMPurify is not available in this project; the preview is admin-only trusted content
+    previewBody.innerHTML = bodyHtml;
+    previewBody.querySelectorAll('table').forEach(function (t) { t.classList.add('table', 'table-bordered'); });
+
+    // Video
+    const videoFilenameInput = document.getElementById('field-video-filename');
+    const videoFilename = videoFilenameInput ? videoFilenameInput.value.trim() : '';
+    if (previewVideoWrap && previewVideoPlayer) {
+      if (videoFilename) {
+        const mediaUrl = window.location.origin + '/media/' + videoFilename;
+        if (previewVideoPlayer.getAttribute('src') !== mediaUrl) {
+          previewVideoPlayer.src = mediaUrl;
+          previewVideoPlayer.load();
+        }
+        previewVideoWrap.hidden = false;
+      } else {
+        previewVideoPlayer.removeAttribute('src');
+        previewVideoWrap.hidden = true;
+      }
+    }
+
+    // Tags
+    const rawTags = tagsInput ? tagsInput.value : '';
+    const tagList = rawTags.split(',').map(function (t) { return t.trim(); }).filter(Boolean);
+
+    if (tagList.length > 0) {
+      previewTags.innerHTML = tagList.map(function (t) {
+        return '<span class="badge bg-secondary">' +
+          t.replace(/[<>&"]/g, function (c) {
+            return ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' })[c];
+          }) + '</span>';
+      }).join('');
+      previewTagsWrap.hidden = false;
+    } else {
+      previewTags.innerHTML  = '';
+      previewTagsWrap.hidden = true;
+    }
+  }
+
+  // Refresh preview when switching to the Preview tab
+  document.getElementById('tab-preview').addEventListener('shown.bs.tab', function () {
+    if (previewDirty) {
+      fetchPreview();
+    }
+  });
+
+  // Also refresh preview when tags or published-at change
+  // Initialize tags state from hidden input value
+  if (tagsInput) {
+    tagsArray = tagsInput.value ? tagsInput.value.split(',').map(function (t) { return t.trim(); }).filter(Boolean) : [];
+    function renderTags(markDirty = true) {
+      // update hidden CSV
+      tagsInput.value = tagsArray.join(', ');
+      // render badges
+      if (tagBadges) {
+        tagBadges.innerHTML = tagsArray.map(function (t) {
+          return '<span class="badge bg-secondary me-1 mb-1 tag-badge" role="button" tabindex="0">' +
+            t.replace(/[<>&\"]/g, function (c) { return ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '\"': '&quot;' })[c]; }) +
+            '</span>';
+        }).join('');
+      }
+      if (markDirty) {
+        markDirty = false; // shadow var -> avoid clobbering function name
+        isDirty = true;
+        unsavedToast.show();
+        previewDirty = true;
+      }
+    }
+
+    function addTag(tag) {
+      if (!tag) return;
+      tag = tag.trim();
+      if (!tag) return;
+      if (tagsArray.indexOf(tag) !== -1) return;
+      tagsArray.push(tag);
+      renderTags(true);
+    }
+
+    function removeTagAtIndex(i) {
+      if (i < 0 || i >= tagsArray.length) return;
+      tagsArray.splice(i, 1);
+      renderTags(true);
+    }
+
+    // Entry input: add tag on comma, Enter, or blur
+    if (tagsEntry) {
+      tagsEntry.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ',') {
+          e.preventDefault();
+          var raw = this.value || '';
+          raw.split(',').forEach(function (part) { addTag(part); });
+          this.value = '';
+        }
+      });
+      tagsEntry.addEventListener('blur', function () {
+        var raw = this.value || '';
+        raw.split(',').forEach(function (part) { addTag(part); });
+        this.value = '';
+      });
+    }
+
+    // Click to remove tag (event delegation)
+    if (tagBadges) {
+      tagBadges.addEventListener('click', function (e) {
+        var el = e.target;
+        if (el.classList.contains('tag-badge')) {
+          // find index by matching textContent
+          var txt = el.textContent.trim();
+          var idx = tagsArray.indexOf(txt);
+          if (idx !== -1) removeTagAtIndex(idx);
+        }
+      });
+    }
+
+    // Initial render (do not mark dirty)
+    renderTags(false);
+
+    // ── AI tag suggestions ───────────────────────────────────────────────────
+    if (btnAiTags) {
+      const aiTagsUrl      = form.dataset.aiTagsUrl;
+      const aiTagsModal    = new bootstrap.Modal(document.getElementById('ai-tags-modal'));
+      const aiTagsLoading  = document.getElementById('ai-tags-loading');
+      const aiTagsResult   = document.getElementById('ai-tags-result');
+      const aiTagsBoxes    = document.getElementById('ai-tags-checkboxes');
+      const aiTagsError    = document.getElementById('ai-tags-error');
+      const btnAiTagsApply = document.getElementById('btn-ai-tags-apply');
+
+      function getAiCookie(name) {
+        const match = document.cookie.match('(?:^|; )' + name + '=([^;]*)');
+        return match ? decodeURIComponent(match[1]) : null;
+      }
+
+      btnAiTags.addEventListener('click', async function () {
+        aiTagsLoading.hidden = false;
+        aiTagsResult.hidden = true;
+        aiTagsError.hidden = true;
+        aiTagsBoxes.innerHTML = '';
+        btnAiTagsApply.disabled = true;
+
+        aiTagsModal.show();
+
+        const text = (bodyTextarea ? bodyTextarea.value.trim() : '') || (titleInput ? titleInput.value.trim() : '');
+        if (!text) {
+          aiTagsLoading.hidden = true;
+          aiTagsError.textContent = 'Please add some post content before generating tags.';
+          aiTagsError.hidden = false;
+          return;
+        }
+
+        const aiModelSelect = document.getElementById('ai-model-select');
+        const model = aiModelSelect ? aiModelSelect.value : '';
+
+        try {
+          const res = await fetch(aiTagsUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'user-uuid': getAiCookie('user_uuid'),
+              'apikey':    getAiCookie('apikey'),
+            },
+            body: JSON.stringify({ text: text, model: model }),
+          });
+
+          if (!res.ok) {
+            throw new Error('The server returned an error (' + res.status + '). Please try again.');
+          }
+
+          const data = await res.json();
+          if (!data.tags || !Array.isArray(data.tags)) {
+            throw new Error('Unexpected response format from the AI service.');
+          }
+
+          aiTagsLoading.hidden = true;
+
+          if (!data.tags.length) {
+            aiTagsError.textContent = 'No tag suggestions were returned.';
+            aiTagsError.hidden = false;
+            return;
+          }
+
+          function updateApplyBtn() {
+            const anyChecked = Array.from(
+              aiTagsBoxes.querySelectorAll('input[type="checkbox"]:not(:disabled)')
+            ).some(function (c) { return c.checked; });
+            btnAiTagsApply.disabled = !anyChecked;
+          }
+
+          data.tags.forEach(function (tag, i) {
+            const alreadyAdded = tagsArray.indexOf(tag) !== -1;
+            const id = 'ai-tag-cb-' + i;
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'form-check';
+
+            const cb = document.createElement('input');
+            cb.className = 'form-check-input';
+            cb.type = 'checkbox';
+            cb.id = id;
+            cb.value = tag;
+            if (alreadyAdded) {
+              cb.disabled = true;
+            } else {
+              cb.checked = true;
+              cb.addEventListener('change', updateApplyBtn);
+            }
+
+            const lbl = document.createElement('label');
+            lbl.className = 'form-check-label' + (alreadyAdded ? ' text-secondary text-decoration-line-through' : '');
+            lbl.htmlFor = id;
+            lbl.textContent = tag;
+
+            wrapper.appendChild(cb);
+            wrapper.appendChild(lbl);
+            aiTagsBoxes.appendChild(wrapper);
+          });
+
+          updateApplyBtn();
+          aiTagsResult.hidden = false;
+        } catch (err) {
+          aiTagsLoading.hidden = true;
+          aiTagsError.textContent = err.message || 'An unexpected error occurred.';
+          aiTagsError.hidden = false;
+        }
+      });
+
+      btnAiTagsApply.addEventListener('click', function () {
+        aiTagsBoxes.querySelectorAll('input[type="checkbox"]:not(:disabled):checked').forEach(function (cb) {
+          addTag(cb.value);
+        });
+        aiTagsModal.hide();
+      });
+    }
+  }
+  if (pubAtInput) {
+    pubAtInput.addEventListener('change', function () {
+      markDirty();
+      previewDirty = true;
+    });
+  }
+
+  // ── Featured image upload/drop handling ───────────────────────────────
+  (function () {
+    if (!featuredDropzone || !featuredInput) return;
+
+    const allowedTypes = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
+
+    const uploadErrorEl = document.getElementById('featured-upload-error');
+    const uploadErrorMsg = document.getElementById('featured-upload-error-msg');
+
+    function showUploadError(msg) {
+      if (uploadErrorEl && uploadErrorMsg) {
+        uploadErrorMsg.textContent = msg;
+        uploadErrorEl.hidden = false;
+        const closeBtn = uploadErrorEl.querySelector('.btn-close');
+        if (closeBtn) {
+          closeBtn.onclick = function () { uploadErrorEl.hidden = true; };
+        }
+      } else {
+        // eslint-disable-next-line no-alert
+        alert(msg);
+      }
+    }
+
+    function clearUploadError() {
+      if (uploadErrorEl) uploadErrorEl.hidden = true;
+    }
+
+    function appendCsrfToFormData(fd) {
+      if (!form) return;
+      const csrfInput = form.querySelector('input[type="hidden"][name^="csrf"]');
+      if (csrfInput) {
+        fd.append(csrfInput.name, csrfInput.value);
+      }
+    }
+
+    function uploadFile(file) {
+      if (!file) return;
+      clearUploadError();
+      if (allowedTypes.indexOf(file.type) === -1) {
+        showUploadError('Invalid file type. Allowed: png, jpeg, webp, gif.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const img = new Image();
+        img.onload = function () {
+          if (img.naturalWidth !== 1200 || img.naturalHeight !== 630) {
+            showUploadError('Image must be exactly 1200 × 630 pixels.');
+            return;
+          }
+
+          if (!uploadUrl) {
+            showUploadError('Upload URL not configured.');
+            return;
+          }
+
+          const fd = new FormData();
+          fd.append('featured_image', file, file.name);
+          appendCsrfToFormData(fd);
+
+          fetch(uploadUrl, {
+            method: 'POST',
+            body: fd,
+            credentials: 'same-origin'
+          })
+            .then(function (res) { return res.json(); })
+            .then(function (data) {
+              if (!data || !data.success) {
+                showUploadError((data && data.error) || 'Upload failed');
+                return;
+              }
+              // update hidden input and preview
+              featuredInput.value = data.filename || '';
+              if (featuredThumb) {
+                featuredThumb.src = data.url || (window.location.origin + '/media/' + data.filename);
+                featuredThumb.style.display = '';
+              }
+              if (featuredPreview) featuredPreview.style.display = '';
+              if (btnRemoveFeatured) btnRemoveFeatured.style.display = '';
+              markDirty();
+            })
+            .catch(function () { showUploadError('Upload failed'); });
+        };
+        img.onerror = function () { showUploadError('Unable to load image for validation.'); };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Dropzone interactions
+    featuredDropzone.addEventListener('click', function () { if (featuredFileInput) featuredFileInput.click(); });
+    featuredDropzone.addEventListener('dragover', function (e) { e.preventDefault(); featuredDropzone.classList.add('border-primary'); });
+    featuredDropzone.addEventListener('dragleave', function () { featuredDropzone.classList.remove('border-primary'); });
+    featuredDropzone.addEventListener('drop', function (e) {
+      e.preventDefault();
+      featuredDropzone.classList.remove('border-primary');
+      const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+      if (f) uploadFile(f);
+    });
+
+    if (featuredFileInput) {
+      featuredFileInput.addEventListener('change', function () {
+        const f = this.files && this.files[0];
+        if (f) uploadFile(f);
+      });
+    }
+
+    // Remove handler
+    if (btnRemoveFeatured) {
+      btnRemoveFeatured.addEventListener('click', function () {
+        const filename = featuredInput.value && featuredInput.value.trim();
+        if (!filename) {
+          // nothing to remove
+          featuredInput.value = '';
+          if (featuredThumb) featuredThumb.style.display = 'none';
+          if (featuredPreview) featuredPreview.style.display = 'none';
+          if (btnRemoveFeatured) btnRemoveFeatured.style.display = 'none';
+          markDirty();
+          return;
+        }
+        if (!removeUrl) {
+          showUploadError('Remove URL not configured.');
+          return;
+        }
+
+        const fd = new FormData();
+        fd.append('filename', filename);
+        appendCsrfToFormData(fd);
+
+        fetch(removeUrl, { method: 'POST', body: fd, credentials: 'same-origin' })
+          .then(function (res) { return res.json(); })
+          .then(function (data) {
+            featuredInput.value = '';
+            if (featuredThumb) featuredThumb.style.display = 'none';
+            if (featuredPreview) featuredPreview.style.display = 'none';
+            if (btnRemoveFeatured) btnRemoveFeatured.style.display = 'none';
+            markDirty();
+          })
+          .catch(function () { showUploadError('Failed to remove image'); });
+      });
+    }
+
+    // Choose existing featured image from media library
+    const btnChooseExisting = document.getElementById('btn-choose-existing');
+    const listUrl = form ? form.dataset.listUrl : null;
+    const featuredModalEl = document.getElementById('featured-library-modal');
+    const featuredLibraryGrid = featuredModalEl ? featuredModalEl.querySelector('#featured-library-grid') : null;
+    // Move modal to document.body to avoid stacking-context / z-index issues
+    if (featuredModalEl && featuredModalEl.parentNode !== document.body) {
+      document.body.appendChild(featuredModalEl);
+    }
+    const featuredModalInstance = featuredModalEl ? new bootstrap.Modal(featuredModalEl) : null;
+
+    if (btnChooseExisting && featuredModalEl && listUrl && featuredLibraryGrid && featuredModalInstance) {
+      btnChooseExisting.addEventListener('click', function () {
+        // show modal and fetch list
+        featuredLibraryGrid.innerHTML = '<div class="col-12 text-center p-4 text-secondary">Loading…</div>';
+        featuredModalInstance.show();
+
+        fetch(listUrl, { credentials: 'same-origin' })
+          .then(function (res) { if (!res.ok) throw new Error('Failed'); return res.json(); })
+          .then(function (data) {
+            featuredLibraryGrid.innerHTML = '';
+            const files = (data && data.files) ? data.files : [];
+            if (files.length === 0) {
+              featuredLibraryGrid.innerHTML = '<div class="col-12 text-center p-4 text-muted">No images found.</div>';
+              return;
+            }
+
+            files.forEach(function (f) {
+              const col = document.createElement('div');
+              col.className = 'col-6 col-md-4 col-lg-3';
+              const wrap = document.createElement('div');
+              wrap.className = 'fn-thumb-wrap rounded overflow-hidden border bg-white';
+              wrap.style.cursor = 'pointer';
+              wrap.tabIndex = 0;
+
+              const img = document.createElement('img');
+              img.className = 'fn-thumb';
+              img.loading = 'lazy';
+              img.alt = f.filename;
+              img.src = f.url;
+
+              wrap.appendChild(img);
+              wrap.addEventListener('click', function () {
+                featuredInput.value = f.filename;
+                if (featuredThumb) {
+                  featuredThumb.src = f.url;
+                  featuredThumb.style.display = '';
+                }
+                if (featuredPreview) featuredPreview.style.display = '';
+                if (btnRemoveFeatured) btnRemoveFeatured.style.display = '';
+                markDirty();
+                featuredModalInstance.hide();
+              });
+
+              col.appendChild(wrap);
+              featuredLibraryGrid.appendChild(col);
+            });
+          })
+          .catch(function () {
+            featuredLibraryGrid.innerHTML = '<div class="col-12 text-center p-4 text-danger">Unable to load images.</div>';
+          });
+      });
+    }
+  })();
+
+  // ── Image upload tab ──────────────────────────────────────────────────────
+  (function () {
+    const imageUploadUrl   = form ? form.dataset.imageUploadUrl : null;
+    const aiAlttextUrl     = form ? form.dataset.aiAlttextUrl : null;
+    const imageDropzone    = document.getElementById('image-upload-dropzone');
+    const imageFileInput   = document.getElementById('field-image-file');
+    const imageGallery     = document.getElementById('image-gallery');
+    const imageProgress    = document.getElementById('image-upload-progress');
+    const imageErrorEl     = document.getElementById('image-upload-error');
+    const imageErrorMsg    = document.getElementById('image-upload-error-msg');
+
+    if (!imageDropzone || !imageFileInput || !imageGallery || !imageUploadUrl) return;
+
+    const allowedTypes = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
+
+    function showImageError(msg) {
+      if (imageErrorEl && imageErrorMsg) {
+        imageErrorMsg.textContent = msg;
+        imageErrorEl.hidden = false;
+        const closeBtn = imageErrorEl.querySelector('.btn-close');
+        if (closeBtn) closeBtn.onclick = function () { imageErrorEl.hidden = true; };
+      }
+    }
+
+    function clearImageError() {
+      if (imageErrorEl) imageErrorEl.hidden = true;
+    }
+
+    function escHtml(str) {
+      return str.replace(/[&<>"']/g, function (c) {
+        return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
+      });
+    }
+
+    function makeCopyButton(inputEl, btnEl) {
+      btnEl.addEventListener('click', function () {
+        navigator.clipboard.writeText(inputEl.value).then(function () {
+          const icon = btnEl.querySelector('i');
+          if (icon) {
+            const orig = icon.className;
+            icon.className = 'bi bi-clipboard-check';
+            setTimeout(function () { icon.className = orig; }, 1500);
+          }
+        });
+      });
+    }
+
+    function fetchAltText(file, url, altInput, mdInput, altSpinner) {
+      if (!aiAlttextUrl) {
+        if (altSpinner) altSpinner.hidden = true;
+        return;
+      }
+      function getCookie(name) {
+        const match = document.cookie.match('(?:^|; )' + name + '=([^;]*)');
+        return match ? decodeURIComponent(match[1]) : null;
+      }
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const base64 = e.target.result.split(',')[1];
+        fetch(aiAlttextUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'user-uuid':    getCookie('user_uuid'),
+            'apikey':       getCookie('apikey'),
+          },
+          body: JSON.stringify({ image: base64, model: 'gemma4:e4b' }),
+        })
+          .then(function (res) { return res.json(); })
+          .then(function (data) {
+            if (altSpinner) altSpinner.hidden = true;
+            if (data && data.alt_text) {
+              altInput.value = data.alt_text;
+              mdInput.value = '![' + data.alt_text + '](' + url + ')';
+            }
+          })
+          .catch(function () {
+            if (altSpinner) altSpinner.hidden = true;
+          });
+      };
+      reader.onerror = function () {
+        if (altSpinner) altSpinner.hidden = true;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function prependImageCard(url, filename) {
+      const altDefault = 'Alt text';
+      const mdValue    = '![' + altDefault + '](' + url + ')';
+      const safeFile   = escHtml(filename);
+      const cssFile    = CSS.escape(filename);
+
+      const card = document.createElement('div');
+      card.className = 'card border';
+      card.innerHTML = '<div class="card-body d-flex gap-3 align-items-start">' +
+        '<img src="' + escHtml(url) + '" alt="' + safeFile + '" ' +
+          'class="rounded border flex-shrink-0" style="width:120px;height:auto;object-fit:cover;">' +
+        '<div class="flex-grow-1 min-w-0">' +
+          '<label class="form-label small text-secondary mb-1">URL</label>' +
+          '<div class="input-group input-group-sm mb-2">' +
+            '<input type="text" class="form-control font-monospace" id="img-url-' + safeFile + '" value="' + escHtml(url) + '" readonly>' +
+            '<button class="btn btn-outline-secondary" type="button" title="Copy URL"><i class="bi bi-clipboard"></i></button>' +
+          '</div>' +
+          '<label class="form-label small text-secondary mb-1 d-flex align-items-center gap-1">Alt text' +
+            '<span class="spinner-border spinner-border-sm text-secondary" id="img-alt-spinner-' + safeFile + '" role="status" aria-label="Generating alt text"></span>' +
+          '</label>' +
+          '<div class="mb-2">' +
+            '<input type="text" class="form-control form-control-sm" id="img-alt-' + safeFile + '" value="' + escHtml(altDefault) + '" placeholder="Alt text">' +
+          '</div>' +
+          '<label class="form-label small text-secondary mb-1">Markdown</label>' +
+          '<div class="input-group input-group-sm">' +
+            '<input type="text" class="form-control font-monospace" id="img-md-' + safeFile + '" value="' + escHtml(mdValue) + '" readonly>' +
+            '<button class="btn btn-outline-secondary" type="button" title="Copy Markdown"><i class="bi bi-clipboard"></i></button>' +
+          '</div>' +
+        '</div>' +
+        '</div>';
+
+      const urlInput   = card.querySelector('#img-url-' + cssFile);
+      const altInput   = card.querySelector('#img-alt-' + cssFile);
+      const mdInput    = card.querySelector('#img-md-' + cssFile);
+      const altSpinner = card.querySelector('#img-alt-spinner-' + cssFile);
+      const btns       = card.querySelectorAll('.btn-outline-secondary');
+      if (urlInput && btns[0]) makeCopyButton(urlInput, btns[0]);
+      if (mdInput  && btns[1]) makeCopyButton(mdInput,  btns[1]);
+
+      if (altInput && mdInput) {
+        altInput.addEventListener('input', function () {
+          mdInput.value = '![' + altInput.value + '](' + url + ')';
+        });
+      }
+
+      imageGallery.insertBefore(card, imageGallery.firstChild);
+      return { altInput: altInput, mdInput: mdInput, altSpinner: altSpinner };
+    }
+
+    function appendCsrfToFormData(fd) {
+      if (!form) return;
+      const csrfInput = form.querySelector('input[type="hidden"][name^="csrf"]');
+      if (csrfInput) fd.append(csrfInput.name, csrfInput.value);
+    }
+
+    function uploadImageFile(file) {
+      clearImageError();
+      if (allowedTypes.indexOf(file.type) === -1) {
+        showImageError('Invalid file type. Allowed: png, jpeg, webp, gif.');
+        return;
+      }
+
+      if (imageProgress) imageProgress.hidden = false;
+
+      const fd = new FormData();
+      fd.append('image', file, file.name);
+      appendCsrfToFormData(fd);
+
+      fetch(imageUploadUrl, {
+        method: 'POST',
+        body: fd,
+        credentials: 'same-origin',
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (imageProgress) imageProgress.hidden = true;
+          if (!data || !data.success) {
+            showImageError((data && data.error) || 'Upload failed.');
+            return;
+          }
+          const refs = prependImageCard(data.url, data.filename);
+          if (refs && refs.altInput && refs.mdInput && refs.altSpinner) {
+            fetchAltText(file, data.url, refs.altInput, refs.mdInput, refs.altSpinner);
+          }
+        })
+        .catch(function () {
+          if (imageProgress) imageProgress.hidden = true;
+          showImageError('Upload failed. Please try again.');
+        });
+    }
+
+    function handleFiles(files) {
+      Array.from(files).forEach(function (f) { uploadImageFile(f); });
+    }
+
+    // Click to open file picker
+    imageDropzone.addEventListener('click', function () { imageFileInput.click(); });
+    imageDropzone.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); imageFileInput.click(); }
+    });
+
+    // Drag-and-drop
+    imageDropzone.addEventListener('dragover', function (e) {
+      e.preventDefault();
+      imageDropzone.classList.add('border-primary');
+    });
+    imageDropzone.addEventListener('dragleave', function () {
+      imageDropzone.classList.remove('border-primary');
+    });
+    imageDropzone.addEventListener('drop', function (e) {
+      e.preventDefault();
+      imageDropzone.classList.remove('border-primary');
+      const files = e.dataTransfer && e.dataTransfer.files;
+      if (files && files.length) handleFiles(files);
+    });
+
+    // File input change
+    imageFileInput.addEventListener('change', function () {
+      if (this.files && this.files.length) {
+        handleFiles(this.files);
+        this.value = '';
+      }
+    });
+  })();
+
+  // ── Video upload tab ──────────────────────────────────────────────────────
+  (function () {
+    const videoUploadUrl   = form ? form.dataset.videoUploadUrl : null;
+    const videoRemoveUrl   = form ? form.dataset.videoRemoveUrl : null;
+    const videoDropzone    = document.getElementById('video-upload-dropzone');
+    const videoFileInput   = document.getElementById('field-video-file');
+    const videoPreview     = document.getElementById('video-preview');
+    const videoPlayer      = document.getElementById('video-player');
+    const videoFilenameEl  = document.getElementById('video-filename-display');
+    const videoHiddenInput = document.getElementById('field-video-filename');
+    const videoProgress    = document.getElementById('video-upload-progress');
+    const videoErrorEl     = document.getElementById('video-upload-error');
+    const videoErrorMsg    = document.getElementById('video-upload-error-msg');
+    const btnRemoveVideo   = document.getElementById('btn-remove-video');
+
+    if (!videoDropzone || !videoFileInput || !videoUploadUrl) return;
+
+    const allowedTypes = ['video/mp4', 'video/webm', 'video/ogg', 'video/quicktime'];
+
+    function showVideoError(msg) {
+      if (videoErrorEl && videoErrorMsg) {
+        videoErrorMsg.textContent = msg;
+        videoErrorEl.hidden = false;
+        const closeBtn = videoErrorEl.querySelector('.btn-close');
+        if (closeBtn) closeBtn.onclick = function () { videoErrorEl.hidden = true; };
+      }
+    }
+
+    function clearVideoError() {
+      if (videoErrorEl) videoErrorEl.hidden = true;
+    }
+
+    function appendCsrfToFormData(fd) {
+      if (!form) return;
+      const csrfInput = form.querySelector('input[type="hidden"][name^="csrf"]');
+      if (csrfInput) fd.append(csrfInput.name, csrfInput.value);
+    }
+
+    function showVideoPreview(url, filename) {
+      if (videoPlayer) { videoPlayer.src = url; videoPlayer.load(); }
+      if (videoFilenameEl) videoFilenameEl.textContent = filename;
+      if (videoHiddenInput) videoHiddenInput.value = filename;
+      if (videoPreview) videoPreview.hidden = false;
+      if (videoDropzone) videoDropzone.style.display = 'none';
+    }
+
+    function resetToDropzone() {
+      if (videoPlayer) { videoPlayer.pause(); videoPlayer.removeAttribute('src'); videoPlayer.load(); }
+      if (videoFilenameEl) videoFilenameEl.textContent = '';
+      if (videoHiddenInput) videoHiddenInput.value = '';
+      if (videoPreview) videoPreview.hidden = true;
+      if (videoDropzone) videoDropzone.style.display = '';
+    }
+
+    function uploadVideoFile(file) {
+      clearVideoError();
+      if (allowedTypes.indexOf(file.type) === -1) {
+        showVideoError('Invalid file type. Allowed: mp4, webm, ogg, mov.');
+        return;
+      }
+
+      if (videoProgress) videoProgress.hidden = false;
+
+      const postId = (form && form.dataset.postId) || '';
+      const fd = new FormData();
+      fd.append('video', file, file.name);
+      fd.append('post_id', postId);
+      appendCsrfToFormData(fd);
+
+      fetch(videoUploadUrl, {
+        method: 'POST',
+        body: fd,
+        credentials: 'same-origin',
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (videoProgress) videoProgress.hidden = true;
+          if (!data || !data.success) {
+            showVideoError((data && data.error) || 'Upload failed.');
+            return;
+          }
+          showVideoPreview(data.url, data.filename);
+          markDirty();
+        })
+        .catch(function () {
+          if (videoProgress) videoProgress.hidden = true;
+          showVideoError('Upload failed. Please try again.');
+        });
+    }
+
+    // Dropzone interactions
+    videoDropzone.addEventListener('click', function () { videoFileInput.click(); });
+    videoDropzone.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); videoFileInput.click(); }
+    });
+    videoDropzone.addEventListener('dragover', function (e) {
+      e.preventDefault();
+      videoDropzone.classList.add('border-primary');
+    });
+    videoDropzone.addEventListener('dragleave', function () {
+      videoDropzone.classList.remove('border-primary');
+    });
+    videoDropzone.addEventListener('drop', function (e) {
+      e.preventDefault();
+      videoDropzone.classList.remove('border-primary');
+      const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+      if (f) uploadVideoFile(f);
+    });
+
+    videoFileInput.addEventListener('change', function () {
+      const f = this.files && this.files[0];
+      if (f) { uploadVideoFile(f); this.value = ''; }
+    });
+
+    // Remove handler
+    if (btnRemoveVideo && videoRemoveUrl) {
+      btnRemoveVideo.addEventListener('click', function () {
+        const filename = videoHiddenInput ? videoHiddenInput.value.trim() : '';
+        if (!filename) {
+          resetToDropzone();
+          markDirty();
+          return;
+        }
+
+        const postId = (form && form.dataset.postId) || '';
+        const fd = new FormData();
+        fd.append('filename', filename);
+        fd.append('post_id', postId);
+        appendCsrfToFormData(fd);
+
+        fetch(videoRemoveUrl, { method: 'POST', body: fd, credentials: 'same-origin' })
+          .then(function (res) { return res.json(); })
+          .then(function (data) {
+            if (data && data.success) {
+              resetToDropzone();
+              markDirty();
+            } else {
+              showVideoError((data && data.error) || 'Failed to remove video.');
+            }
+          })
+          .catch(function () { showVideoError('Failed to remove video.'); });
+      });
+    }
+  })();
+
+  // ── Dirty-state tracking ─────────────────────────────────────────────────
+  function markDirty() {
+    if (!isDirty) {
+      isDirty = true;
+      unsavedToast.show();
+    }
+  }
+
+  // Listen for changes on all other form inputs
+  form.querySelectorAll('input, textarea, select').forEach(function (el) {
+    if (el === titleInput || el === slugInput || el === bodyTextarea || el === tagsInput || el === pubAtInput) {
+      return; // already handled above
+    }
+    if (el.id === 'ai-model-select') return;
+    el.addEventListener('change', markDirty);
+  });
+
+  // Warn before navigating away with unsaved changes
+  window.addEventListener('beforeunload', function (e) {
+    if (isDirty) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  });
+
+  // Clear dirty flag on form submit
+  function clearSaveMessages() {
+    if (saveSuccessToast) {
+      saveSuccessToast.hide();
+    }
+    if (saveErrorsToast) {
+      saveErrorsToast.hide();
+    }
+    if (saveErrorsList) {
+      saveErrorsList.innerHTML = '';
+    }
+  }
+
+  function showSaveSuccess(message) {
+    if (saveSuccessText) {
+      saveSuccessText.textContent = message || 'Post saved successfully.';
+    }
+    if (saveErrorsToast) {
+      saveErrorsToast.hide();
+    }
+    if (saveSuccessToast) {
+      saveSuccessToast.show();
+    }
+  }
+
+  function showSaveErrors(errors, fallbackMessage) {
+    if (!saveErrorsAlert || !saveErrorsList) {
+      // eslint-disable-next-line no-alert
+      alert(fallbackMessage || 'Unable to save this post.');
+      return;
+    }
+
+    saveErrorsList.innerHTML = '';
+    const list = Array.isArray(errors) ? errors : Object.values(errors || {});
+    if (list.length === 0 && fallbackMessage) {
+      list.push(fallbackMessage);
+    }
+
+    list.forEach(function (msg) {
+      const item = document.createElement('li');
+      item.textContent = msg;
+      saveErrorsList.appendChild(item);
+    });
+
+    if (saveSuccessToast) {
+      saveSuccessToast.hide();
+    }
+    if (saveErrorsToast) {
+      saveErrorsToast.show();
+    }
+  }
+
+  function updateCsrfToken(payload) {
+    if (!payload || !payload.csrf || !payload.csrf.name) return;
+
+    const csrfInput = form.querySelector('input[type="hidden"][name^="csrf"]');
+    if (!csrfInput) return;
+
+    csrfInput.name = payload.csrf.name;
+    csrfInput.value = payload.csrf.hash || '';
+  }
+
+  function setSavingState(saving) {
+    isSaving = saving;
+    submitButtons.forEach(function (button) {
+      button.disabled = saving;
+    });
+  }
+
+  function applyQuickPublishIfNeeded(submitter) {
+    if (!btnQuickPublish || submitter !== btnQuickPublish) return;
+
+    statusSelect.value = 'published';
+    if (pubAtInput && !pubAtInput.value) {
+      const pad  = function (n) { return String(n).padStart(2, '0'); };
+      const now  = new Date();
+      pubAtInput.value = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate())
+        + 'T' + pad(now.getHours()) + ':' + pad(now.getMinutes());
+    }
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    if (isSaving) return;
+
+    const submitter = e.submitter || document.activeElement;
+    applyQuickPublishIfNeeded(submitter);
+
+    const formData = new FormData(form);
+    if (submitter && submitter.name === '_save_action' && submitter.value) {
+      formData.set('_save_action', submitter.value);
+    }
+
+    clearSaveMessages();
+    setSavingState(true);
+
+    fetch(form.action, {
+      method: 'POST',
+      body: formData,
+      credentials: 'same-origin',
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        Accept: 'application/json'
+      }
+    })
+      .then(function (res) {
+        return res.json().then(function (payload) {
+          return { ok: res.ok, payload };
+        }).catch(function () {
+          return { ok: res.ok, payload: null };
+        });
+      })
+      .then(function (result) {
+        const payload = result.payload || {};
+        updateCsrfToken(payload);
+
+        if (!result.ok || payload.success === false) {
+          showSaveErrors(payload.errors || [], payload.message || 'Unable to save this post.');
+          return;
+        }
+
+        isDirty = false;
+        unsavedToast.hide();
+        showSaveSuccess(payload.message || 'Post saved successfully.');
+
+        if (payload.post_id) {
+          form.dataset.postId = String(payload.post_id);
+        }
+        if (payload.update_url) {
+          form.action = payload.update_url;
+        }
+        if (payload.edit_url && window.location.pathname !== new URL(payload.edit_url, window.location.origin).pathname) {
+          window.history.replaceState({}, document.title, payload.edit_url);
+        }
+      })
+      .catch(function () {
+        showSaveErrors([], 'Unable to save this post right now. Please try again.');
+      })
+      .finally(function () {
+        setSavingState(false);
+      });
+  });
+
+  // ── Sidebar: highlight active nav link ──────────────────────────────────
+  const sidebarLinks = document.querySelectorAll('#sidebar .nav-link');
+  // If the form contains a post id it's edit mode; otherwise it's a new post.
+  (function updateSidebarActive() {
+    const postId = form ? String(form.dataset.postId || '').trim() : '';
+    if (!form) return;
+
+    if (!postId) {
+      // Creating a new post: mark the create link as active.
+      sidebarLinks.forEach(function (link) {
+        if (link.getAttribute('href') === '/admin/blog/posts/create') {
+          link.classList.remove('text-white-50');
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+          if (!link.classList.contains('text-white-50')) {
+            link.classList.add('text-white-50');
+          }
+        }
+      });
+    } else {
+      // Editing an existing post: remove all active menu items.
+      sidebarLinks.forEach(function (link) {
+        link.classList.remove('active');
+        if (!link.classList.contains('text-white-50')) {
+          link.classList.add('text-white-50');
+        }
+      });
+    }
+  })();
+
+  // ── AI ───────────────────────────────────────────────────────────────────
+  (function () {
+    const aiOutlineUrl     = form.dataset.aiOutlineUrl;
+    const aiAnalyseUrl     = form.dataset.aiAnalyseUrl;
+    const aiRewriteUrl     = form.dataset.aiRewriteUrl;
+    const aiModelsUrl      = form.dataset.aiModelsUrl;
+    const outlineModal     = new bootstrap.Modal(document.getElementById('ai-outline-modal'));
+    const outlineTopic     = document.getElementById('ai-outline-topic');
+    const outlineSubmit    = document.getElementById('btn-ai-outline-submit');
+    const outlineSpinner   = document.getElementById('ai-outline-spinner');
+    const outlineModalErr  = document.getElementById('ai-outline-modal-error');
+
+    const aiDescriptions   = document.getElementById('ai-action-descriptions');
+    const aiResult         = document.getElementById('ai-result');
+    const aiResultLabel    = document.getElementById('ai-result-label');
+    const aiResultBody     = document.getElementById('ai-result-body');
+    const aiError          = document.getElementById('ai-error');
+    const btnAiClear       = document.getElementById('btn-ai-clear');
+    const aiModelSelect    = document.getElementById('ai-model-select');
+
+    const MODEL_PREF_KEY   = 'ai-model-preference';
+
+    function getCookie(name) {
+      const match = document.cookie.match('(?:^|; )' + name + '=([^;]*)');
+      return match ? decodeURIComponent(match[1]) : null;
+    }
+
+    function authHeaders() {
+      return {
+        'user-uuid': getCookie('user_uuid'),
+        'apikey':    getCookie('apikey'),
+      };
+    }
+
+    function selectedModel() {
+      return aiModelSelect.value;
+    }
+
+    // ── Model selector ───────────────────────────────────────────────────────
+    async function loadModels() {
+      try {
+        const res = await fetch(aiModelsUrl, { headers: authHeaders() });
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        if (!data.models || !data.models.length) throw new Error();
+
+        const saved = localStorage.getItem(MODEL_PREF_KEY);
+        aiModelSelect.innerHTML = '';
+        data.models.forEach(function (name) {
+          const opt = document.createElement('option');
+          opt.value = name;
+          opt.textContent = name;
+          if (name === saved) opt.selected = true;
+          aiModelSelect.appendChild(opt);
+        });
+        aiModelSelect.disabled = false;
+      } catch (_) {
+        aiModelSelect.innerHTML = '<option value="">No models available</option>';
+      }
+    }
+
+    aiModelSelect.addEventListener('change', function () {
+      localStorage.setItem(MODEL_PREF_KEY, aiModelSelect.value);
+    });
+
+    // ── Pane helpers ─────────────────────────────────────────────────────────
+    function showAiResult(label, html) {
+      aiDescriptions.hidden = true;
+      aiError.hidden = true;
+      aiResultLabel.textContent = label;
+      aiResultBody.innerHTML = html;
+      aiResult.hidden = false;
+    }
+
+    function resetAiPane() {
+      aiResult.hidden = true;
+      aiError.hidden = true;
+      aiDescriptions.hidden = false;
+      aiResultBody.innerHTML = '';
+    }
+
+    function renderOutline(outline) {
+      const ol = document.createElement('ol');
+      ol.className = 'ps-3 mb-0 small';
+      outline.forEach(function (section) {
+        const li = document.createElement('li');
+        li.className = 'mb-2';
+        const title = document.createElement('span');
+        title.className = 'fw-semibold';
+        title.textContent = section.heading;
+        li.appendChild(title);
+        if (section.subheadings && section.subheadings.length) {
+          const sub = document.createElement('ul');
+          sub.className = 'mt-1 ps-3';
+          section.subheadings.forEach(function (sh) {
+            const subLi = document.createElement('li');
+            subLi.className = 'text-secondary';
+            subLi.textContent = sh;
+            sub.appendChild(subLi);
+          });
+          li.appendChild(sub);
+        }
+        ol.appendChild(li);
+      });
+      return ol.outerHTML;
+    }
+
+    // ── Analyse action ───────────────────────────────────────────────────────
+    function renderAnalysis(data) {
+      let html = '<p class="small mb-3">' + data.summary.replace(/</g, '&lt;') + '</p>';
+      if (data.suggestions && data.suggestions.length) {
+        html += '<dl class="small mb-0">';
+        data.suggestions.forEach(function (s) {
+          html += '<dt class="mb-1">' + s.area.replace(/</g, '&lt;') + '</dt>'
+               +  '<dd class="mb-3 text-secondary">' + s.suggestion.replace(/</g, '&lt;') + '</dd>';
+        });
+        html += '</dl>';
+      }
+      return html;
+    }
+
+    btnAiAnalyse.addEventListener('click', async function () {
+      const headers = authHeaders();
+      if (!headers['user-uuid'] || !headers['apikey']) {
+        aiError.textContent = 'Authentication cookies are missing. Please log in again.';
+        aiError.hidden = false;
+        return;
+      }
+
+      const originalHtml = btnAiAnalyse.innerHTML;
+      btnAiAnalyse.disabled = true;
+      btnAiAnalyse.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+      btnAiRewrite.disabled = true;
+      btnAiOutline.disabled = true;
+      resetAiPane();
+
+      try {
+        const res = await fetch(aiAnalyseUrl, {
+          method: 'POST',
+          headers: Object.assign({ 'Content-Type': 'application/json' }, headers),
+          body: JSON.stringify({
+            title:   titleInput.value.trim(),
+            content: bodyTextarea.value,
+            model:   selectedModel(),
+          }),
+        });
+
+        if (!res.ok) {
+          throw new Error('The server returned an error (' + res.status + '). Please try again.');
+        }
+
+        const data = await res.json();
+        if (!data.summary) {
+          throw new Error('Unexpected response format from the AI service.');
+        }
+
+        localStorage.setItem(MODEL_PREF_KEY, selectedModel());
+        showAiResult('Analysis', renderAnalysis(data));
+      } catch (err) {
+        aiError.textContent = err.message || 'An unexpected error occurred.';
+        aiError.hidden = false;
+      } finally {
+        btnAiAnalyse.innerHTML = originalHtml;
+        updateAiButtons();
+        btnAiOutline.disabled = false;
+      }
+    });
+
+    // ── Rewrite action ───────────────────────────────────────────────────────
+    function computeLineDiff(original, rewritten) {
+      const a = original.split('\n');
+      const b = rewritten.split('\n');
+      const m = a.length, n = b.length;
+
+      const dp = Array.from({ length: m + 1 }, function () { return new Array(n + 1).fill(0); });
+      for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+          dp[i][j] = a[i - 1] === b[j - 1]
+            ? dp[i - 1][j - 1] + 1
+            : Math.max(dp[i - 1][j], dp[i][j - 1]);
+        }
+      }
+
+      const hunks = [];
+      let i = m, j = n;
+      while (i > 0 || j > 0) {
+        if (i > 0 && j > 0 && a[i - 1] === b[j - 1]) {
+          hunks.unshift({ type: 'same', line: a[i - 1] });
+          i--; j--;
+        } else if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
+          hunks.unshift({ type: 'add', line: b[j - 1] });
+          j--;
+        } else {
+          hunks.unshift({ type: 'remove', line: a[i - 1] });
+          i--;
+        }
+      }
+      return hunks;
+    }
+
+    function renderDiffHtml(hunks) {
+      return hunks.map(function (h) {
+        const esc = h.line.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+        if (h.type === 'add') {
+          return '<span style="background:rgba(25,135,84,.12);display:block">+ ' + esc + '</span>';
+        }
+        if (h.type === 'remove') {
+          return '<span style="background:rgba(220,53,69,.12);display:block">- ' + esc + '</span>';
+        }
+        return '<span style="display:block">  ' + esc + '</span>';
+      }).join('');
+    }
+
+    function renderRewrite(data, originalContent, originalTitle) {
+      const titleChanged = data.title && data.title !== originalTitle;
+      const hunks        = computeLineDiff(originalContent, data.content);
+      const hasChanges   = hunks.some(function (h) { return h.type !== 'same'; });
+      const preStyle     = 'white-space: pre-wrap; word-break: break-word; max-height: 20rem; overflow-y: auto;';
+
+      let html = '';
+
+      if (titleChanged) {
+        html += '<div class="mb-3">'
+             +    '<div class="small text-secondary fw-semibold mb-1">Suggested title</div>'
+             +    '<div class="small border rounded px-2 py-1 font-monospace">' + data.title.replace(/</g, '&lt;') + '</div>'
+             +  '</div>';
+      }
+
+      if (!hasChanges) {
+        html += '<p class="small text-secondary">No changes were made.</p>';
+      } else {
+        html += '<ul class="nav nav-tabs mb-2" id="rewrite-tabs">'
+             +    '<li class="nav-item"><button class="nav-link py-1 small active" type="button" data-bs-toggle="tab" data-bs-target="#rewrite-pane-diff">Diff</button></li>'
+             +    '<li class="nav-item"><button class="nav-link py-1 small" type="button" data-bs-toggle="tab" data-bs-target="#rewrite-pane-raw">Markdown</button></li>'
+             +    '<li class="nav-item"><button class="nav-link py-1 small" type="button" id="rewrite-tab-preview" data-bs-toggle="tab" data-bs-target="#rewrite-pane-preview">Preview</button></li>'
+             +  '</ul>'
+             +  '<div class="tab-content mb-3">'
+             +    '<div class="tab-pane show active" id="rewrite-pane-diff">'
+             +      '<pre class="small border rounded p-2 mb-0 font-monospace" style="' + preStyle + '">' + renderDiffHtml(hunks) + '</pre>'
+             +    '</div>'
+             +    '<div class="tab-pane" id="rewrite-pane-raw">'
+             +      '<pre class="small border rounded p-2 mb-0" style="' + preStyle + '">' + data.content.replace(/</g, '&lt;') + '</pre>'
+             +    '</div>'
+             +    '<div class="tab-pane" id="rewrite-pane-preview">'
+             +      '<div class="border rounded p-3" style="max-height:20rem;overflow-y:auto">'
+             +        '<div class="post__body e-content" id="rewrite-preview-body">'
+             +          '<p class="text-secondary small mb-0">Loading preview…</p>'
+             +        '</div>'
+             +      '</div>'
+             +    '</div>'
+             +  '</div>'
+             +  '<button type="button" class="btn btn-sm btn-primary" id="btn-ai-apply-rewrite">Apply rewrite</button>';
+      }
+
+      return html;
+    }
+
+    btnAiRewrite.addEventListener('click', async function () {
+      const headers = authHeaders();
+      if (!headers['user-uuid'] || !headers['apikey']) {
+        aiError.textContent = 'Authentication cookies are missing. Please log in again.';
+        aiError.hidden = false;
+        return;
+      }
+
+      const originalTitle   = titleInput.value.trim();
+      const originalContent = bodyTextarea.value;
+      const originalHtml    = btnAiRewrite.innerHTML;
+      btnAiAnalyse.disabled = true;
+      btnAiRewrite.disabled = true;
+      btnAiRewrite.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+      btnAiOutline.disabled = true;
+      resetAiPane();
+
+      try {
+        const res = await fetch(aiRewriteUrl, {
+          method: 'POST',
+          headers: Object.assign({ 'Content-Type': 'application/json' }, headers),
+          body: JSON.stringify({
+            title:   originalTitle,
+            content: originalContent,
+            model:   selectedModel(),
+          }),
+        });
+
+        if (!res.ok) {
+          throw new Error('The server returned an error (' + res.status + '). Please try again.');
+        }
+
+        const data = await res.json();
+        if (!data.content) {
+          throw new Error('Unexpected response format from the AI service.');
+        }
+
+        localStorage.setItem(MODEL_PREF_KEY, selectedModel());
+        showAiResult('Rewrite', renderRewrite(data, originalContent, originalTitle));
+
+        const applyBtn = document.getElementById('btn-ai-apply-rewrite');
+        if (applyBtn) {
+          applyBtn.addEventListener('click', function () {
+            if (data.title && data.title !== originalTitle) {
+              titleInput.value = data.title;
+              titleInput.dispatchEvent(new Event('input'));
+            }
+            bodyTextarea.value = data.content;
+            bodyTextarea.dispatchEvent(new Event('input'));
+            resetAiPane();
+          });
+        }
+
+        const previewTab = document.getElementById('rewrite-tab-preview');
+        if (previewTab) {
+          let previewFetched = false;
+          previewTab.addEventListener('shown.bs.tab', function () {
+            if (previewFetched) return;
+            previewFetched = true;
+            const previewBody = document.getElementById('rewrite-preview-body');
+            fetch(previewUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ markdown: data.content }),
+            })
+              .then(function (res) { return res.ok ? res.json() : Promise.reject(res.status); })
+              .then(function (d) {
+                previewBody.innerHTML = d.body_html || '';
+                previewBody.querySelectorAll('table').forEach(function (t) { t.classList.add('table', 'table-bordered'); });
+              })
+              .catch(function () {
+                previewBody.innerHTML = '<p class="text-danger small"><i class="bi bi-exclamation-triangle-fill me-1"></i>Preview unavailable.</p>';
+              });
+          });
+        }
+      } catch (err) {
+        aiError.textContent = err.message || 'An unexpected error occurred.';
+        aiError.hidden = false;
+      } finally {
+        btnAiRewrite.innerHTML = originalHtml;
+        updateAiButtons();
+        btnAiOutline.disabled = false;
+      }
+    });
+
+    // ── Outline action ───────────────────────────────────────────────────────
+    btnAiOutline.addEventListener('click', function () {
+      outlineTopic.value = (document.getElementById('field-title') || {}).value || '';
+      outlineModalErr.hidden = true;
+      outlineSubmit.disabled = false;
+      outlineModal.show();
+    });
+
+    document.getElementById('ai-outline-modal').addEventListener('shown.bs.modal', function () {
+      outlineTopic.select();
+      outlineTopic.focus();
+    });
+
+    outlineTopic.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); outlineSubmit.click(); }
+    });
+
+    outlineSubmit.addEventListener('click', async function () {
+      const topic = outlineTopic.value.trim();
+      if (!topic) {
+        outlineModalErr.textContent = 'Please enter a topic or working title.';
+        outlineModalErr.hidden = false;
+        outlineTopic.focus();
+        return;
+      }
+
+      const headers = authHeaders();
+      if (!headers['user-uuid'] || !headers['apikey']) {
+        outlineModalErr.textContent = 'Authentication cookies are missing. Please log in again.';
+        outlineModalErr.hidden = false;
+        return;
+      }
+
+      outlineModalErr.hidden = true;
+      outlineSubmit.disabled = true;
+      outlineSpinner.hidden = false;
+
+      try {
+        const res = await fetch(aiOutlineUrl, {
+          method: 'POST',
+          headers: Object.assign({ 'Content-Type': 'application/json' }, headers),
+          body: JSON.stringify({ topic: topic, model: selectedModel() }),
+        });
+
+        if (!res.ok) {
+          throw new Error('The server returned an error (' + res.status + '). Please try again.');
+        }
+
+        const data = await res.json();
+        if (!data.outline || !Array.isArray(data.outline)) {
+          throw new Error('Unexpected response format from the AI service.');
+        }
+
+        outlineModal.hide();
+        localStorage.setItem(MODEL_PREF_KEY, selectedModel());
+        showAiResult('Outline: ' + topic, renderOutline(data.outline));
+      } catch (err) {
+        outlineModalErr.textContent = err.message || 'An unexpected error occurred.';
+        outlineModalErr.hidden = false;
+      } finally {
+        outlineSubmit.disabled = false;
+        outlineSpinner.hidden = true;
+      }
+    });
+
+    // ── Creative Rewrite action ──────────────────────────────────────────────
+    const aiCreativeUrl = form.dataset.aiCreativeUrl;
+
+    function renderCreativeRewrite(data) {
+      const preStyle = 'white-space: pre-wrap; word-break: break-word; max-height: 20rem; overflow-y: auto;';
+      let html = '';
+
+      if (data.title) {
+        html += '<div class="mb-3">'
+             +    '<div class="small text-secondary fw-semibold mb-1">Suggested title</div>'
+             +    '<div class="small border rounded px-2 py-1 font-monospace">' + data.title.replace(/</g, '&lt;') + '</div>'
+             +  '</div>';
+      }
+
+      html += '<ul class="nav nav-tabs mb-2" id="creative-tabs">'
+           +    '<li class="nav-item"><button class="nav-link py-1 small active" type="button" data-bs-toggle="tab" data-bs-target="#creative-pane-raw">Markdown</button></li>'
+           +    '<li class="nav-item"><button class="nav-link py-1 small" type="button" id="creative-tab-preview" data-bs-toggle="tab" data-bs-target="#creative-pane-preview">Preview</button></li>'
+           +  '</ul>'
+           +  '<div class="tab-content mb-3">'
+           +    '<div class="tab-pane show active" id="creative-pane-raw">'
+           +      '<pre class="small border rounded p-2 mb-0" style="' + preStyle + '">' + data.content.replace(/</g, '&lt;') + '</pre>'
+           +    '</div>'
+           +    '<div class="tab-pane" id="creative-pane-preview">'
+           +      '<div class="border rounded p-3" style="max-height:20rem;overflow-y:auto">'
+           +        '<div class="post__body e-content" id="creative-preview-body">'
+           +          '<p class="text-secondary small mb-0">Loading preview…</p>'
+           +        '</div>'
+           +      '</div>'
+           +    '</div>'
+           +  '</div>'
+           +  '<button type="button" class="btn btn-sm btn-primary" id="btn-ai-apply-creative">Use this rewrite</button>';
+
+      return html;
+    }
+
+    if (btnAiCreative) {
+      btnAiCreative.addEventListener('click', async function () {
+        const headers = authHeaders();
+        if (!headers['user-uuid'] || !headers['apikey']) {
+          aiError.textContent = 'Authentication cookies are missing. Please log in again.';
+          aiError.hidden = false;
+          return;
+        }
+
+        const originalTitle   = titleInput.value.trim();
+        const originalContent = bodyTextarea.value;
+        const originalHtml    = btnAiCreative.innerHTML;
+        btnAiAnalyse.disabled  = true;
+        btnAiRewrite.disabled  = true;
+        btnAiOutline.disabled  = true;
+        btnAiCreative.disabled = true;
+        btnAiCreative.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+        resetAiPane();
+
+        try {
+          const res = await fetch(aiCreativeUrl, {
+            method: 'POST',
+            headers: Object.assign({ 'Content-Type': 'application/json' }, headers),
+            body: JSON.stringify({
+              title:   originalTitle,
+              content: originalContent,
+              model:   selectedModel(),
+            }),
+          });
+
+          if (!res.ok) {
+            throw new Error('The server returned an error (' + res.status + '). Please try again.');
+          }
+
+          const data = await res.json();
+          if (!data.content) {
+            throw new Error('Unexpected response format from the AI service.');
+          }
+
+          localStorage.setItem(MODEL_PREF_KEY, selectedModel());
+          showAiResult('Creative Rewrite', renderCreativeRewrite(data));
+
+          const applyBtn = document.getElementById('btn-ai-apply-creative');
+          if (applyBtn) {
+            applyBtn.addEventListener('click', function () {
+              if (data.title) {
+                titleInput.value = data.title;
+                titleInput.dispatchEvent(new Event('input'));
+              }
+              bodyTextarea.value = data.content;
+              bodyTextarea.dispatchEvent(new Event('input'));
+              resetAiPane();
+            });
+          }
+
+          const creativePreviewTab = document.getElementById('creative-tab-preview');
+          if (creativePreviewTab) {
+            let previewFetched = false;
+            creativePreviewTab.addEventListener('shown.bs.tab', function () {
+              if (previewFetched) return;
+              previewFetched = true;
+              const previewBody = document.getElementById('creative-preview-body');
+              fetch(previewUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ markdown: data.content }),
+              })
+                .then(function (res) { return res.ok ? res.json() : Promise.reject(res.status); })
+                .then(function (d) {
+                  previewBody.innerHTML = d.body_html || '';
+                  previewBody.querySelectorAll('table').forEach(function (t) { t.classList.add('table', 'table-bordered'); });
+                })
+                .catch(function () {
+                  previewBody.innerHTML = '<p class="text-danger small"><i class="bi bi-exclamation-triangle-fill me-1"></i>Preview unavailable.</p>';
+                });
+            });
+          }
+        } catch (err) {
+          aiError.textContent = err.message || 'An unexpected error occurred.';
+          aiError.hidden = false;
+        } finally {
+          btnAiCreative.innerHTML = originalHtml;
+          updateAiButtons();
+          btnAiOutline.disabled = false;
+        }
+      });
+    }
+
+    btnAiClear.addEventListener('click', resetAiPane);
+
+    loadModels();
+  }());
+
+  // ── AI Excerpt ───────────────────────────────────────────────────────────
+  (function () {
+    if (!btnAiExcerpt) return;
+
+    const aiExcerptUrl   = form.dataset.aiExcerptUrl;
+    const excerptModalEl = document.getElementById('ai-excerpt-modal');
+    const excerptModal   = new bootstrap.Modal(excerptModalEl);
+    const excerptLoading = document.getElementById('ai-excerpt-loading');
+    const excerptResult  = document.getElementById('ai-excerpt-result');
+    const excerptText    = document.getElementById('ai-excerpt-text');
+    const excerptError   = document.getElementById('ai-excerpt-error');
+    const btnRetry       = document.getElementById('btn-ai-excerpt-retry');
+    const retrySpinner   = document.getElementById('ai-excerpt-retry-spinner');
+    const btnUse         = document.getElementById('btn-ai-excerpt-use');
+
+    function getCookie(name) {
+      const match = document.cookie.match('(?:^|; )' + name + '=([^;]*)');
+      return match ? decodeURIComponent(match[1]) : null;
+    }
+
+    function getSelectedLength() {
+      const checked = document.querySelector('input[name="ai-excerpt-length"]:checked');
+      return checked ? checked.value : 'medium';
+    }
+
+    function getModel() {
+      const sel = document.getElementById('ai-model-select');
+      return (sel && sel.value) ? sel.value : 'gemma4:e4b';
+    }
+
+    async function fetchExcerpt(isRetry) {
+      if (isRetry) {
+        retrySpinner.hidden = false;
+        btnRetry.disabled   = true;
+        btnUse.disabled     = true;
+      } else {
+        excerptLoading.hidden = false;
+        excerptResult.hidden  = true;
+        excerptError.hidden   = true;
+        btnRetry.hidden       = true;
+        btnUse.hidden         = true;
+      }
+
+      try {
+        const res = await fetch(aiExcerptUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'user-uuid': getCookie('user_uuid'),
+            'apikey':    getCookie('apikey'),
+          },
+          body: JSON.stringify({
+            title:   titleInput ? titleInput.value.trim() : '',
+            content: bodyTextarea ? bodyTextarea.value.trim() : '',
+            length:  getSelectedLength(),
+            model:   getModel(),
+          }),
+        });
+
+        if (!res.ok) {
+          throw new Error('The server returned an error (' + res.status + '). Please try again.');
+        }
+
+        const data = await res.json();
+        if (!data.excerpt) {
+          throw new Error('Unexpected response from the AI service.');
+        }
+
+        excerptText.textContent   = data.excerpt;
+        excerptLoading.hidden     = true;
+        excerptResult.hidden      = false;
+        excerptError.hidden       = true;
+        btnRetry.hidden           = false;
+        btnUse.hidden             = false;
+      } catch (err) {
+        excerptLoading.hidden = true;
+        excerptResult.hidden  = true;
+        excerptError.textContent = err.message || 'An unexpected error occurred.';
+        excerptError.hidden   = false;
+        btnRetry.hidden       = false;
+        btnUse.hidden         = true;
+      } finally {
+        if (isRetry) {
+          retrySpinner.hidden = true;
+          btnRetry.disabled   = false;
+          btnUse.disabled     = false;
+        }
+      }
+    }
+
+    btnAiExcerpt.addEventListener('click', function () {
+      excerptModal.show();
+      fetchExcerpt(false);
+    });
+
+    btnRetry.addEventListener('click', function () {
+      fetchExcerpt(true);
+    });
+
+    btnUse.addEventListener('click', function () {
+      excerptTextarea.value = excerptText.textContent;
+      excerptTextarea.dispatchEvent(new Event('input'));
+      excerptModal.hide();
+    });
+  }());
+
+  // ── Keyboard shortcut: Ctrl/Cmd+S to save ────────────────────────────────
+  document.addEventListener('keydown', function (e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 's' && !e.altKey && !e.shiftKey) {
+      e.preventDefault();
+      if (!isSaving) {
+        form.requestSubmit();
+      }
+    }
+  });
+
+  // ── Init ─────────────────────────────────────────────────────────────────
+  updateCharCount();
+  updateAiButtons();
+  updateExcerptCharCount();
+
+  // Initialise excerpt length guide popover
+  const excerptPopoverEl = document.getElementById('excerpt-char-count');
+  if (excerptPopoverEl) {
+    const excerptPopover = new bootstrap.Popover(excerptPopoverEl, { container: 'body' });
+    // Dismiss when clicking outside
+    document.addEventListener('click', function (e) {
+      if (!excerptPopoverEl.contains(e.target)) {
+        excerptPopover.hide();
+      }
+    });
+  }
+});

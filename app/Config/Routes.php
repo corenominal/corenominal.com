@@ -161,6 +161,42 @@ $routes->group('api/bookmarks', function ($routes) {
     $routes->put('(:segment)', 'Bookmarks\Api\Bookmarks::update/$1');
 });
 
+// Public blog routes
+$routes->group('blog', function ($routes) {
+    $routes->get('/', 'Blog\Home::index');
+    $routes->get('posts', 'Blog\Home::morePosts');
+    $routes->get('posts/(:segment)/json', 'Blog\Post::showJson/$1');
+    $routes->get('posts/(:segment)/markdown', 'Blog\Post::showMarkdown/$1');
+    $routes->get('posts/(:segment)', 'Blog\Post::show/$1');
+    $routes->get('tags/(:segment)', 'Blog\Tag::show/$1');
+    $routes->get('search', 'Blog\Search::index');
+    $routes->get('feed/rss', 'Blog\Feed::rss');
+});
+
+// Admin blog routes (adminfilter applied globally via Filters.php)
+$routes->group('admin/blog', function ($routes) {
+    $routes->get('/', 'Blog\Admin\Home::index');
+    $routes->post('posts/delete', 'Blog\Admin\Home::deletePosts');
+    $routes->post('posts/preview', 'Blog\Admin\Posts::preview');
+    $routes->post('posts/upload_featured_image', 'Blog\Admin\Posts::upload_featured_image');
+    $routes->post('posts/remove_featured_image', 'Blog\Admin\Posts::remove_featured_image');
+    $routes->get('posts/list_featured_images', 'Blog\Admin\Posts::list_featured_images');
+    $routes->post('posts/upload_body_image', 'Blog\Admin\Posts::upload_body_image');
+    $routes->post('posts/upload_video', 'Blog\Admin\Posts::upload_video');
+    $routes->post('posts/remove_video', 'Blog\Admin\Posts::remove_video');
+    $routes->get('posts/create', 'Blog\Admin\Posts::create');
+    $routes->post('posts/store', 'Blog\Admin\Posts::store');
+    $routes->get('posts/(:num)/edit', 'Blog\Admin\Posts::edit/$1');
+    $routes->post('posts/(:num)/update', 'Blog\Admin\Posts::update/$1');
+});
+
+// Blog API routes (apifilter applied globally via Filters.php)
+$routes->group('api/blog', function ($routes) {
+    $routes->options('(:any)', static function () { return ''; });
+    $routes->get('ping', 'Blog\Api\Test::ping');
+    $routes->get('posts/latest', 'Blog\Api\Posts::latest');
+});
+
 // Metrics collection endpoint
 $routes->post('/metrics', 'Metrics::receive');
 
