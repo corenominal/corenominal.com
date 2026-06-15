@@ -36,7 +36,7 @@ class Posts extends BaseController
         $data['title']            = 'New Post';
         $data['templateMaxWidth'] = '100%';
         $data['templateMenu']     = 'admin/sidebar-menu';
-        $data['js']               = ['blog/admin/post_editor'];
+        $data['js']               = ['blog/common', 'blog/admin/post_editor'];
         $data['action']           = site_url('admin/blog/posts/store');
         $data['isNew']            = true;
         $data['all_tags']         = array_column($tags, 'tag');
@@ -174,7 +174,7 @@ class Posts extends BaseController
         $data['title']      = 'Edit Post';
         $data['templateMaxWidth'] = '100%';
         $data['templateMenu']     = 'admin/sidebar-menu';
-        $data['js']         = ['blog/admin/post_editor'];
+        $data['js']         = ['blog/common', 'blog/admin/post_editor'];
         $data['action']     = site_url('admin/blog/posts/' . $id . '/update');
         $data['isNew']      = false;
         $data['all_tags']   = $allTags;

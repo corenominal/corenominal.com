@@ -1,40 +1,30 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const imageModalEl   = document.querySelector('#post-image-modal');
-    const imageModalImg  = document.querySelector('#post-image-modal-img');
+function applyPostBodyFormatting(container) {
+    const imageModalEl      = document.querySelector('#post-image-modal');
+    const imageModalImg     = document.querySelector('#post-image-modal-img');
     const imageModalCaption = document.querySelector('#post-image-modal-caption');
     const imageModal        = imageModalEl && window.bootstrap
         ? window.bootstrap.Modal.getOrCreateInstance(imageModalEl)
         : null;
 
-    document.querySelectorAll('.post__body img').forEach((img) => {
+    container.querySelectorAll('img').forEach((img) => {
         img.classList.add('img-fluid', 'rounded', 'mb-2');
 
         if (imageModal) {
             img.style.cursor = 'pointer';
             img.addEventListener('click', () => {
-                imageModalImg.src              = img.currentSrc || img.src;
-                imageModalImg.alt              = img.alt || '';
-                imageModalCaption.textContent  = img.alt || '';
+                imageModalImg.src             = img.currentSrc || img.src;
+                imageModalImg.alt             = img.alt || '';
+                imageModalCaption.textContent = img.alt || '';
                 imageModal.show();
             });
         }
     });
 
-    if (imageModalEl) {
-        imageModalEl.addEventListener('hidden.bs.modal', () => {
-            imageModalImg.src         = '';
-            imageModalImg.alt         = '';
-            imageModalCaption.textContent = '';
-        });
-    }
-
-    // Bootstrap table classes for post body tables
-    document.querySelectorAll('.post__body table').forEach((table) => {
+    container.querySelectorAll('table').forEach((table) => {
         table.classList.add('table', 'table-bordered');
     });
 
-    // Copy button for code blocks
-    document.querySelectorAll('.post__body pre > code').forEach((codeEl) => {
+    container.querySelectorAll('pre > code').forEach((codeEl) => {
         const pre = codeEl.parentElement;
 
         const wrapper = document.createElement('div');
@@ -62,5 +52,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
         wrapper.appendChild(btn);
     });
-});
+}
 
+window.applyPostBodyFormatting = applyPostBodyFormatting;
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.post__body').forEach(applyPostBodyFormatting);
+
+    const imageModalEl      = document.querySelector('#post-image-modal');
+    const imageModalImg     = document.querySelector('#post-image-modal-img');
+    const imageModalCaption = document.querySelector('#post-image-modal-caption');
+
+    if (imageModalEl) {
+        imageModalEl.addEventListener('hidden.bs.modal', () => {
+            imageModalImg.src             = '';
+            imageModalImg.alt             = '';
+            imageModalCaption.textContent = '';
+        });
+    }
+});
