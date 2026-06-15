@@ -357,7 +357,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const videoFilename = videoFilenameInput ? videoFilenameInput.value.trim() : '';
     if (previewVideoWrap && previewVideoPlayer) {
       if (videoFilename) {
-        const mediaUrl = window.location.origin + '/media/' + videoFilename;
+        const mediaUrl = window.location.origin + '/uploads/blog/media/' + videoFilename;
         if (previewVideoPlayer.getAttribute('src') !== mediaUrl) {
           previewVideoPlayer.src = mediaUrl;
           previewVideoPlayer.load();
@@ -663,7 +663,7 @@ document.addEventListener('DOMContentLoaded', function () {
               // update hidden input and preview
               featuredInput.value = data.filename || '';
               if (featuredThumb) {
-                featuredThumb.src = data.url || (window.location.origin + '/media/' + data.filename);
+                featuredThumb.src = data.url || (window.location.origin + '/uploads/blog/media/' + data.filename);
                 featuredThumb.style.display = '';
               }
               if (featuredPreview) featuredPreview.style.display = '';
