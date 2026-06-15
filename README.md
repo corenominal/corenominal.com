@@ -6,9 +6,10 @@ Website live at https://corenominal.com
 
 ## README Files
 
+- [Blog](README-blog.md)
+- [Status](README-status.md)
+- [Bookmarks](README-bookmarks.md)
 - [Authentication](README-authentication.md)
 - [Debug](README-debug.md)
 - [Metrics](README-metrics.md)
-- [Status](README-status.md)
-- [Bookmarks](README-bookmarks.md)
 - [Social Verification Tags](README-social-verification-tags.md)
