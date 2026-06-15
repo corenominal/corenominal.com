@@ -10,5 +10,5 @@ class Urls extends BaseConfig
     public $github = '';
     public $license = '';
     public $readme = '';
-    public $gitRepository = '';
+    public $git_repository = '';
 }
