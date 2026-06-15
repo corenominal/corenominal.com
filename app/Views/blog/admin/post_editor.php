@@ -418,12 +418,12 @@
                                         controls
                                         class="w-100 rounded border mb-2"
                                         <?php if (!empty($postVideo)): ?>
-                                        src="<?= esc(site_url('media/' . $postVideo)) ?>"
+                                        src="<?= esc(site_url('uploads/blog/media/' . $postVideo)) ?>"
                                         <?php endif; ?>
                                     ></video>
                                     <div class="d-flex align-items-center justify-content-between gap-2 mt-1">
                                         <small id="video-filename-display" class="text-secondary font-monospace text-truncate"><?= esc($postVideo) ?></small>
-                                        <button type="button" id="btn-remove-video" class="btn btn-danger btn-sm flex-shrink-0">
+                                        <button type="button" id="btn-remove-video" class="btn btn-primary btn-sm flex-shrink-0">
                                             <i class="bi bi-trash me-1"></i> Remove video
                                         </button>
                                     </div>
@@ -683,15 +683,15 @@
                             <div id="featured-preview" class="mt-2" style="display: <?= empty($post['featured_image']) ? 'none' : 'block' ?>;">
                                 <?php if (!empty($post['featured_image'])): ?>
                                 <div class="position-relative d-block w-100">
-                                    <img id="featured-thumb" src="<?= site_url('media/' . $post['featured_image']) ?>" alt="Featured image" style="width:100%; height:auto; object-fit:cover; display:block;" />
-                                    <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2" id="btn-remove-featured-image" aria-label="Remove featured image">
+                                    <img id="featured-thumb" src="<?= site_url('uploads/blog/media/' . $post['featured_image']) ?>" alt="Featured image" style="width:100%; height:auto; object-fit:cover; display:block;" />
+                                    <button type="button" class="btn btn-primary btn-sm position-absolute top-0 end-0 m-2" id="btn-remove-featured-image" aria-label="Remove featured image">
                                         <i class="bi bi-x"></i>
                                     </button>
                                 </div>
                                 <?php else: ?>
                                 <div class="position-relative d-block w-100">
                                     <img id="featured-thumb" src="" alt="Featured image" style="width:100%; height:auto; object-fit:cover; display:none;" />
-                                    <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2" id="btn-remove-featured-image" style="display:none;" aria-label="Remove featured image">
+                                    <button type="button" class="btn btn-primary btn-sm position-absolute top-0 end-0 m-2" id="btn-remove-featured-image" style="display:none;" aria-label="Remove featured image">
                                         <i class="bi bi-x"></i>
                                     </button>
                                 </div>
