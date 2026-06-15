@@ -6,6 +6,29 @@
             <span class="sidebar-label">Dashboard</span>
         </a>
     </li>
+    
+    <li>
+        <a href="/admin/blog" class="nav-link"
+            data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Blog">
+            <i class="bi bi-pencil"></i>
+            <span class="sidebar-label">Blog</span>
+        </a>
+    </li>
+    <li>
+        <a href="/admin/status" class="nav-link"
+            data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Status">
+            <i class="bi bi-broadcast"></i>
+            <span class="sidebar-label">Status</span>
+        </a>
+    </li>
+    <li class="mb-4">
+        <a href="/admin/bookmarks" class="nav-link"
+            data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Bookmarks">
+            <i class="bi bi-bookmarks"></i>
+            <span class="sidebar-label">Bookmarks</span>
+        </a>
+    </li>
+
     <li>
         <a href="/admin/auth" class="nav-link"
             data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Auth">
@@ -18,20 +41,6 @@
             data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Social">
             <i class="bi bi-link-45deg"></i>
             <span class="sidebar-label">Social</span>
-        </a>
-    </li>
-    <li>
-        <a href="/admin/status" class="nav-link"
-            data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Status">
-            <i class="bi bi-broadcast"></i>
-            <span class="sidebar-label">Status</span>
-        </a>
-    </li>
-    <li>
-        <a href="/admin/bookmarks" class="nav-link"
-            data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Bookmarks">
-            <i class="bi bi-bookmarks"></i>
-            <span class="sidebar-label">Bookmarks</span>
         </a>
     </li>
 </ul>
