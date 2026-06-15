@@ -80,6 +80,7 @@
                         <div class="small">
                             <span class="badge text-bg-<?= esc($event['label_class']) ?> me-1"><?= esc($event['label']) ?></span>
                             <span class="text-secondary"><?= esc($event['repo']) ?></span>
+                            <span class="text-secondary ms-1"><?= esc(date('H:i', strtotime($event['github_created_at']))) ?></span>
                             <div><?= $event['description'] ?></div>
                         </div>
                     </a>
@@ -99,6 +100,7 @@
                 'repo'        => $ev['repo'],
                 'description' => $ev['description'],
                 'link'        => $ev['link'],
+                'time'        => date('H:i', strtotime($ev['github_created_at'])),
             ], $events);
         }
         ?>

@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				<div class="small">
 					<span class="badge text-bg-${escHtml(e.label_class)} me-1">${escHtml(e.label)}</span>
 					<span class="text-secondary">${escHtml(e.repo)}</span>
+					${e.time ? `<span class="text-secondary ms-1">${escHtml(e.time)}</span>` : ''}
 					<div>${e.description}</div>
 				</div>
 			</a>
