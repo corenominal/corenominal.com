@@ -111,4 +111,22 @@
     </div>
     <?php endif; ?>
 
+<!-- Image preview modal -->
+<div class="modal fade" id="post-image-modal" tabindex="-1" aria-labelledby="post-image-modal-label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <h2 class="modal-title fs-6" id="post-image-modal-label">Image Preview</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center pt-2">
+                <div id="post-image-modal-img-wrap" class="mx-auto">
+                    <img id="post-image-modal-img" src="" alt="" class="img-fluid rounded" style="max-height: 80vh;">
+                </div>
+                <p id="post-image-modal-caption" class="text-secondary small mt-2 mb-0"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?= $this->endSection() ?>
