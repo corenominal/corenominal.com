@@ -11,6 +11,25 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/icon-16x16.png">
     <!-- Social verification -->
     <?= social_verification_tags() ?>
+    <!-- Open Graph -->
+    <?php if (isset($og)): ?>
+    <meta property="og:type" content="<?= esc($og['type'] ?? 'website') ?>">
+    <meta property="og:title" content="<?= esc($og['title'] ?? '') ?>">
+    <meta property="og:url" content="<?= esc($og['url'] ?? current_url()) ?>">
+    <meta property="og:site_name" content="<?= esc($og['site_name'] ?? config('App')->siteName) ?>">
+    <?php if (!empty($og['description'])): ?>
+    <meta property="og:description" content="<?= esc($og['description']) ?>">
+    <?php endif; ?>
+    <?php if (!empty($og['image'])): ?>
+    <meta property="og:image" content="<?= esc($og['image']) ?>">
+    <?php if (!empty($og['image_width'])): ?>
+    <meta property="og:image:width" content="<?= esc((string)$og['image_width']) ?>">
+    <?php endif; ?>
+    <?php if (!empty($og['image_height'])): ?>
+    <meta property="og:image:height" content="<?= esc((string)$og['image_height']) ?>">
+    <?php endif; ?>
+    <?php endif; ?>
+    <?php endif; ?>
     <!-- Stylesheets -->
     <?php $f = FCPATH . 'assets/css/vendor/bootstrap-corenominal.css'; ?>
     <link rel="stylesheet" href="/assets/css/vendor/bootstrap-corenominal.css<?= file_exists($f) ? '?v=' . filemtime($f) : '' ?>"/>
