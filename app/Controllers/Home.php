@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\BookmarkModel;
 use App\Models\GitHubActivityModel;
+use App\Models\PostModel;
 
 class Home extends BaseController
 {
@@ -28,7 +29,14 @@ class Home extends BaseController
                 ->orderBy('id', 'DESC')
                 ->first();
 
+            $latestPost = (new PostModel())
+                ->where('status', 'published')
+                ->where('visibility', 'public')
+                ->orderBy('published_at', 'DESC')
+                ->first();
+
             $data['status']          = $status !== null ? status_with_media($status) : null;
+            $data['latestPost']      = $latestPost;
             $data['latestBookmark']  = $latestBookmarkRow !== null ? bookmark_with_tags($latestBookmarkRow) : null;
             $data['mastodonHandle']  = config('Mastodon')->account;
             $data['mastodonProfile'] = config('Mastodon')->profile;
