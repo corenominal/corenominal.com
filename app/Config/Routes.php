@@ -197,6 +197,9 @@ $routes->group('api/blog', function ($routes) {
     $routes->get('posts/latest', 'Blog\Api\Posts::latest');
 });
 
+// About page route
+$routes->get('/about', 'About::index');
+
 // Metrics collection endpoint
 $routes->post('/metrics', 'Metrics::receive');
 
