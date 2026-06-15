@@ -172,6 +172,8 @@ class Posts extends BaseController
 
         $data['post']       = $post;
         $data['title']      = 'Edit Post';
+        $data['templateMaxWidth'] = '100%';
+        $data['templateMenu']     = 'admin/sidebar-menu';
         $data['js']         = ['blog/admin/post_editor'];
         $data['action']     = site_url('admin/blog/posts/' . $id . '/update');
         $data['isNew']      = false;
