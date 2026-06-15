@@ -56,6 +56,9 @@
             ?>
                 <div class="heatmap-cell heatmap-cell--level-<?= $level ?>"
                      data-date="<?= $date ?>"
+                     data-bs-toggle="tooltip"
+                     data-bs-placement="top"
+                     title="<?= esc($label) ?>"
                      aria-label="<?= esc($label) ?>"></div>
             <?php endforeach; ?>
         </div>

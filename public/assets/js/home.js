@@ -37,6 +37,10 @@ document.addEventListener('DOMContentLoaded', () => {
 		`).join('');
 	};
 
+	if (window.bootstrap) {
+		heatmapCells.forEach((cell) => new window.bootstrap.Tooltip(cell));
+	}
+
 	const infoBtn = document.getElementById('github-activity-info');
 	if (infoBtn && window.bootstrap) {
 		new window.bootstrap.Popover(infoBtn, {
