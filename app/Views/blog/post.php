@@ -3,11 +3,11 @@
 <?= $this->section('content') ?>
 
     <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb">
+        <ol class="breadcrumb flex-nowrap">
             <li class="breadcrumb-item">
                 <a class="text-decoration-none" href="<?= site_url('blog') ?>">Blog</a>
             </li>
-            <li class="breadcrumb-item active" aria-current="page">
+            <li class="breadcrumb-item active text-truncate" aria-current="page">
                 <?= esc($post['title']) ?>
             </li>
         </ol>
