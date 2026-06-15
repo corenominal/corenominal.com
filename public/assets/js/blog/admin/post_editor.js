@@ -2007,10 +2007,21 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  // ── Body textarea height ─────────────────────────────────────────────────
+  function fitBodyTextarea() {
+    if (!bodyTextarea) return;
+    const rect = bodyTextarea.getBoundingClientRect();
+    const height = window.innerHeight - rect.top - 24;
+    bodyTextarea.style.height = Math.max(200, height) + 'px';
+  }
+
+  window.addEventListener('resize', fitBodyTextarea);
+
   // ── Init ─────────────────────────────────────────────────────────────────
   updateCharCount();
   updateAiButtons();
   updateExcerptCharCount();
+  fitBodyTextarea();
 
   // Initialise excerpt length guide popover
   const excerptPopoverEl = document.getElementById('excerpt-char-count');
