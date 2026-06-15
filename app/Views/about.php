@@ -20,6 +20,6 @@
 
     <p>This site is built with CodeIgniter, a powerful PHP framework that helps me create robust and scalable web applications. I use it to manage the content and functionality of this site, ensuring it performs well under typical usage scenarios.</p>
 
-    <p>The site is hosted on an <a href="https://www.ovhcloud.com/" target="_blank" rel="noopener noreferrer">OVH VPS</a> running <a href="https://www.debian.org/" target="_blank" rel="noopener noreferrer">Debian</a>, with <a href="https://httpd.apache.org/" target="_blank" rel="noopener noreferrer">Apache</a> as the web server and <a href="https://mariadb.org/" target="_blank" rel="noopener noreferrer">MariaDB</a> as the database. I use Git for version control and all the code for this site is stored in a <a href="<?= Config('urls')->git_repository ?>" target="_blank" rel="noopener noreferrer">public Git repository</a>.</p>
+    <p>The site is hosted on an <a href="https://www.ovhcloud.com/" target="_blank" rel="noopener noreferrer">OVH VPS</a> running <a href="https://www.debian.org/" target="_blank" rel="noopener noreferrer">Debian</a>, with <a href="https://httpd.apache.org/" target="_blank" rel="noopener noreferrer">Apache</a> as the web server and <a href="https://mariadb.org/" target="_blank" rel="noopener noreferrer">MariaDB</a> as the database. I use Git for version control and all the code for this site is stored in a <a href="<?= config('Urls')->git_repository ?>" target="_blank" rel="noopener noreferrer">public Git repository</a>.</p>
 
 <?= $this->endSection() ?>
