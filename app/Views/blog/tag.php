@@ -1,9 +1,8 @@
 <?= $this->extend('templates/default') ?>
 
 <?= $this->section('content') ?>
-<div class="container">
 
-    <nav aria-label="breadcrumb" class="mt-3 mb-4">
+    <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 <a class="text-decoration-none" href="<?= site_url('blog') ?>">Blog</a>
@@ -44,5 +43,4 @@
         <?php endforeach; ?>
     </ol>
 
-</div>
 <?= $this->endSection() ?>

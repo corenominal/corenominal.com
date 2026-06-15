@@ -1,9 +1,8 @@
 <?= $this->extend('templates/default') ?>
 
 <?= $this->section('content') ?>
-<div class="container">
 
-    <form class="search-form mt-4 mb-4" action="<?= site_url('blog/search') ?>" method="get" role="search">
+    <form class="search-form mb-4" action="<?= site_url('blog/search') ?>" method="get" role="search">
         <div class="input-group">
             <input
                 class="form-control"
@@ -112,5 +111,4 @@
     </div>
     <?php endif; ?>
 
-</div>
 <?= $this->endSection() ?>
