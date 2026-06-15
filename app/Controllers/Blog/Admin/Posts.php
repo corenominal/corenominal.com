@@ -354,7 +354,7 @@ class Posts extends BaseController
 
         $uuid     = Uuid::uuid4()->toString();
         $filename = 'og-' . $uuid . '.' . $ext;
-        $destDir  = FCPATH . 'media/';
+        $destDir  = FCPATH . 'uploads/blog/media/';
 
         if (!is_dir($destDir)) {
             @mkdir($destDir, 0755, true);
@@ -366,7 +366,7 @@ class Posts extends BaseController
             return $this->response->setStatusCode(500)->setJSON(['success' => false, 'error' => 'Failed to move uploaded file.']);
         }
 
-        return $this->response->setJSON(['success' => true, 'filename' => $filename, 'url' => site_url('media/' . $filename)]);
+        return $this->response->setJSON(['success' => true, 'filename' => $filename, 'url' => site_url('uploads/blog/media/' . $filename)]);
     }
 
     public function remove_featured_image(): \CodeIgniter\HTTP\ResponseInterface
@@ -381,7 +381,7 @@ class Posts extends BaseController
 
     public function list_featured_images(): \CodeIgniter\HTTP\ResponseInterface
     {
-        $dir   = FCPATH . 'media/';
+        $dir   = FCPATH . 'uploads/blog/media/';
         $files = [];
 
         if (is_dir($dir)) {
@@ -393,7 +393,7 @@ class Posts extends BaseController
                 if (!is_file($path)) continue;
                 $files[] = [
                     'filename' => $f,
-                    'url'      => site_url('media/' . $f),
+                    'url'      => site_url('uploads/blog/media/' . $f),
                 ];
             }
         }
@@ -430,7 +430,7 @@ class Posts extends BaseController
 
         $uuid     = Uuid::uuid4()->toString();
         $filename = $uuid . '.' . $ext;
-        $destDir  = FCPATH . 'media/';
+        $destDir  = FCPATH . 'uploads/blog/media/';
 
         if (!is_dir($destDir)) {
             @mkdir($destDir, 0755, true);
@@ -454,7 +454,7 @@ class Posts extends BaseController
             }
         }
 
-        return $this->response->setJSON(['success' => true, 'filename' => $filename, 'url' => site_url('media/' . $filename)]);
+        return $this->response->setJSON(['success' => true, 'filename' => $filename, 'url' => site_url('uploads/blog/media/' . $filename)]);
     }
 
     public function upload_video(): \CodeIgniter\HTTP\ResponseInterface
@@ -481,7 +481,7 @@ class Posts extends BaseController
 
         $uuid     = Uuid::uuid4()->toString();
         $filename = $uuid . '.' . $ext;
-        $destDir  = FCPATH . 'media/';
+        $destDir  = FCPATH . 'uploads/blog/media/';
 
         if (!is_dir($destDir)) {
             @mkdir($destDir, 0755, true);
@@ -504,7 +504,7 @@ class Posts extends BaseController
             }
         }
 
-        return $this->response->setJSON(['success' => true, 'filename' => $filename, 'url' => site_url('media/' . $filename)]);
+        return $this->response->setJSON(['success' => true, 'filename' => $filename, 'url' => site_url('uploads/blog/media/' . $filename)]);
     }
 
     public function remove_video(): \CodeIgniter\HTTP\ResponseInterface
@@ -517,7 +517,7 @@ class Posts extends BaseController
         }
 
         $basename = basename($filename);
-        $path     = FCPATH . 'media/' . $basename;
+        $path     = FCPATH . 'uploads/blog/media/' . $basename;
         if (is_file($path)) {
             @unlink($path);
         }
