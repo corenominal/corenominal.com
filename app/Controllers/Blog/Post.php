@@ -97,7 +97,7 @@ class Post extends BaseController
         }
 
         if (!empty($post['featured_image'])) {
-            $og['image']        = rtrim(config('App')->baseURL, '/') . '/media/' . $post['featured_image'];
+            $og['image']        = rtrim(config('App')->baseURL, '/') . '/uploads/blog/media/' . $post['featured_image'];
             $og['image_width']  = 1200;
             $og['image_height'] = 630;
         }
