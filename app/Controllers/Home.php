@@ -15,52 +15,47 @@ class Home extends BaseController
         if ($userModel->countAllResults() === 0) {
             return redirect()->to('/auth/register');
         }
-        // If logged in show home page, otherwise show under construction page
-        if(is_logged_in()) {
-            helper(['status', 'bookmark']);
 
-            // Get the latest status post
-            $model  = model('StatusModel');
-            $status = $model->orderBy('created_at', 'DESC')->first();
+        helper(['status', 'bookmark']);
 
-            $latestBookmarkRow = (new BookmarkModel())
-                ->where('private', 0)
-                ->orderBy('created_at', 'DESC')
-                ->orderBy('id', 'DESC')
-                ->first();
+        // Get the latest status post
+        $model  = model('StatusModel');
+        $status = $model->orderBy('created_at', 'DESC')->first();
 
-            $postModel = new PostModel();
-            $recentPosts = $postModel
-                ->where('status', 'published')
-                ->where('visibility', 'public')
-                ->orderBy('published_at', 'DESC')
-                ->findAll(4);
+        $latestBookmarkRow = (new BookmarkModel())
+            ->where('private', 0)
+            ->orderBy('created_at', 'DESC')
+            ->orderBy('id', 'DESC')
+            ->first();
 
-            $latestPost  = $recentPosts[0] ?? null;
-            $morePosts   = array_slice($recentPosts, 0);
+        $postModel = new PostModel();
+        $recentPosts = $postModel
+            ->where('status', 'published')
+            ->where('visibility', 'public')
+            ->orderBy('published_at', 'DESC')
+            ->findAll(4);
 
-            $data['status']          = $status !== null ? status_with_media($status) : null;
-            $data['latestPost']      = $latestPost;
-            $data['morePosts']       = $morePosts;
-            $data['latestBookmark']  = $latestBookmarkRow !== null ? bookmark_with_tags($latestBookmarkRow) : null;
-            $data['mastodonHandle']  = config('Mastodon')->account;
-            $data['mastodonProfile'] = config('Mastodon')->profile;
-            $githubModel             = new GitHubActivityModel();
-            $githubGrouped           = $githubModel->getGroupedByDate(98);
-            $heatmap                 = [];
-            for ($i = 97; $i >= 0; $i--) {
-                $d             = date('Y-m-d', strtotime("-{$i} days"));
-                $heatmap[$d]   = count($githubGrouped[$d] ?? []);
-            }
-            $data['githubHeatmap']   = $heatmap;
-            $data['githubActivity']  = $githubGrouped;
-            $data['js']              = ['home'];
-            $data['css']             = ['status/timeline', 'github-heatmap'];
-            $data['title']           = 'Tech Enthusiast and Web Developer';
-            return view('home', $data);
-        } else {
-            $data['title'] = 'Under Construction';
-            return view('under-construction', $data);
+        $latestPost  = $recentPosts[0] ?? null;
+        $morePosts   = array_slice($recentPosts, 0);
+
+        $data['status']          = $status !== null ? status_with_media($status) : null;
+        $data['latestPost']      = $latestPost;
+        $data['morePosts']       = $morePosts;
+        $data['latestBookmark']  = $latestBookmarkRow !== null ? bookmark_with_tags($latestBookmarkRow) : null;
+        $data['mastodonHandle']  = config('Mastodon')->account;
+        $data['mastodonProfile'] = config('Mastodon')->profile;
+        $githubModel             = new GitHubActivityModel();
+        $githubGrouped           = $githubModel->getGroupedByDate(98);
+        $heatmap                 = [];
+        for ($i = 97; $i >= 0; $i--) {
+            $d             = date('Y-m-d', strtotime("-{$i} days"));
+            $heatmap[$d]   = count($githubGrouped[$d] ?? []);
         }
+        $data['githubHeatmap']   = $heatmap;
+        $data['githubActivity']  = $githubGrouped;
+        $data['js']              = ['home'];
+        $data['css']             = ['status/timeline', 'github-heatmap'];
+        $data['title']           = 'Tech Enthusiast and Web Developer';
+        return view('home', $data);
     }
 }
