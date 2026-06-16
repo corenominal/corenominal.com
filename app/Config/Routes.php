@@ -200,6 +200,10 @@ $routes->group('api/blog', function ($routes) {
 // About page route
 $routes->get('/about', 'About::index');
 
+// Contact page routes
+$routes->get('/contact', 'Contact::index');
+$routes->post('/contact/send', 'Contact::send');
+
 // Metrics collection endpoint
 $routes->post('/metrics', 'Metrics::receive');
 
