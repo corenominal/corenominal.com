@@ -29,14 +29,19 @@ class Home extends BaseController
                 ->orderBy('id', 'DESC')
                 ->first();
 
-            $latestPost = (new PostModel())
+            $postModel = new PostModel();
+            $recentPosts = $postModel
                 ->where('status', 'published')
                 ->where('visibility', 'public')
                 ->orderBy('published_at', 'DESC')
-                ->first();
+                ->findAll(4);
+
+            $latestPost  = $recentPosts[0] ?? null;
+            $morePosts   = array_slice($recentPosts, 0);
 
             $data['status']          = $status !== null ? status_with_media($status) : null;
             $data['latestPost']      = $latestPost;
+            $data['morePosts']       = $morePosts;
             $data['latestBookmark']  = $latestBookmarkRow !== null ? bookmark_with_tags($latestBookmarkRow) : null;
             $data['mastodonHandle']  = config('Mastodon')->account;
             $data['mastodonProfile'] = config('Mastodon')->profile;

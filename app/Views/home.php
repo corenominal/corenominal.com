@@ -3,39 +3,52 @@
 
     <h1 class="mb-4"><span aria-hidden="true">~/ </span>corenominal</h1>
 
-    <p class="lead">Hello, World! Welcome to my website. I'm a tech enthusiast and web developer. When I'm not sat in front of my computer, I can be found reading Warhammer 40,000 fiction, performing grumpa duties, listening to tech podcasts, or riding my bike.</p>
+    <p class="lead">Hello, World! Welcome to my website. I'm a tech enthusiast and web developer. When I'm not sat in front of my computer, I can be found reading Warhammer 40,000 fiction, performing proud husband/dad/grumpa duties, listening to tech podcasts, or riding my bike.</p>
 
-    <p>I occasionally write about technology, programming, and my personal projects on my <a href="/blog">blog</a><?php if (!empty($latestPost)): ?>. My latest blog post is titled <strong>"<a href="/blog/posts/<?= esc($latestPost['slug']) ?>"><?= esc($latestPost['title']) ?></a>"</strong><?php endif; ?>.</p>
+    <h2 class="h4 mt-5">Blog</h2>
 
-    <?php if (isset($status) && $status !== null): ?>
-        <p class="mb-3">I write short updates about my life and work and syndicate them to my <strong><a href="<?= esc(config('Mastodon')->profile) ?>" target="_blank" rel="noopener noreferrer">Mastodon profile</a></strong>. The latest update is below:</p>
-        <div id="timeline-items">
-            <?= view('status/partials/timeline_items', [
-                'statuses'        => [$status],
-                'mastodonHandle'  => $mastodonHandle ?? '',
-                'mastodonProfile' => $mastodonProfile ?? '',
-            ]) ?>
-        </div>
-        <div class="d-flex flex-column flex-lg-row gap-3 mt-3 mb-5">
-            <a class="btn btn-outline-primary w-100 w-lg-50" href="/status">
-                <i class="bi bi-arrow-right-circle me-1" aria-hidden="true"></i>View all status updates
-            </a>
-            <a class="btn btn-outline-primary w-100 w-lg-50" href="<?= esc(config('Mastodon')->profile) ?>" target="_blank" rel="noopener noreferrer">
-                <i class="bi bi-mastodon me-1" aria-hidden="true"></i>Follow me on Mastodon
-            </a>
-        </div>
+    <p>I occasionally write about technology, programming, and my personal projects on my <a href="/blog">blog</a>. My latest blog posts are:</p>
+
+    <?php if (!empty($morePosts)): ?>
+    <ul>
+        <?php foreach ($morePosts as $post): ?>
+        <li><a href="/blog/posts/<?= esc($post['slug']) ?>"><?= esc($post['title']) ?></a></li>
+        <?php endforeach; ?>
+    </ul>
     <?php endif; ?>
+
+    <h2 class="h4 mt-5">Status</h2>
+
+    <p class="mb-3">I write short updates about my life and work and syndicate them to my <strong><a href="<?= esc(config('Mastodon')->profile) ?>" target="_blank" rel="noopener noreferrer">Mastodon profile</a></strong>. The latest update is below:</p>
+    <div id="timeline-items">
+        <?= view('status/partials/timeline_items', [
+            'statuses'        => [$status],
+            'mastodonHandle'  => $mastodonHandle ?? '',
+            'mastodonProfile' => $mastodonProfile ?? '',
+        ]) ?>
+    </div>
+    <div class="d-flex flex-column flex-lg-row gap-3 mt-3 mb-5">
+        <a class="btn btn-outline-primary w-100 w-lg-50" href="/status">
+            <i class="bi bi-arrow-right-circle me-1" aria-hidden="true"></i>View all status updates
+        </a>
+        <a class="btn btn-outline-primary w-100 w-lg-50" href="<?= esc(config('Mastodon')->profile) ?>" target="_blank" rel="noopener noreferrer">
+            <i class="bi bi-mastodon me-1" aria-hidden="true"></i>Follow me on Mastodon
+        </a>
+    </div>
+
+    <h2 class="h4 mt-5">Bookmarks</h2>
 
     <p class="mb-3">I also keep a collection of bookmarks to interesting articles, projects, and resources that I come across. You can check them out on my <a href="/bookmarks">bookmarks page</a>. The latest bookmark is below:</p>
 
-    <?php if (isset($latestBookmark) && $latestBookmark !== null): ?>
-        <?= view('bookmarks/partials/bookmark_items', ['bookmarks' => [$latestBookmark]]) ?>
-        <div class="d-flex flex-column flex-lg-row gap-3 mt-3 mb-5">
-            <a class="btn btn-outline-primary w-100 w-lg-50" href="/bookmarks">
-                <i class="bi bi-arrow-right-circle me-1" aria-hidden="true"></i>View all bookmarks
-            </a>
-        </div>
-    <?php endif; ?>
+    <?= view('bookmarks/partials/bookmark_items', ['bookmarks' => [$latestBookmark]]) ?>
+    <div class="d-flex flex-column flex-lg-row gap-3 mt-3 mb-5">
+        <a class="btn btn-outline-primary w-100 w-lg-50" href="/bookmarks">
+            <i class="bi bi-arrow-right-circle me-1" aria-hidden="true"></i>View all bookmarks
+        </a>
+    </div>
+
+
+    <h2 class="h4 mt-5">Code</h2>
 
     <p>I publish my open source projects on <a href="https://github.com/corenominal" target="_blank" rel="noopener noreferrer">GitHub</a>.</p>
 
