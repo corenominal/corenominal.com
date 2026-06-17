@@ -1,0 +1,62 @@
+.note-editor__textarea {
+    resize: vertical;
+    min-height: 24rem;
+}
+
+.note-editor__preview {
+    min-height: 24rem;
+    padding: 1rem;
+    border: 1px solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+}
+
+.note-editor__code-wrapper {
+    position: relative;
+}
+
+.note-editor__copy-btn {
+    position: absolute;
+    top: 0.4rem;
+    right: 0.4rem;
+    z-index: 1;
+    padding: 0.2rem 0.45rem;
+    font-size: 0.8rem;
+    line-height: 1;
+    background-color: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--bs-border-radius-sm);
+    color: var(--bs-body-color);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.note-editor__code-wrapper:hover .note-editor__copy-btn {
+    opacity: 1;
+}
+
+.revision-diff {
+    font-family: var(--bs-font-monospace);
+    font-size: 0.875rem;
+    border: 1px solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+    overflow: auto;
+    max-height: 30rem;
+}
+
+.revision-diff__line {
+    display: block;
+    padding: 0 0.5rem;
+    white-space: pre;
+    line-height: 1.5;
+}
+
+.revision-diff__line--del {
+    background-color: rgba(var(--bs-danger-rgb), 0.4);
+    color: var(--bs-body-color);
+}
+
+.revision-diff__line--add {
+    background-color: rgba(var(--bs-success-rgb), 0.4);
+    color: var(--bs-body-color);
+}

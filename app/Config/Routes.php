@@ -236,6 +236,29 @@ $routes->group('api/startpage', function ($routes) {
     $routes->match(['post', 'options'], 'redirects', 'Startpage\Api\Redirects::create');
 });
 
+// Admin notes routes (adminfilter applied globally via Filters.php)
+$routes->group('admin/notes', function ($routes) {
+    $routes->get('/', 'Notes\Admin\Home::index');
+    $routes->get('key', 'Notes\Admin\Key::index');
+    $routes->get('new', 'Notes\Admin\Editor::new');
+    $routes->get('(:num)/edit', 'Notes\Admin\Editor::edit/$1');
+});
+
+// API notes routes (apifilter applied globally via Filters.php)
+$routes->group('api/notes', function ($routes) {
+    $routes->options('(:any)', static function () { return ''; });
+    $routes->get('list', 'Notes\Api\Notes::list');
+    $routes->get('(:num)', 'Notes\Api\Notes::find/$1');
+    $routes->post('/', 'Notes\Api\Notes::create');
+    $routes->post('preview', 'Notes\Api\Notes::preview');
+    $routes->patch('(:num)', 'Notes\Api\Notes::update/$1');
+    $routes->delete('(:num)', 'Notes\Api\Notes::delete/$1');
+    $routes->get('(:num)/revisions', 'Notes\Api\Notes::listRevisions/$1');
+    $routes->get('(:num)/revision/(:num)', 'Notes\Api\Notes::findRevision/$1/$2');
+    $routes->delete('(:num)/revision/(:num)', 'Notes\Api\Notes::deleteRevision/$1/$2');
+    $routes->delete('(:num)/revisions', 'Notes\Api\Notes::deleteRevisions/$1');
+});
+
 // About page route
 $routes->get('/about', 'About::index');
 
