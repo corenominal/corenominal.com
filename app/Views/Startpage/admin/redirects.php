@@ -2,7 +2,7 @@
 
 <?= $this->section('content') ?>
 
-<div class="d-flex align-items-center justify-content-between gap-3 border-bottom mb-4 pb-4">
+<div class="d-flex align-items-center justify-content-between gap-3 mb-4">
     <h1 class="h3 mb-0">Redirects</h1>
     <div class="d-flex gap-2">
         <button id="btn-add" class="btn btn-outline-primary"><i class="bi bi-plus-lg"></i> Add</button>
@@ -37,7 +37,7 @@
                             data-url="<?= esc($row['url'], 'attr') ?>"
                             data-comments="<?= esc($row['comments'] ?? '', 'attr') ?>"
                             aria-label="Edit"><i class="bi bi-pencil-fill"></i></button>
-                        <button class="btn btn-outline-danger btn-delete-row"
+                        <button class="btn btn-outline-primary btn-delete-row"
                             data-id="<?= $row['id'] ?>"
                             aria-label="Delete"><i class="bi bi-trash-fill"></i></button>
                     </div>
@@ -92,7 +92,7 @@
             <div class="modal-body">Delete this redirect? This cannot be undone.</div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" id="btn-redirects-delete-confirm">Delete</button>
+                <button type="button" class="btn btn-primary" id="btn-redirects-delete-confirm">Delete</button>
             </div>
         </div>
     </div>

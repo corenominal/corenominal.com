@@ -2,10 +2,10 @@
 
 <?= $this->section('content') ?>
 
-<div class="d-flex align-items-center justify-content-between gap-3 border-bottom mb-4 pb-4">
+<div class="d-flex align-items-center justify-content-between gap-3 mb-4">
     <h1 class="h3 mb-0">History</h1>
     <div class="d-flex gap-2">
-        <button id="btn-history-delete" class="btn btn-outline-danger" disabled>
+        <button id="btn-history-delete" class="btn btn-outline-primary" disabled>
             <i class="bi bi-trash-fill"></i> Delete Selected
         </button>
         <a href="/admin/startpage" class="btn btn-outline-primary"><i class="bi bi-arrow-left"></i> Back</a>
@@ -45,7 +45,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" id="btn-history-delete-confirm">Delete</button>
+                <button type="button" class="btn btn-primary" id="btn-history-delete-confirm">Delete</button>
             </div>
         </div>
     </div>

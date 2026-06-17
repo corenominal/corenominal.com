@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-12">
 
-            <div class="border-bottom border-1 mb-4 pb-4 d-flex align-items-center justify-content-between gap-3">
+            <div class="mb-4 d-flex align-items-center justify-content-between gap-3">
                 <h1 class="h3 mb-0">Shortcuts</h1>
                 <div class="d-flex gap-2">
                     <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modal-add-category">

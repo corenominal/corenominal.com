@@ -1,5 +1,5 @@
 <div class="d-flex justify-content-between align-items-center mb-2">
-    <button id="btn-history-delete" class="btn btn-outline-danger btn-sm" disabled>
+    <button id="btn-history-delete" class="btn btn-outline-primary btn-sm" disabled>
         <i class="bi bi-trash-fill"></i> Delete
     </button>
     <a href="/admin/startpage/history" class="btn btn-outline-primary btn-sm"><i class="bi bi-gear-fill"></i> Manage</a>
@@ -38,7 +38,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" id="btn-history-delete-confirm">Delete</button>
+                <button type="button" class="btn btn-primary" id="btn-history-delete-confirm">Delete</button>
             </div>
         </div>
     </div>
