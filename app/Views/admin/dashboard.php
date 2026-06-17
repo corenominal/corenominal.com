@@ -4,6 +4,12 @@
     <h1 class="h3 text-uppercase mb-4">Admin</h1>
 
     <ul class="list-group mb-4">
+        <a href="/admin/startpage" class="list-group-item list-group-item-action">
+            <i class="bi bi-slash-square me-2"></i>Startpage
+        </a>
+    </ul>
+
+    <ul class="list-group mb-4">
         <a href="/admin/blog" class="list-group-item list-group-item-action">
             <i class="bi bi-pencil me-2"></i>Blog
         </a>

@@ -197,6 +197,45 @@ $routes->group('api/blog', function ($routes) {
     $routes->get('posts/latest', 'Blog\Api\Posts::latest');
 });
 
+// Admin startpage routes (adminfilter applied globally via Filters.php)
+$routes->group('admin/startpage', function ($routes) {
+    $routes->get('/', 'Startpage\Admin\Home::index');
+    $routes->post('command', 'Startpage\Admin\Home::command');
+    $routes->get('history/suggestions', 'Startpage\Admin\Home::historySuggestions');
+    $routes->get('history', 'Startpage\Admin\History::index');
+    $routes->post('history/delete', 'Startpage\Admin\History::delete');
+    $routes->get('redirects', 'Startpage\Admin\Redirects::index');
+    $routes->post('redirects/add', 'Startpage\Admin\Redirects::add');
+    $routes->post('redirects/edit', 'Startpage\Admin\Redirects::edit');
+    $routes->post('redirects/delete', 'Startpage\Admin\Redirects::delete');
+    $routes->get('search', 'Startpage\Admin\Search::index');
+    $routes->post('search/add', 'Startpage\Admin\Search::add');
+    $routes->post('search/edit', 'Startpage\Admin\Search::edit');
+    $routes->post('search/delete', 'Startpage\Admin\Search::delete');
+    $routes->get('shortcuts', 'Startpage\Admin\Shortcuts::index');
+    $routes->post('shortcuts/category/add', 'Startpage\Admin\Shortcuts::categoryAdd');
+    $routes->post('shortcuts/category/edit', 'Startpage\Admin\Shortcuts::categoryEdit');
+    $routes->post('shortcuts/category/delete', 'Startpage\Admin\Shortcuts::categoryDelete');
+    $routes->post('shortcuts/category/reorder', 'Startpage\Admin\Shortcuts::categoryReorder');
+    $routes->post('shortcuts/add', 'Startpage\Admin\Shortcuts::shortcutAdd');
+    $routes->post('shortcuts/edit', 'Startpage\Admin\Shortcuts::shortcutEdit');
+    $routes->post('shortcuts/delete', 'Startpage\Admin\Shortcuts::shortcutDelete');
+    $routes->post('shortcuts/reorder', 'Startpage\Admin\Shortcuts::shortcutReorder');
+    $routes->get('import-export', 'Startpage\Admin\ImportExport::index');
+    $routes->get('export/history', 'Startpage\Admin\ImportExport::exportHistory');
+    $routes->get('export/redirects', 'Startpage\Admin\ImportExport::exportRedirects');
+    $routes->get('export/search', 'Startpage\Admin\ImportExport::exportSearch');
+    $routes->post('import/history', 'Startpage\Admin\ImportExport::importHistory');
+    $routes->post('import/redirects', 'Startpage\Admin\ImportExport::importRedirects');
+    $routes->post('import/search', 'Startpage\Admin\ImportExport::importSearch');
+});
+
+// API startpage routes (apifilter applied globally via Filters.php)
+$routes->group('api/startpage', function ($routes) {
+    $routes->options('(:any)', static function () { return ''; });
+    $routes->match(['post', 'options'], 'redirects', 'Startpage\Api\Redirects::create');
+});
+
 // About page route
 $routes->get('/about', 'About::index');
 

@@ -1,4 +1,12 @@
 <ul class="nav flex-column gap-1">
+    <li class="mb-4">
+        <a href="/admin/startpage" class="nav-link"
+            data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Startpage">
+            <i class="bi bi-slash-square"></i>
+            <span class="sidebar-label">Startpage</span>
+        </a>
+    </li>
+
     <li>
         <a href="/admin" class="nav-link"
             data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Admin">
@@ -6,7 +14,6 @@
             <span class="sidebar-label">Dashboard</span>
         </a>
     </li>
-    
     <li>
         <a href="/admin/blog" class="nav-link"
             data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Blog">
