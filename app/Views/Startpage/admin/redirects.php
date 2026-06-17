@@ -13,6 +13,9 @@
 <?php if (empty($redirects)): ?>
     <p class="text-secondary">No redirects yet.</p>
 <?php else: ?>
+<div class="mb-3">
+    <input type="search" id="redirects-filter" class="form-control" placeholder="Filter by phrase or URL&hellip;" autocomplete="off">
+</div>
 <div class="table-responsive">
     <table class="table table-bordered table-hover align-middle" id="table-redirects">
         <thead>
