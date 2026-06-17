@@ -13,6 +13,9 @@
 <?php if (empty($search_engines)): ?>
     <p class="text-secondary">No search engines yet.</p>
 <?php else: ?>
+<div class="mb-3">
+    <input type="search" id="search-filter" class="form-control" placeholder="Filter by phrase or URL&hellip;" autocomplete="off">
+</div>
 <div class="table-responsive">
     <table class="table table-bordered table-hover align-middle" id="table-search">
         <thead>

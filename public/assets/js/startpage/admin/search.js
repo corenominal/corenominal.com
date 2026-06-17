@@ -113,6 +113,35 @@ document.addEventListener('DOMContentLoaded', () => {
       .catch((err) => console.error('Delete failed:', err));
   });
 
+  // ── Filter ─────────────────────────────────────────────────────────────────
+  const filterInput = document.getElementById('search-filter');
+  if (filterInput) {
+    const tbody = document.querySelector('#table-search tbody');
+    const colSpan = document.querySelector('#table-search thead tr')?.children.length || 4;
+
+    const emptyRow = document.createElement('tr');
+    emptyRow.id = 'search-filter-empty';
+    emptyRow.classList.add('d-none');
+    emptyRow.innerHTML = `<td colspan="${colSpan}" class="text-center text-secondary">No matching search engines.</td>`;
+    tbody.appendChild(emptyRow);
+
+    filterInput.addEventListener('input', () => {
+      const query = filterInput.value.trim().toLowerCase();
+      const rows = tbody.querySelectorAll('tr:not(#search-filter-empty)');
+      let visibleCount = 0;
+
+      rows.forEach((row) => {
+        const phrase = row.children[0]?.textContent.toLowerCase() ?? '';
+        const url    = row.children[1]?.textContent.toLowerCase() ?? '';
+        const match  = !query || phrase.includes(query) || url.includes(query);
+        row.classList.toggle('d-none', !match);
+        if (match) visibleCount += 1;
+      });
+
+      emptyRow.classList.toggle('d-none', visibleCount > 0);
+    });
+  }
+
   // ── Table button delegation ────────────────────────────────────────────────
   document.querySelector('#table-search tbody')?.addEventListener('click', (e) => {
     const editBtn   = e.target.closest('.btn-edit');
