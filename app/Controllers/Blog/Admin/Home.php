@@ -27,6 +27,14 @@ class Home extends BaseController
         $statusFilter = trim((string) $this->request->getGet('status'));
 
         $allowedStatuses = ['published', 'draft', 'revision', 'trashed'];
+        $allowedSorts    = ['hitcounter', 'published_at'];
+
+        $sort = $this->request->getGet('sort');
+        $dir  = strtolower((string) $this->request->getGet('dir')) === 'desc' ? 'DESC' : 'ASC';
+
+        if (!in_array($sort, $allowedSorts, true)) {
+            $sort = null;
+        }
 
         if ($search !== '') {
             $postModel->groupStart()
@@ -40,6 +48,10 @@ class Home extends BaseController
             $postModel->where('status', $statusFilter);
         } else {
             $statusFilter = '';
+        }
+
+        if ($sort !== null) {
+            $postModel->orderBy($sort, $dir);
         }
 
         $posts = $postModel
@@ -58,6 +70,8 @@ class Home extends BaseController
             'pager'            => $postModel->pager,
             'search'           => $search,
             'statusFilter'     => $statusFilter,
+            'sort'             => $sort,
+            'dir'              => $dir,
         ]);
     }
 

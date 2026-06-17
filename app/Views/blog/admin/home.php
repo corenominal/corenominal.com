@@ -2,6 +2,32 @@
 
 <?= $this->section('content') ?>
 
+<?php
+function blogSortUrl(string $col, ?string $currentSort, string $currentDir, string $search, string $statusFilter): string
+{
+    $nextDir = ($currentSort === $col && $currentDir === 'ASC') ? 'desc' : 'asc';
+    $params  = array_filter([
+        'sort'   => $col,
+        'dir'    => $nextDir,
+        'q'      => $search,
+        'status' => $statusFilter,
+    ]);
+
+    return site_url('admin/blog') . ($params ? '?' . http_build_query($params) : '');
+}
+
+function blogSortIcon(?string $currentSort, string $col, string $currentDir): string
+{
+    if ($currentSort !== $col) {
+        return '<i class="bi bi-chevron-expand" aria-hidden="true"></i>';
+    }
+
+    return $currentDir === 'ASC'
+        ? '<i class="bi bi-chevron-up" aria-hidden="true"></i>'
+        : '<i class="bi bi-chevron-down" aria-hidden="true"></i>';
+}
+?>
+
 <div class="mb-4">
 
     <div class="d-flex align-items-center justify-content-between mb-4">
@@ -77,6 +103,10 @@
     <!-- Toolbar -->
     <div class="d-flex align-items-center justify-content-between gap-2 mb-3 flex-wrap">
         <form method="get" action="<?= site_url('admin/blog') ?>" class="d-flex gap-2" role="search">
+            <?php if ($sort): ?>
+                <input type="hidden" name="sort" value="<?= esc($sort) ?>">
+                <input type="hidden" name="dir"  value="<?= esc(strtolower($dir)) ?>">
+            <?php endif; ?>
             <div class="input-group input-group-sm">
                 <span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span>
                 <input
@@ -112,8 +142,16 @@
                     </th>
                     <th>Title</th>
                     <th class="d-none d-md-table-cell">Tags</th>
-                    <th class="d-none d-lg-table-cell">Views</th>
-                    <th class="d-none d-lg-table-cell">Published</th>
+                    <th class="d-none d-lg-table-cell text-end" style="white-space:nowrap;">
+                        <a href="<?= blogSortUrl('hitcounter', $sort, $dir, $search, $statusFilter) ?>" class="text-body text-decoration-none">
+                            Views <?= blogSortIcon($sort, 'hitcounter', $dir) ?>
+                        </a>
+                    </th>
+                    <th class="d-none d-lg-table-cell" style="white-space:nowrap;">
+                        <a href="<?= blogSortUrl('published_at', $sort, $dir, $search, $statusFilter) ?>" class="text-body text-decoration-none">
+                            Published <?= blogSortIcon($sort, 'published_at', $dir) ?>
+                        </a>
+                    </th>
                     <th style="width: 80px;"></th>
                 </tr>
             </thead>
