@@ -9,6 +9,7 @@ Website live at https://corenominal.com
 - [Blog](README-blog.md)
 - [Status](README-status.md)
 - [Bookmarks](README-bookmarks.md)
+- [Startpage](README-startpage.md)
 - [Authentication](README-authentication.md)
 - [Debug](README-debug.md)
 - [Metrics](README-metrics.md)
