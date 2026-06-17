@@ -43,4 +43,11 @@
             <span class="sidebar-label">Social</span>
         </a>
     </li>
+    <li>
+        <a href="/admin/metrics" class="nav-link"
+            data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Metrics">
+            <i class="bi bi-graph-up"></i>
+            <span class="sidebar-label">Metrics</span>
+        </a>
+    </li>
 </ul>

@@ -22,6 +22,9 @@
         <a href="/admin/social" class="list-group-item list-group-item-action">
             <i class="bi bi-link-45deg me-2"></i>Social
         </a>
+        <a href="/admin/metrics" class="list-group-item list-group-item-action">
+            <i class="bi bi-graph-up me-2"></i>Metrics
+        </a>
     </ul>
 
 <?= $this->endSection() ?>

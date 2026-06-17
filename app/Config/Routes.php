@@ -207,6 +207,13 @@ $routes->post('/contact/send', 'Contact::send');
 // Metrics collection endpoint
 $routes->post('/metrics', 'Metrics::receive');
 
+// Admin metrics routes
+$routes->group('admin/metrics', function ($routes) {
+    $routes->get('/', 'Metrics\Admin\Dashboard::index');
+    $routes->get('paths', 'Metrics\Admin\Dashboard::paths');
+    $routes->get('log', 'Metrics\Admin\Dashboard::log');
+});
+
 // Unauthorised route
 $routes->get('/unauthorised', 'Unauthorised::index');
 // Custom 404 route
