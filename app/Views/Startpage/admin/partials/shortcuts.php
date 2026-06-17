@@ -2,7 +2,7 @@
     <p class="text-secondary"><em>No shortcuts yet.</em></p>
 <?php else: ?>
     <div class="d-flex align-items-center justify-content-end gap-3 mb-2">
-        <a href="/admin/startpage/shortcuts" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil-fill"></i> Manage</a>
+        <a href="/admin/startpage/shortcuts" class="btn btn-sm btn-outline-primary"><i class="bi bi-gear-fill"></i> Manage</a>
         <div class="form-check form-switch mb-0">
             <input class="form-check-input" type="checkbox" role="switch" id="shortcuts-new-tab">
             <label class="form-check-label text-secondary small" for="shortcuts-new-tab">New tab</label>
