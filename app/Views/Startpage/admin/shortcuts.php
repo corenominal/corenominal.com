@@ -73,7 +73,7 @@
                                             <th style="width:3rem">Icon</th>
                                             <th>Name</th>
                                             <th>URL</th>
-                                            <th style="width:8rem">Actions</th>
+                                            <th class="text-end" style="width:8rem">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -109,7 +109,7 @@
                                             </td>
                                             <td><?= esc($shortcut['name']) ?></td>
                                             <td><a href="<?= esc($shortcut['url'], 'attr') ?>" target="_blank" rel="noopener noreferrer" class="text-truncate d-block" style="max-width:300px;"><?= esc($shortcut['url']) ?></a></td>
-                                            <td>
+                                            <td class="text-end">
                                                 <div class="btn-group btn-group-sm" role="group">
                                                     <button type="button"
                                                         class="btn btn-outline-primary btn-edit-shortcut"
