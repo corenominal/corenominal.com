@@ -151,7 +151,7 @@ $routes->group('admin/bookmarks', function ($routes) {
 // API bookmarks routes (apifilter applied globally via Filters.php)
 $routes->group('api/bookmarks', function ($routes) {
     $routes->options('(:any)', static function () { return ''; });
-    $routes->post('/', 'Bookmarks\Api\Bookmarks::create');
+    $routes->match(['post', 'options'], 'Bookmarks\Api\Bookmarks::create');
     $routes->get('latest', 'Bookmarks\Api\Bookmarks::latest');
     $routes->get('check-url', 'Bookmarks\Api\Bookmarks::checkUrl');
     $routes->get('tags', 'Bookmarks\Api\Tags::index');
