@@ -36,6 +36,14 @@
         </a>
     </li>
 
+    <li class="mb-4">
+        <a href="/admin/notes" class="nav-link"
+            data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Notes">
+            <i class="bi bi-journal-text"></i>
+            <span class="sidebar-label">Notes</span>
+        </a>
+    </li>
+
     <li>
         <a href="/admin/auth" class="nav-link"
             data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Auth">

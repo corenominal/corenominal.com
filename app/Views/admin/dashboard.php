@@ -22,6 +22,12 @@
     </ul>
 
     <ul class="list-group mb-4">
+        <a href="/admin/notes" class="list-group-item list-group-item-action">
+            <i class="bi bi-journal-text me-2"></i>Notes
+        </a>
+    </ul>
+
+    <ul class="list-group mb-4">
         <a href="/admin/auth" class="list-group-item list-group-item-action">
             <i class="bi bi-shield-lock me-2"></i>Auth
         </a>
