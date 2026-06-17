@@ -17,6 +17,8 @@ class StartShortcutModel extends Model
         'name',
         'url',
         'icon_filename',
+        'icon_invert',
+        'icon_invert_light',
         'sort_order',
     ];
 

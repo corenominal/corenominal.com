@@ -18,7 +18,8 @@
                 <?php foreach ($category['shortcuts'] as $shortcut): ?>
                     <a href="<?= esc($shortcut['url'], 'attr') ?>" class="d-flex flex-column align-items-center text-decoration-none shortcut-item" style="width:64px;" title="<?= esc($shortcut['name'], 'attr') ?>">
                         <?php if ($shortcut['icon_filename'] !== ''): ?>
-                            <img src="/uploads/startpage/icons/<?= esc($shortcut['icon_filename'], 'attr') ?>" alt="<?= esc($shortcut['name'], 'attr') ?>" style="width:40px;height:40px;object-fit:contain;" class="mb-1">
+                            <?php $iconClass = 'mb-1' . ($shortcut['icon_invert'] ? ' invert' : '') . ($shortcut['icon_invert_light'] ? ' invert-light' : ''); ?>
+                            <img src="/uploads/startpage/icons/<?= esc($shortcut['icon_filename'], 'attr') ?>" alt="<?= esc($shortcut['name'], 'attr') ?>" style="width:40px;height:40px;object-fit:contain;" class="<?= $iconClass ?>">
                         <?php else: ?>
                             <i class="bi bi-link-45deg mb-1" style="font-size:2.5rem;"></i>
                         <?php endif; ?>

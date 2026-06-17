@@ -39,6 +39,13 @@ document.addEventListener('DOMContentLoaded', function () {
     window.location.reload();
   }
 
+  function updateEditIconPreviewClasses() {
+    const img = document.querySelector('#edit-shortcut-current-icon img');
+    if (!img) return;
+    img.classList.toggle('invert', document.getElementById('edit-shortcut-icon-invert').checked);
+    img.classList.toggle('invert-light', document.getElementById('edit-shortcut-icon-invert-light').checked);
+  }
+
   function clearAddShortcutExistingIconSelection() {
     document.querySelectorAll('.add-shortcut-existing-icon').forEach((input) => {
       input.checked = false;
@@ -223,6 +230,8 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('add-shortcut-category-display').value = btn.dataset.categoryName;
     document.getElementById('add-shortcut-name').value             = '';
     document.getElementById('add-shortcut-url').value              = '';
+    document.getElementById('add-shortcut-icon-invert').checked       = false;
+    document.getElementById('add-shortcut-icon-invert-light').checked = false;
     inputAddShortcutIcon.value = '';
     clearAddShortcutExistingIconSelection();
     bootstrap.Modal.getOrCreateInstance(modalAddShortcut).show();
@@ -248,6 +257,8 @@ document.addEventListener('DOMContentLoaded', function () {
     fd.append('category_id', categoryId);
     fd.append('name', name);
     fd.append('url', url);
+    fd.append('icon_invert',       document.getElementById('add-shortcut-icon-invert').checked ? '1' : '0');
+    fd.append('icon_invert_light', document.getElementById('add-shortcut-icon-invert-light').checked ? '1' : '0');
     if (iconFile) {
       fd.append('icon', iconFile);
     } else if (iconFilename) {
@@ -270,6 +281,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const modalEditShortcut = document.getElementById('modal-edit-shortcut');
 
+  document.getElementById('edit-shortcut-icon-invert').addEventListener('change', updateEditIconPreviewClasses);
+  document.getElementById('edit-shortcut-icon-invert-light').addEventListener('change', updateEditIconPreviewClasses);
+
   document.addEventListener('click', function (e) {
     const btn = e.target.closest('.btn-edit-shortcut');
     if (!btn) return;
@@ -289,6 +303,10 @@ document.addEventListener('DOMContentLoaded', function () {
     } else {
       iconContainer.innerHTML = '<span class="text-secondary">No icon</span>';
     }
+
+    document.getElementById('edit-shortcut-icon-invert').checked       = btn.dataset.iconInvert === '1';
+    document.getElementById('edit-shortcut-icon-invert-light').checked = btn.dataset.iconInvertLight === '1';
+    updateEditIconPreviewClasses();
 
     bootstrap.Modal.getOrCreateInstance(modalEditShortcut).show();
   });
@@ -310,6 +328,8 @@ document.addEventListener('DOMContentLoaded', function () {
     fd.append('category_id', categoryId);
     fd.append('name', name);
     fd.append('url', url);
+    fd.append('icon_invert',       document.getElementById('edit-shortcut-icon-invert').checked ? '1' : '0');
+    fd.append('icon_invert_light', document.getElementById('edit-shortcut-icon-invert-light').checked ? '1' : '0');
     if (iconFile) {
       fd.append('icon', iconFile);
     }

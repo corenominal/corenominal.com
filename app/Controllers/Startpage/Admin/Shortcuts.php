@@ -151,9 +151,11 @@ class Shortcuts extends BaseController
 
     public function shortcutAdd(): \CodeIgniter\HTTP\ResponseInterface
     {
-        $categoryId = (int) $this->request->getPost('category_id');
-        $name       = trim($this->request->getPost('name') ?? '');
-        $url        = trim($this->request->getPost('url') ?? '');
+        $categoryId      = (int) $this->request->getPost('category_id');
+        $name            = trim($this->request->getPost('name') ?? '');
+        $url             = trim($this->request->getPost('url') ?? '');
+        $iconInvert      = (int) (bool) $this->request->getPost('icon_invert');
+        $iconInvertLight = (int) (bool) $this->request->getPost('icon_invert_light');
 
         if ($categoryId <= 0 || $name === '' || $url === '') {
             return $this->response->setStatusCode(400)->setJSON([
@@ -187,11 +189,13 @@ class Shortcuts extends BaseController
         $sortOrder = ($maxOrder['sort_order'] ?? 0) + 1;
 
         $id = $model->insert([
-            'category_id'   => $categoryId,
-            'name'          => $name,
-            'url'           => $url,
-            'icon_filename' => $iconFilename ?? '',
-            'sort_order'    => $sortOrder,
+            'category_id'      => $categoryId,
+            'name'             => $name,
+            'url'              => $url,
+            'icon_filename'    => $iconFilename ?? '',
+            'icon_invert'      => $iconInvert,
+            'icon_invert_light' => $iconInvertLight,
+            'sort_order'       => $sortOrder,
         ]);
 
         return $this->response->setJSON([
@@ -205,10 +209,12 @@ class Shortcuts extends BaseController
 
     public function shortcutEdit(): \CodeIgniter\HTTP\ResponseInterface
     {
-        $id         = (int) $this->request->getPost('id');
-        $categoryId = (int) $this->request->getPost('category_id');
-        $name       = trim($this->request->getPost('name') ?? '');
-        $url        = trim($this->request->getPost('url') ?? '');
+        $id              = (int) $this->request->getPost('id');
+        $categoryId      = (int) $this->request->getPost('category_id');
+        $name            = trim($this->request->getPost('name') ?? '');
+        $url             = trim($this->request->getPost('url') ?? '');
+        $iconInvert      = (int) (bool) $this->request->getPost('icon_invert');
+        $iconInvertLight = (int) (bool) $this->request->getPost('icon_invert_light');
 
         if ($id <= 0 || $categoryId <= 0 || $name === '' || $url === '') {
             return $this->response->setStatusCode(400)->setJSON([
@@ -250,10 +256,12 @@ class Shortcuts extends BaseController
         }
 
         $model->update($id, [
-            'category_id'   => $categoryId,
-            'name'          => $name,
-            'url'           => $url,
-            'icon_filename' => $iconFilename,
+            'category_id'      => $categoryId,
+            'name'             => $name,
+            'url'              => $url,
+            'icon_filename'    => $iconFilename,
+            'icon_invert'      => $iconInvert,
+            'icon_invert_light' => $iconInvertLight,
         ]);
 
         return $this->response->setJSON([

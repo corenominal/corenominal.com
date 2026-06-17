@@ -101,7 +101,8 @@
                                             </td>
                                             <td class="text-center">
                                                 <?php if ($shortcut['icon_filename'] !== ''): ?>
-                                                    <img src="/uploads/startpage/icons/<?= esc($shortcut['icon_filename'], 'attr') ?>" alt="<?= esc($shortcut['name'], 'attr') ?> icon" style="width:32px;height:32px;object-fit:contain;">
+                                                    <?php $adminIconClass = trim(($shortcut['icon_invert'] ? 'invert ' : '') . ($shortcut['icon_invert_light'] ? 'invert-light' : '')); ?>
+                                                    <img src="/uploads/startpage/icons/<?= esc($shortcut['icon_filename'], 'attr') ?>" alt="<?= esc($shortcut['name'], 'attr') ?> icon" class="<?= $adminIconClass ?>" style="width:32px;height:32px;object-fit:contain;">
                                                 <?php else: ?>
                                                     <i class="bi bi-link-45deg text-secondary" style="font-size:1.5rem;"></i>
                                                 <?php endif; ?>
@@ -117,6 +118,8 @@
                                                         data-name="<?= esc($shortcut['name'], 'attr') ?>"
                                                         data-url="<?= esc($shortcut['url'], 'attr') ?>"
                                                         data-icon-filename="<?= esc($shortcut['icon_filename'], 'attr') ?>"
+                                                        data-icon-invert="<?= (int) $shortcut['icon_invert'] ?>"
+                                                        data-icon-invert-light="<?= (int) $shortcut['icon_invert_light'] ?>"
                                                         aria-label="Edit">
                                                         <i class="bi bi-pencil-fill"></i>
                                                     </button>
@@ -275,6 +278,17 @@
                     <input type="file" class="form-control" id="add-shortcut-icon" accept="image/png,image/jpeg,image/gif,image/webp,image/svg+xml,image/x-icon,image/vnd.microsoft.icon">
                     <div class="form-text">Displayed at 40&times;40px. Accepted formats: PNG, JPEG, GIF, WebP, SVG, ICO. Max 512&nbsp;KB.</div>
                 </div>
+                <div class="mb-3">
+                    <label class="form-label">Icon Display</label>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="add-shortcut-icon-invert">
+                        <label class="form-check-label" for="add-shortcut-icon-invert">Invert in dark mode (<code>.invert</code>)</label>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="add-shortcut-icon-invert-light">
+                        <label class="form-check-label" for="add-shortcut-icon-invert-light">Invert in light mode (<code>.invert-light</code>)</label>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -316,6 +330,17 @@
                     <label for="edit-shortcut-icon" class="form-label">Replace Icon</label>
                     <input type="file" class="form-control" id="edit-shortcut-icon" accept="image/png,image/jpeg,image/gif,image/webp,image/svg+xml,image/x-icon,image/vnd.microsoft.icon">
                     <div class="form-text">Leave blank to keep the current icon. Max 512&nbsp;KB.</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Icon Display</label>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="edit-shortcut-icon-invert">
+                        <label class="form-check-label" for="edit-shortcut-icon-invert">Invert in dark mode (<code>.invert</code>)</label>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="edit-shortcut-icon-invert-light">
+                        <label class="form-check-label" for="edit-shortcut-icon-invert-light">Invert in light mode (<code>.invert-light</code>)</label>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
