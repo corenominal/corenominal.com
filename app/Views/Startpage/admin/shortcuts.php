@@ -46,14 +46,14 @@
                                 <i class="bi bi-pencil-fill"></i>
                             </button>
                             <button type="button"
-                                class="btn btn-sm btn-outline-danger btn-delete-category"
+                                class="btn btn-sm btn-outline-primary btn-delete-category"
                                 data-id="<?= $category['id'] ?>"
                                 data-name="<?= esc($category['name'], 'attr') ?>"
                                 aria-label="Delete category">
                                 <i class="bi bi-trash3-fill"></i>
                             </button>
                             <button type="button"
-                                class="btn btn-sm btn-outline-success btn-add-shortcut"
+                                class="btn btn-sm btn-primary btn-add-shortcut"
                                 data-category-id="<?= $category['id'] ?>"
                                 data-category-name="<?= esc($category['name'], 'attr') ?>"
                                 aria-label="Add shortcut">
@@ -124,7 +124,7 @@
                                                         <i class="bi bi-pencil-fill"></i>
                                                     </button>
                                                     <button type="button"
-                                                        class="btn btn-outline-danger btn-delete-shortcut"
+                                                        class="btn btn-outline-primary btn-delete-shortcut"
                                                         data-id="<?= $shortcut['id'] ?>"
                                                         data-name="<?= esc($shortcut['name'], 'attr') ?>"
                                                         aria-label="Delete">
@@ -207,7 +207,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" id="btn-delete-category-confirm">Delete</button>
+                <button type="button" class="btn btn-primary" id="btn-delete-category-confirm">Delete</button>
             </div>
         </div>
     </div>
@@ -365,7 +365,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" id="btn-delete-shortcut-confirm">Delete</button>
+                <button type="button" class="btn btn-primary" id="btn-delete-shortcut-confirm">Delete</button>
             </div>
         </div>
     </div>
