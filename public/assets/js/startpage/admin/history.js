@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function getAllRows() {
-    return Array.from(tableBody.querySelectorAll('tr[data-id]'));
+    return Array.from(tableBody.querySelectorAll('tr[data-id]:not(.d-none)'));
   }
 
   tableBody.addEventListener('change', function (e) {
@@ -47,6 +47,47 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     updateDeleteButton();
   });
+
+  // ── Filter ─────────────────────────────────────────────────────────────────
+  const filterInput = document.getElementById('history-filter');
+  if (filterInput) {
+    const colSpan = document.querySelector('#table-history thead tr')?.children.length || 4;
+
+    const emptyRow = document.createElement('tr');
+    emptyRow.id = 'history-filter-empty';
+    emptyRow.classList.add('d-none');
+    emptyRow.innerHTML = `<td colspan="${colSpan}" class="text-center text-secondary">No matching history.</td>`;
+    tableBody.appendChild(emptyRow);
+
+    filterInput.addEventListener('input', () => {
+      const query = filterInput.value.trim().toLowerCase();
+      const rows = tableBody.querySelectorAll('tr[data-id]');
+      let visibleCount = 0;
+
+      rows.forEach((row) => {
+        const date    = row.children[1]?.textContent.toLowerCase() ?? '';
+        const q       = row.children[2]?.textContent.toLowerCase() ?? '';
+        const match   = !query || date.includes(query) || q.includes(query);
+        row.classList.toggle('d-none', !match);
+        if (!match && selectedIds.has(row.dataset.id)) {
+          selectedIds.delete(row.dataset.id);
+          const cb = row.querySelector('.row-select');
+          if (cb) cb.checked = false;
+          row.classList.remove('table-active');
+        }
+        if (match) visibleCount += 1;
+      });
+
+      emptyRow.classList.toggle('d-none', visibleCount > 0);
+      updateDeleteButton();
+
+      const selectAll = document.getElementById('history-select-all');
+      if (selectAll) {
+        selectAll.checked       = false;
+        selectAll.indeterminate = false;
+      }
+    });
+  }
 
   const deleteModalEl = document.getElementById('modal-history-delete-confirm');
   const deleteModal   = new bootstrap.Modal(deleteModalEl, { focus: false });

@@ -12,6 +12,10 @@
     </div>
 </div>
 
+<div class="mb-3">
+    <input type="search" id="history-filter" class="form-control" placeholder="Filter by date or query&hellip;" autocomplete="off">
+</div>
+
 <table id="table-history" class="table table-bordered table-striped">
     <thead>
         <tr>
