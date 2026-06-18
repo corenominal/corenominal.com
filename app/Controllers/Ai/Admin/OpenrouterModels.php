@@ -37,7 +37,7 @@ class OpenrouterModels extends BaseController
         $data['enabledIds']         = $enabledIds;
         $data['js']                 = ['ai/admin/openrouter-models'];
         $data['title']              = 'OpenRouter Models';
-        $data['templateMaxWidth']   = '100%';
+        // $data['templateMaxWidth']   = '100%';
         $data['templateMenu']       = 'ai/admin/sidebar-menu';
 
         return view('ai/admin/openrouter-models', $data);

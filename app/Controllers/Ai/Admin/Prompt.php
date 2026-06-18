@@ -15,7 +15,7 @@ class Prompt extends BaseController
         $data['js']               = ['ai/admin/prompt'];
         $data['css']              = ['ai/admin/prompt'];
         $data['title']            = 'Default Prompt';
-        $data['templateMaxWidth'] = '100%';
+        // $data['templateMaxWidth'] = '100%';
         $data['templateMenu']     = 'ai/admin/sidebar-menu';
 
         return view('ai/admin/prompt', $data);

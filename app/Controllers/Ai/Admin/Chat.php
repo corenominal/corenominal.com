@@ -20,7 +20,7 @@ class Chat extends BaseController
         $data['uuid']             = $uuid;
         $data['js']               = ['vendor/marked.min', 'vendor/highlight.min', 'ai/admin/chat'];
         $data['css']              = ['vendor/highlight-dracula.min', 'ai/admin/chat'];
-        $data['templateMaxWidth'] = '100%';
+        // $data['templateMaxWidth'] = '100%';
         $data['templateMenu']     = 'ai/admin/sidebar-menu';
         $data['icon16'] = '/assets/img/icons/ai/icon-16x16.png';
         $data['icon32'] = '/assets/img/icons/ai/icon-32x32.png';

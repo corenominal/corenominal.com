@@ -24,7 +24,7 @@ class Home extends BaseController
         $data['recent_sessions'] = $sessions->orderBy('created_at', 'DESC')->limit(8)->find();
 
         $data['title']            = 'AI Chat';
-        $data['templateMaxWidth'] = '100%';
+        // $data['templateMaxWidth'] = '100%';
         $data['templateMenu']     = 'ai/admin/sidebar-menu';
 
         return view('ai/admin/home', $data);
