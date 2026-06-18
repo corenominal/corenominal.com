@@ -9,10 +9,11 @@ let pendingDocuments   = []; // [{name, type, content}]
 let lastSentMessage    = '';
 let lastSentImages     = [];
 let lastSentDocuments  = [];
+let selectedModel      = '';
 
 // ===== DOM REFS =====
 let chatThread, welcomeScreen;
-let messageInput, sendBtn, chatList, modelSelect, newChatBtn, searchBtn;
+let messageInput, sendBtn, chatList, modelBtn, modelList, newChatBtn, searchBtn;
 let searchModal, searchInput, searchResults;
 let attachBtn, imageInput, imagePreviewArea;
 let searchDebounceTimer = null;
@@ -30,7 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
     messageInput  = document.getElementById('message-input');
     sendBtn       = document.getElementById('send-btn');
     chatList      = document.getElementById('chat-list');
-    modelSelect   = document.getElementById('model-select');
+    modelBtn      = document.getElementById('model-btn');
+    modelList     = document.getElementById('model-list');
     newChatBtn    = document.getElementById('new-chat-btn');
     searchBtn     = document.getElementById('search-btn');
     searchInput   = document.getElementById('search-input');
@@ -45,7 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
     messageInput.addEventListener('keydown', onKeyDown);
     sendBtn.addEventListener('click', sendMessage);
     newChatBtn.addEventListener('click', startNewChat);
-    modelSelect.addEventListener('change', () => localStorage.setItem('chat_model', modelSelect.value));
     searchBtn.addEventListener('click', openSearchModal);
     attachBtn.addEventListener('click', () => imageInput.click());
     imageInput.addEventListener('change', handleFileSelect);
@@ -93,32 +94,52 @@ document.addEventListener('DOMContentLoaded', () => {
 // ===== MODELS =====
 async function loadModels() {
     try {
-        const res  = await fetch('/api/ai/chat/models', {
+        const res    = await fetch('/api/ai/chat/models', {
             headers: { apikey: masterKey },
         });
-        const data = await res.json();
+        const data   = await res.json();
         const models = data.models || [];
 
-        modelSelect.innerHTML = '';
         if (models.length === 0) {
-            modelSelect.innerHTML = '<option value="">No models found</option>';
+            modelList.innerHTML = '<p class="text-secondary text-center small py-4 mb-0">No models found.</p>';
+            document.getElementById('model-btn-label').textContent = 'No models';
             return;
         }
 
+        const frag = document.createDocumentFragment();
+
         models.forEach(name => {
-            const opt = document.createElement('option');
-            opt.value = name;
-            opt.textContent = name;
-            modelSelect.appendChild(opt);
+            const item = document.createElement('button');
+            item.type = 'button';
+            item.className = 'model-list-item d-flex align-items-center justify-content-between w-100 px-3 py-3 border-bottom bg-transparent border-start-0 border-end-0 border-top-0 text-start';
+            item.dataset.model = name;
+            item.innerHTML = `<span>${escHtml(name)}</span><i class="bi bi-check-circle-fill" hidden></i>`;
+            item.addEventListener('click', () => {
+                setSelectedModel(name);
+                bootstrap.Modal.getInstance(document.getElementById('modelModal')).hide();
+            });
+            frag.appendChild(item);
         });
 
+        modelList.innerHTML = '';
+        modelList.appendChild(frag);
+
         const saved = localStorage.getItem('chat_model');
-        if (saved && models.includes(saved)) {
-            modelSelect.value = saved;
-        }
+        setSelectedModel(saved && models.includes(saved) ? saved : models[0]);
     } catch (e) {
-        modelSelect.innerHTML = '<option value="">Ollama unavailable</option>';
+        modelList.innerHTML = '<p class="text-danger text-center small py-4 mb-0">Failed to load models.</p>';
+        document.getElementById('model-btn-label').textContent = 'Unavailable';
     }
+}
+
+function setSelectedModel(name) {
+    selectedModel = name;
+    localStorage.setItem('chat_model', name);
+    document.getElementById('model-btn-label').textContent = name || 'Select model…';
+    document.querySelectorAll('#model-list [data-model]').forEach(item => {
+        const check = item.querySelector('.bi-check-circle-fill');
+        if (check) check.hidden = item.dataset.model !== name;
+    });
 }
 
 // ===== SESSIONS =====
@@ -305,7 +326,7 @@ async function loadSession(uuid) {
         window.history.pushState({}, '', `/admin/ai/chat/${uuid}`);
 
         if (data.session?.model) {
-            modelSelect.value = data.session.model;
+            setSelectedModel(data.session.model);
         }
 
         renderMessages(data.messages || []);
@@ -373,7 +394,7 @@ async function sendMessage() {
             body: JSON.stringify({
                 session_uuid: currentSessionUuid,
                 message,
-                model: modelSelect.value,
+                model: selectedModel,
                 images: imagesToSend.map(img => img.dataUrl),
                 documents: documentsToSend,
             }),

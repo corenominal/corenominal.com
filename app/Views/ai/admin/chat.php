@@ -6,19 +6,17 @@
     <!-- Toolbar -->
     <div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
         <button id="new-chat-btn" class="btn btn-outline-primary btn-sm">
-            <i class="bi bi-plus-lg me-1"></i>New Chat
+            <i class="bi bi-plus-lg"></i> <span class="d-none d-md-inline">New Chat</span>
         </button>
-        <div class="flex-grow-1">
-            <select id="model-select" class="form-select form-select-sm" style="max-width:260px">
-                <option value="">Loading models…</option>
-            </select>
-        </div>
+        <button id="model-btn" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#modelModal">
+            <i class="bi bi-cpu me-1"></i><span id="model-btn-label">Loading…</span>
+        </button>
         <button id="search-btn" class="btn btn-outline-secondary btn-sm" title="Search conversations (⌘K)">
-            <i class="bi bi-search me-1"></i>Search
+            <i class="bi bi-search"></i> <span class="d-none d-md-inline">Search</span>
         </button>
         <button class="btn btn-outline-secondary btn-sm" type="button"
                 data-bs-toggle="offcanvas" data-bs-target="#history-offcanvas" aria-controls="history-offcanvas">
-            <i class="bi bi-clock-history me-1"></i>History
+            <i class="bi bi-clock-history"></i> <span class="d-none d-md-inline">History</span>
         </button>
     </div>
 
@@ -127,6 +125,24 @@
             <div class="modal-footer border-0 pt-0">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-primary" id="renameConfirmBtn">Rename</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Model selection modal -->
+<div class="modal fade" id="modelModal" tabindex="-1" aria-labelledby="modelModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="modelModalLabel"><i class="bi bi-gear-fill me-2"></i>AI Model</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0" id="model-list">
+                <p class="text-secondary text-center small py-4 mb-0">Loading models…</p>
+            </div>
+            <div class="modal-footer border-0 d-block pt-0">
+                <p class="text-secondary small mb-0">The selected model will be used for all AI actions.</p>
             </div>
         </div>
     </div>
