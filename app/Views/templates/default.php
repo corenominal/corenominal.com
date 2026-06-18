@@ -86,19 +86,12 @@
 
         <!-- Sidebar footer -->
         <div class="p-2">
-            <?php if( is_logged_in() ): ?>
-            <a href="/" class="sidebar-footer-link"
-               data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Home Page">
-                <i class="bi bi-slash-square flex-shrink-0" aria-hidden="true"></i>
-                <span class="sidebar-label">Home</span>
-            </a>
-            <a href="#" data-api-url="" class="sidebar-footer-link trigger-appmenu"
-               data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="App Menu">
-                <i class="bi bi-grid-3x3-gap-fill flex-shrink-0" aria-hidden="true"></i>
-                <span class="sidebar-label">App Menu</span>
-            </a>
-            <?php endif; ?>
             <?php if( user_in_group('administrators') ): ?>
+            <a href="/admin/startpage" class="sidebar-footer-link"
+               data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Start Page">
+                <i class="bi bi-slash-square flex-shrink-0" aria-hidden="true"></i>
+                <span class="sidebar-label">Start Page</span>
+            </a>
             <a href="/admin" class="sidebar-footer-link"
                data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Admin">
                 <i class="bi bi-gear flex-shrink-0" aria-hidden="true"></i>
