@@ -4,7 +4,7 @@
 
 <div class="container-fluid">
 
-    <h1 class="visually-hidden"><?= esc($title) ?></h1>
+    <h1 class="visually-hidden"><?= esc((string) $title) ?></h1>
 
     <div class="row">
         <?= $this->include('startpage/admin/partials/form') ?>
