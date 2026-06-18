@@ -64,6 +64,7 @@ class Home extends BaseController
         $data['title']           = 'Start Page';
         $data['templateMenu']    = 'admin/sidebar-menu';
         $data['templateMaxWidth'] = '100%';
+        $data['manifest']        = '/manifest-startpage.json';
 
         return view('startpage/admin/home', $data);
     }
