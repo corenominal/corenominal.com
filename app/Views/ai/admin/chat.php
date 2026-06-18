@@ -4,20 +4,24 @@
 <div id="chat-container" data-master-key="<?= esc(config('ApiKeys')->masterKey) ?>" data-session-uuid="<?= esc($uuid ?? '') ?>">
 
     <!-- Toolbar -->
-    <div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
-        <button id="new-chat-btn" class="btn btn-outline-primary btn-sm">
-            <i class="bi bi-plus-lg"></i> <span class="d-none d-md-inline">New Chat</span>
-        </button>
-        <button id="model-btn" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#modelModal">
-            <i class="bi bi-cpu"></i> <span class="d-none d-md-inline" id="model-btn-label">Loading…</span>
-        </button>
-        <button id="search-btn" class="btn btn-outline-secondary btn-sm" title="Search conversations (⌘K)">
-            <i class="bi bi-search"></i> <span class="d-none d-md-inline">Search</span>
-        </button>
-        <button class="btn btn-outline-secondary btn-sm" type="button"
-                data-bs-toggle="offcanvas" data-bs-target="#history-offcanvas" aria-controls="history-offcanvas">
-            <i class="bi bi-clock-history"></i> <span class="d-none d-md-inline">History</span>
-        </button>
+    <div class="d-flex align-items-center justify-content-between gap-2 mb-3 flex-wrap">
+        <div class="d-flex gap-2">
+            <button id="new-chat-btn" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-plus-lg"></i> <span class="d-none d-md-inline">New Chat</span>
+            </button>
+            <button id="model-btn" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#modelModal">
+                <i class="bi bi-cpu"></i> <span class="d-none d-md-inline" id="model-btn-label">Loading…</span>
+            </button>
+        </div>
+        <div class="d-flex gap-2">
+            <button id="search-btn" class="btn btn-outline-secondary btn-sm" title="Search conversations (⌘K)">
+                <i class="bi bi-search"></i> <span class="d-none d-md-inline">Search</span>
+            </button>
+            <button class="btn btn-outline-secondary btn-sm" type="button"
+                    data-bs-toggle="offcanvas" data-bs-target="#history-offcanvas" aria-controls="history-offcanvas">
+                <i class="bi bi-clock-history"></i> <span class="d-none d-md-inline">History</span>
+            </button>
+        </div>
     </div>
 
     <!-- File input (hidden) -->
