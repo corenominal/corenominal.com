@@ -259,6 +259,26 @@ $routes->group('api/notes', function ($routes) {
     $routes->delete('(:num)/revisions', 'Notes\Api\Notes::deleteRevisions/$1');
 });
 
+// Admin todo routes (adminfilter applied globally via Filters.php)
+$routes->group('admin/todo', function ($routes) {
+    $routes->get('/', 'Todo\Admin\Home::index');
+});
+
+// API todo routes (apifilter applied globally via Filters.php)
+$routes->group('api/todo', function ($routes) {
+    $routes->options('(:any)', static function () { return ''; });
+    $routes->get('items', 'Todo\Api\TodoItems::index');
+    $routes->get('counts', 'Todo\Api\TodoItems::counts');
+    $routes->get('categories', 'Todo\Api\TodoItems::categories');
+    $routes->post('items', 'Todo\Api\TodoItems::create');
+    $routes->post('items/(:segment)/status', 'Todo\Api\TodoItems::updateStatus/$1');
+    $routes->post('items/(:segment)/pin', 'Todo\Api\TodoItems::togglePin/$1');
+    $routes->post('items/(:segment)/delete', 'Todo\Api\TodoItems::delete/$1');
+    $routes->post('items/(:segment)/restore', 'Todo\Api\TodoItems::restore/$1');
+    $routes->post('items/(:segment)/destroy', 'Todo\Api\TodoItems::destroy/$1');
+    $routes->post('items/(:segment)', 'Todo\Api\TodoItems::update/$1');
+});
+
 // About page route
 $routes->get('/about', 'About::index');
 

@@ -22,6 +22,10 @@
     </ul>
 
     <ul class="list-group mb-4">
+        <a href="/admin/todo" class="list-group-item list-group-item-action">
+            <i class="bi bi-check2-square me-2"></i>Todo
+        </a>
+
         <a href="/admin/notes" class="list-group-item list-group-item-action">
             <i class="bi bi-journal-text me-2"></i>Notes
         </a>

@@ -36,6 +36,14 @@
         </a>
     </li>
 
+    <li>
+        <a href="/admin/todo" class="nav-link"
+            data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Todo">
+            <i class="bi bi-check2-square"></i>
+            <span class="sidebar-label">Todo</span>
+        </a>
+    </li>
+
     <li class="mb-4">
         <a href="/admin/notes" class="nav-link"
             data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Notes">
