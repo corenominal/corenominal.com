@@ -9,7 +9,7 @@
             <i class="bi bi-plus-lg"></i> <span class="d-none d-md-inline">New Chat</span>
         </button>
         <button id="model-btn" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#modelModal">
-            <i class="bi bi-cpu me-1"></i><span id="model-btn-label">Loading…</span>
+            <i class="bi bi-cpu"></i> <span class="d-none d-md-inline" id="model-btn-label">Loading…</span>
         </button>
         <button id="search-btn" class="btn btn-outline-secondary btn-sm" title="Search conversations (⌘K)">
             <i class="bi bi-search"></i> <span class="d-none d-md-inline">Search</span>
