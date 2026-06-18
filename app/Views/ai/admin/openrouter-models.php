@@ -93,7 +93,13 @@
                 >
                 <div class="flex-grow-1 overflow-hidden">
                     <div class="fw-semibold small text-truncate"><?= esc($name) ?></div>
-                    <div class="text-secondary" style="font-size:0.75rem"><?= esc($id) ?><?= $ctx ? ' &middot; ' . esc($ctx) : '' ?></div>
+                    <div class="text-secondary" style="font-size:0.75rem">
+                        <?= esc($id) ?>
+                        <?= $ctx ? ' &middot; ' . esc($ctx) : '' ?>
+                        <?php if (!empty($m['created'])): ?>
+                        &middot; <?= date('M Y', $m['created']) ?>
+                        <?php endif; ?>
+                    </div>
                 </div>
                 <div class="d-flex align-items-center gap-1 flex-shrink-0">
                     <?php if ($hasVision): ?>
