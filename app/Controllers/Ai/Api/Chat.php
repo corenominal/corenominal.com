@@ -315,7 +315,7 @@ class Chat extends BaseController
         $activePrompt = (new SystemPromptModel())->getActive();
 
         if (($session['provider'] ?? 'ollama') === 'openrouter') {
-            $this->streamOpenRouter($session, $history, $messageModel, $activePrompt, $images);
+            $this->streamOpenRouter($session, $history, $messageModel, $activePrompt);
         } else {
             $this->streamOllama($session, $history, $messageModel, $activePrompt);
         }
@@ -436,7 +436,7 @@ class Chat extends BaseController
         fclose($stream);
     }
 
-    private function streamOpenRouter(array $session, array $history, ChatMessageModel $messageModel, ?array $activePrompt, array $latestImages): void
+    private function streamOpenRouter(array $session, array $history, ChatMessageModel $messageModel, ?array $activePrompt): void
     {
         $apikey = config('Openrouter')->apikey;
 
@@ -497,10 +497,11 @@ class Chat extends BaseController
 
         $context = stream_context_create([
             'http' => [
-                'method'  => 'POST',
-                'header'  => "Content-Type: application/json\r\nAuthorization: Bearer {$apikey}\r\nConnection: close\r\n",
-                'content' => $payload,
-                'timeout' => 300,
+                'method'        => 'POST',
+                'header'        => "Content-Type: application/json\r\nAuthorization: Bearer {$apikey}\r\nConnection: close\r\n",
+                'content'       => $payload,
+                'timeout'       => 300,
+                'ignore_errors' => true,
             ],
         ]);
 
@@ -508,6 +509,22 @@ class Chat extends BaseController
 
         if (!$stream) {
             echo "event: error\ndata: " . json_encode(['error' => 'Failed to connect to OpenRouter']) . "\n\n";
+            flush();
+            return;
+        }
+
+        // Check HTTP status — fopen with ignore_errors opens the stream even on 4xx/5xx
+        $meta       = stream_get_meta_data($stream);
+        $statusLine = $meta['wrapper_data'][0] ?? '';
+        preg_match('/HTTP\/\S+\s+(\d+)/', $statusLine, $statusMatch);
+        $statusCode = (int) ($statusMatch[1] ?? 200);
+
+        if ($statusCode !== 200) {
+            $body    = stream_get_contents($stream);
+            fclose($stream);
+            $errData = json_decode($body, true);
+            $errMsg  = $errData['error']['message'] ?? $errData['error'] ?? "OpenRouter error {$statusCode}";
+            echo "event: error\ndata: " . json_encode(['error' => $errMsg]) . "\n\n";
             flush();
             return;
         }
