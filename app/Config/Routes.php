@@ -279,6 +279,30 @@ $routes->group('api/todo', function ($routes) {
     $routes->post('items/(:segment)', 'Todo\Api\TodoItems::update/$1');
 });
 
+// Admin AI chat routes (adminfilter applied globally via Filters.php)
+$routes->group('admin/ai', function ($routes) {
+    $routes->get('/', 'Ai\Admin\Home::index');
+    $routes->get('chat', 'Ai\Admin\Chat::index');
+    $routes->get('chat/(:segment)', 'Ai\Admin\Chat::session/$1');
+    $routes->get('prompt', 'Ai\Admin\Prompt::index');
+    $routes->post('prompt/update', 'Ai\Admin\Prompt::update');
+    $routes->post('prompt/revert/(:num)', 'Ai\Admin\Prompt::revert/$1');
+});
+
+// API AI chat routes (apifilter applied globally via Filters.php)
+$routes->group('api/ai/chat', function ($routes) {
+    $routes->options('(:any)', static function () { return ''; });
+    $routes->get('models', 'Ai\Api\Chat::models');
+    $routes->get('search', 'Ai\Api\Chat::search');
+    $routes->get('sessions', 'Ai\Api\Chat::sessions');
+    $routes->post('session', 'Ai\Api\Chat::createSession');
+    $routes->patch('session/(:segment)', 'Ai\Api\Chat::updateSession/$1');
+    $routes->delete('session/(:segment)', 'Ai\Api\Chat::deleteSession/$1');
+    $routes->get('messages/(:segment)', 'Ai\Api\Chat::messages/$1');
+    $routes->post('stream', 'Ai\Api\Chat::stream');
+    $routes->post('extract-pdf', 'Ai\Api\Chat::extractPdf');
+});
+
 // About page route
 $routes->get('/about', 'About::index');
 

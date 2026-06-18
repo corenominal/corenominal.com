@@ -22,6 +22,10 @@
     </ul>
 
     <ul class="list-group mb-4">
+        <a href="/admin/ai/chat" class="list-group-item list-group-item-action">
+            <i class="bi bi-chat-dots me-2"></i>AI Chat
+        </a>
+
         <a href="/admin/todo" class="list-group-item list-group-item-action">
             <i class="bi bi-check2-square me-2"></i>Todo
         </a>
