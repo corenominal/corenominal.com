@@ -134,15 +134,29 @@
 <div class="modal fade" id="modelModal" tabindex="-1" aria-labelledby="modelModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header border-0">
+            <div class="modal-header border-0 pb-0">
                 <h5 class="modal-title" id="modelModalLabel"><i class="bi bi-gear-fill me-2"></i>AI Model</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="px-3 pt-2">
+                <ul class="nav nav-tabs" id="provider-tabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="tab-ollama" data-provider="ollama" type="button" role="tab">
+                            <i class="bi bi-hdd-fill me-1"></i>Ollama
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tab-openrouter" data-provider="openrouter" type="button" role="tab">
+                            <i class="bi bi-cloud-fill me-1"></i>OpenRouter
+                        </button>
+                    </li>
+                </ul>
             </div>
             <div class="modal-body p-0" id="model-list">
                 <p class="text-secondary text-center small py-4 mb-0">Loading models…</p>
             </div>
             <div class="modal-footer border-0 d-block pt-0">
-                <p class="text-secondary small mb-0">The selected model will be used for all AI actions.</p>
+                <p class="text-secondary small mb-0">The selected model will be used for this chat session.</p>
             </div>
         </div>
     </div>

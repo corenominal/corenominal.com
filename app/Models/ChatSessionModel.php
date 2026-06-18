@@ -11,7 +11,7 @@ class ChatSessionModel extends Model
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = true;
-    protected $allowedFields    = ['uuid', 'title', 'model', 'pinned'];
+    protected $allowedFields    = ['uuid', 'title', 'model', 'provider', 'pinned'];
     protected $useTimestamps    = true;
     protected $createdField     = 'created_at';
     protected $updatedField     = 'updated_at';

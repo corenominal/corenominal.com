@@ -10,6 +10,8 @@ let lastSentMessage    = '';
 let lastSentImages     = [];
 let lastSentDocuments  = [];
 let selectedModel      = '';
+let selectedProvider   = 'ollama'; // 'ollama' | 'openrouter'
+const modelCache       = {}; // { ollama: [...], openrouter: [...] }
 
 // ===== DOM REFS =====
 let chatThread, welcomeScreen;
@@ -81,7 +83,24 @@ document.addEventListener('DOMContentLoaded', () => {
         userScrolledUp = (window.innerHeight + window.scrollY) < (document.body.scrollHeight - threshold);
     });
 
-    loadModels().then(() => {
+    // Restore provider preference
+    selectedProvider = localStorage.getItem('chat_provider') || 'ollama';
+    setActiveProviderTab(selectedProvider, false);
+
+    // Wire up provider tabs
+    document.querySelectorAll('#provider-tabs [data-provider]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const prov = btn.dataset.provider;
+            setActiveProviderTab(prov, true);
+        });
+    });
+
+    // Open model modal: switch to the tab for the current provider
+    document.getElementById('modelModal').addEventListener('show.bs.modal', () => {
+        setActiveProviderTab(selectedProvider, true);
+    });
+
+    loadModels(selectedProvider).then(() => {
         const initialUuid = container?.dataset.sessionUuid;
         if (initialUuid) {
             loadSession(initialUuid);
@@ -92,50 +111,85 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ===== MODELS =====
-async function loadModels() {
+function setActiveProviderTab(provider, loadIfNeeded = true) {
+    selectedProvider = provider;
+    localStorage.setItem('chat_provider', provider);
+
+    document.querySelectorAll('#provider-tabs [data-provider]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.provider === provider);
+    });
+
+    if (loadIfNeeded) {
+        if (modelCache[provider]) {
+            renderModelList(modelCache[provider], provider);
+        } else {
+            loadModels(provider);
+        }
+    }
+}
+
+async function loadModels(provider = 'ollama') {
+    modelList.innerHTML = '<p class="text-secondary text-center small py-4 mb-0">Loading models…</p>';
     try {
-        const res    = await fetch('/api/ai/chat/models', {
+        const res    = await fetch('/api/ai/chat/models?provider=' + encodeURIComponent(provider), {
             headers: { apikey: masterKey },
         });
         const data   = await res.json();
         const models = data.models || [];
+        modelCache[provider] = models;
+        renderModelList(models, provider);
 
-        if (models.length === 0) {
-            modelList.innerHTML = '<p class="text-secondary text-center small py-4 mb-0">No models found.</p>';
-            document.getElementById('model-btn-label').textContent = 'No models';
-            return;
+        // Set initial selection from localStorage or first available
+        const savedProvider = localStorage.getItem('chat_provider') || 'ollama';
+        if (provider === savedProvider && !selectedModel) {
+            const saved = localStorage.getItem('chat_model');
+            setSelectedModel(saved && models.includes(saved) ? saved : (models[0] || null), provider);
         }
-
-        const frag = document.createDocumentFragment();
-
-        models.forEach(name => {
-            const item = document.createElement('button');
-            item.type = 'button';
-            item.className = 'model-list-item d-flex align-items-center justify-content-between w-100 px-3 py-3 border-bottom bg-transparent border-start-0 border-end-0 border-top-0 text-start';
-            item.dataset.model = name;
-            item.innerHTML = `<span>${escHtml(name)}</span><i class="bi bi-check-circle-fill" hidden></i>`;
-            item.addEventListener('click', () => {
-                setSelectedModel(name);
-                bootstrap.Modal.getInstance(document.getElementById('modelModal')).hide();
-            });
-            frag.appendChild(item);
-        });
-
-        modelList.innerHTML = '';
-        modelList.appendChild(frag);
-
-        const saved = localStorage.getItem('chat_model');
-        setSelectedModel(saved && models.includes(saved) ? saved : models[0]);
     } catch (e) {
         modelList.innerHTML = '<p class="text-danger text-center small py-4 mb-0">Failed to load models.</p>';
         document.getElementById('model-btn-label').textContent = 'Unavailable';
     }
 }
 
-function setSelectedModel(name) {
-    selectedModel = name;
-    localStorage.setItem('chat_model', name);
-    document.getElementById('model-btn-label').textContent = name || 'Select model…';
+function renderModelList(models, provider) {
+    if (models.length === 0) {
+        const msg = provider === 'openrouter'
+            ? 'No models enabled. <a href="/admin/ai/openrouter-models">Configure OpenRouter models</a>.'
+            : 'No models found.';
+        modelList.innerHTML = `<p class="text-secondary text-center small py-4 mb-0">${msg}</p>`;
+        return;
+    }
+
+    const frag = document.createDocumentFragment();
+    models.forEach(name => {
+        const item = document.createElement('button');
+        item.type = 'button';
+        item.className = 'model-list-item d-flex align-items-center justify-content-between w-100 px-3 py-3 border-bottom bg-transparent border-start-0 border-end-0 border-top-0 text-start';
+        item.dataset.model = name;
+        const isActive = name === selectedModel && provider === selectedProvider;
+        item.innerHTML = `<span>${escHtml(name)}</span><i class="bi bi-check-circle-fill"${isActive ? '' : ' hidden'}></i>`;
+        item.addEventListener('click', () => {
+            setSelectedModel(name, provider);
+            bootstrap.Modal.getInstance(document.getElementById('modelModal')).hide();
+        });
+        frag.appendChild(item);
+    });
+
+    modelList.innerHTML = '';
+    modelList.appendChild(frag);
+}
+
+function setSelectedModel(name, provider = selectedProvider) {
+    selectedModel    = name;
+    selectedProvider = provider;
+    localStorage.setItem('chat_model', name || '');
+    localStorage.setItem('chat_provider', provider);
+
+    const providerLabel = provider === 'openrouter' ? 'OR' : 'Ollama';
+    document.getElementById('model-btn-label').textContent = name
+        ? `${providerLabel} / ${name}`
+        : 'Select model…';
+
     document.querySelectorAll('#model-list [data-model]').forEach(item => {
         const check = item.querySelector('.bi-check-circle-fill');
         if (check) check.hidden = item.dataset.model !== name;
@@ -326,7 +380,9 @@ async function loadSession(uuid) {
         window.history.pushState({}, '', `/admin/ai/chat/${uuid}`);
 
         if (data.session?.model) {
-            setSelectedModel(data.session.model);
+            const prov = data.session.provider || 'ollama';
+            setActiveProviderTab(prov, false);
+            setSelectedModel(data.session.model, prov);
         }
 
         renderMessages(data.messages || []);
@@ -394,8 +450,9 @@ async function sendMessage() {
             body: JSON.stringify({
                 session_uuid: currentSessionUuid,
                 message,
-                model: selectedModel,
-                images: imagesToSend.map(img => img.dataUrl),
+                model:    selectedModel,
+                provider: selectedProvider,
+                images:   imagesToSend.map(img => img.dataUrl),
                 documents: documentsToSend,
             }),
         });

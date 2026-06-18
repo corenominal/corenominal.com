@@ -287,6 +287,8 @@ $routes->group('admin/ai', function ($routes) {
     $routes->get('prompt', 'Ai\Admin\Prompt::index');
     $routes->post('prompt/update', 'Ai\Admin\Prompt::update');
     $routes->post('prompt/revert/(:num)', 'Ai\Admin\Prompt::revert/$1');
+    $routes->get('openrouter-models', 'Ai\Admin\OpenrouterModels::index');
+    $routes->post('openrouter-models/save', 'Ai\Admin\OpenrouterModels::save');
 });
 
 // API AI chat routes (apifilter applied globally via Filters.php)

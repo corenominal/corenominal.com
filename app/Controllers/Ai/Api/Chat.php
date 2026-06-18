@@ -5,11 +5,21 @@ namespace App\Controllers\Ai\Api;
 use App\Models\ChatSessionModel;
 use App\Models\ChatMessageModel;
 use App\Models\SystemPromptModel;
+use App\Models\OpenrouterModelModel;
 
 class Chat extends BaseController
 {
     public function models(): \CodeIgniter\HTTP\ResponseInterface
     {
+        $provider = $this->request->getGet('provider') ?? 'ollama';
+
+        if ($provider === 'openrouter') {
+            $model  = new OpenrouterModelModel();
+            $rows   = $model->orderBy('model_id', 'ASC')->findAll();
+            $models = array_column($rows, 'model_id');
+            return $this->response->setJSON(['models' => $models]);
+        }
+
         $ollamaIp = config('Ollama')->ip;
 
         $context = stream_context_create([
@@ -113,17 +123,19 @@ class Chat extends BaseController
 
     public function createSession(): \CodeIgniter\HTTP\ResponseInterface
     {
-        $body        = $this->request->getJSON(true) ?? [];
-        $ollamaModel = $body['model'] ?? 'llama3.2';
+        $body     = $this->request->getJSON(true) ?? [];
+        $model    = $body['model']    ?? 'llama3.2';
+        $provider = $body['provider'] ?? 'ollama';
 
         $sessionModel = new ChatSessionModel();
         $uuid         = $this->generateUuid();
 
         $sessionModel->insert([
-            'uuid'   => $uuid,
-            'title'  => 'New Chat',
-            'model'  => $ollamaModel,
-            'pinned' => 0,
+            'uuid'     => $uuid,
+            'title'    => 'New Chat',
+            'model'    => $model,
+            'provider' => $provider,
+            'pinned'   => 0,
         ]);
 
         $session = $sessionModel->where('uuid', $uuid)->first();
@@ -143,9 +155,10 @@ class Chat extends BaseController
         $body    = $this->request->getJSON(true) ?? [];
         $allowed = [];
 
-        if (isset($body['title']))  $allowed['title']  = trim($body['title']);
-        if (isset($body['pinned'])) $allowed['pinned'] = (int) $body['pinned'];
-        if (isset($body['model']))  $allowed['model']  = $body['model'];
+        if (isset($body['title']))    $allowed['title']    = trim($body['title']);
+        if (isset($body['pinned']))   $allowed['pinned']   = (int) $body['pinned'];
+        if (isset($body['model']))    $allowed['model']    = $body['model'];
+        if (isset($body['provider'])) $allowed['provider'] = $body['provider'];
 
         if (!empty($allowed)) {
             $sessionModel->update($session['id'], $allowed);
@@ -213,7 +226,7 @@ class Chat extends BaseController
         try {
             $pdf  = $parser->parseFile($tmpPath);
             $text = $pdf->getText();
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return $this->response->setStatusCode(422)->setJSON(['error' => 'Could not extract text from PDF']);
         }
 
@@ -241,7 +254,8 @@ class Chat extends BaseController
         $body        = $this->request->getJSON(true) ?? [];
         $sessionUuid = $body['session_uuid'] ?? null;
         $userMessage = trim($body['message'] ?? '');
-        $model       = $body['model'] ?? 'llama3.2';
+        $model       = $body['model']    ?? 'llama3.2';
+        $provider    = $body['provider'] ?? 'ollama';
         $images      = is_array($body['images'] ?? null) ? $body['images'] : [];
         $documents   = is_array($body['documents'] ?? null) ? $body['documents'] : [];
 
@@ -267,10 +281,11 @@ class Chat extends BaseController
             }
 
             $sessionModel->insert([
-                'uuid'   => $sessionUuid,
-                'title'  => $title,
-                'model'  => $model,
-                'pinned' => 0,
+                'uuid'     => $sessionUuid,
+                'title'    => $title,
+                'model'    => $model,
+                'provider' => $provider,
+                'pinned'   => 0,
             ]);
 
             $session = $sessionModel->where('uuid', $sessionUuid)->first();
@@ -290,16 +305,31 @@ class Chat extends BaseController
             'documents'  => !empty($documents) ? json_encode($documents) : null,
         ]);
 
-        $history  = $messageModel->where('session_id', $session['id'])
-                                  ->orderBy('id', 'ASC')
-                                  ->findAll();
+        $history = $messageModel->where('session_id', $session['id'])
+                                ->orderBy('id', 'ASC')
+                                ->findAll();
+
+        echo "event: session\ndata: " . json_encode(['uuid' => $sessionUuid, 'title' => $session['title']]) . "\n\n";
+        flush();
+
+        $activePrompt = (new SystemPromptModel())->getActive();
+
+        if (($session['provider'] ?? 'ollama') === 'openrouter') {
+            $this->streamOpenRouter($session, $history, $messageModel, $activePrompt, $images);
+        } else {
+            $this->streamOllama($session, $history, $messageModel, $activePrompt);
+        }
+
+        exit;
+    }
+
+    private function streamOllama(array $session, array $history, ChatMessageModel $messageModel, ?array $activePrompt): void
+    {
         $messages = array_map(function ($m) {
             $content = $m['content'];
-            // Strip legacy <think> tags from messages saved before the thinking column existed
             if (empty($m['thinking'])) {
                 $content = ltrim(preg_replace('/^<think>[\s\S]*?<\/think>/s', '', $content));
             }
-            // Prepend attached document content to the message text
             if (!empty($m['documents'])) {
                 $docs = json_decode($m['documents'], true);
                 if (is_array($docs) && count($docs) > 0) {
@@ -325,15 +355,12 @@ class Chat extends BaseController
             return $msg;
         }, $history);
 
-        echo "event: session\ndata: " . json_encode(['uuid' => $sessionUuid, 'title' => $session['title']]) . "\n\n";
-        flush();
-
-        $ollamaIp     = config('Ollama')->ip;
-        $activePrompt = (new SystemPromptModel())->getActive();
         if ($activePrompt && $activePrompt['content'] !== '') {
             array_unshift($messages, ['role' => 'system', 'content' => $activePrompt['content']]);
         }
-        $payload = json_encode([
+
+        $ollamaIp = config('Ollama')->ip;
+        $payload  = json_encode([
             'model'    => $session['model'],
             'messages' => $messages,
             'stream'   => true,
@@ -353,7 +380,7 @@ class Chat extends BaseController
         if (!$stream) {
             echo "event: error\ndata: " . json_encode(['error' => 'Failed to connect to Ollama']) . "\n\n";
             flush();
-            exit;
+            return;
         }
 
         $fullResponse = '';
@@ -381,7 +408,6 @@ class Chat extends BaseController
             }
 
             if (!empty($data['done'])) {
-                // Fallback: extract <think> tags for models that embed thinking in content
                 if ($fullThinking === '' && preg_match('/^<think>([\s\S]*?)<\/think>([\s\S]*)$/s', $fullResponse, $m)) {
                     $fullThinking = trim($m[1]);
                     $fullResponse = ltrim($m[2]);
@@ -408,7 +434,134 @@ class Chat extends BaseController
         }
 
         fclose($stream);
-        exit;
+    }
+
+    private function streamOpenRouter(array $session, array $history, ChatMessageModel $messageModel, ?array $activePrompt, array $latestImages): void
+    {
+        $apikey = config('Openrouter')->apikey;
+
+        if ($apikey === '') {
+            echo "event: error\ndata: " . json_encode(['error' => 'OpenRouter API key not configured']) . "\n\n";
+            flush();
+            return;
+        }
+
+        // Build messages in OpenAI format
+        $messages = [];
+
+        if ($activePrompt && $activePrompt['content'] !== '') {
+            $messages[] = ['role' => 'system', 'content' => $activePrompt['content']];
+        }
+
+        foreach ($history as $m) {
+            $content = $m['content'];
+            if (empty($m['thinking'])) {
+                $content = ltrim(preg_replace('/^<think>[\s\S]*?<\/think>/s', '', $content));
+            }
+
+            if (!empty($m['documents'])) {
+                $docs = json_decode($m['documents'], true);
+                if (is_array($docs) && count($docs) > 0) {
+                    $docBlocks = array_map(function ($doc) {
+                        return "--- " . ($doc['name'] ?? 'document') . " ---\n" . ($doc['content'] ?? '') . "\n--- end of " . ($doc['name'] ?? 'document') . " ---";
+                    }, $docs);
+                    $preamble = "The following document(s) have been attached:\n\n" . implode("\n\n", $docBlocks);
+                    $content  = $content !== '' ? $preamble . "\n\n" . $content : $preamble;
+                }
+            }
+
+            // Build multimodal content array for user messages with images
+            if ($m['role'] === 'user' && !empty($m['images'])) {
+                $stored = json_decode($m['images'], true);
+                if (is_array($stored) && count($stored) > 0) {
+                    $parts = [];
+                    if ($content !== '') {
+                        $parts[] = ['type' => 'text', 'text' => $content];
+                    }
+                    foreach ($stored as $dataUrl) {
+                        $parts[] = ['type' => 'image_url', 'image_url' => ['url' => $dataUrl]];
+                    }
+                    $messages[] = ['role' => 'user', 'content' => $parts];
+                    continue;
+                }
+            }
+
+            $messages[] = ['role' => $m['role'], 'content' => $content];
+        }
+
+        $payload = json_encode([
+            'model'    => $session['model'],
+            'messages' => $messages,
+            'stream'   => true,
+        ]);
+
+        $context = stream_context_create([
+            'http' => [
+                'method'  => 'POST',
+                'header'  => "Content-Type: application/json\r\nAuthorization: Bearer {$apikey}\r\nConnection: close\r\n",
+                'content' => $payload,
+                'timeout' => 300,
+            ],
+        ]);
+
+        $stream = @fopen('https://openrouter.ai/api/v1/chat/completions', 'r', false, $context);
+
+        if (!$stream) {
+            echo "event: error\ndata: " . json_encode(['error' => 'Failed to connect to OpenRouter']) . "\n\n";
+            flush();
+            return;
+        }
+
+        $fullResponse = '';
+        $fullThinking = '';
+
+        while (!feof($stream)) {
+            $line = fgets($stream);
+            if (!$line) continue;
+
+            $trimmed = trim($line);
+            if ($trimmed === '' || !str_starts_with($trimmed, 'data: ')) continue;
+
+            $json = substr($trimmed, 6);
+            if ($json === '[DONE]') break;
+
+            $data = json_decode($json, true);
+            if (!$data) continue;
+
+            $chunk    = $data['choices'][0]['delta']['content']   ?? null;
+            $thinking = $data['choices'][0]['delta']['reasoning'] ?? null;
+
+            if ($thinking !== null && $thinking !== '') {
+                $fullThinking .= $thinking;
+                echo "data: " . json_encode(['thinking' => $thinking]) . "\n\n";
+                flush();
+            }
+
+            if ($chunk !== null && $chunk !== '') {
+                $fullResponse .= $chunk;
+                echo "data: " . json_encode(['content' => $chunk]) . "\n\n";
+                flush();
+            }
+        }
+
+        fclose($stream);
+
+        $messageModel->insert([
+            'session_id' => $session['id'],
+            'role'       => 'assistant',
+            'model'      => $session['model'],
+            'content'    => $fullResponse,
+            'thinking'   => $fullThinking !== '' ? $fullThinking : null,
+        ]);
+
+        $saved = $messageModel->find($messageModel->getInsertID());
+
+        echo "event: done\ndata: " . json_encode([
+            'done'       => true,
+            'model'      => $saved['model'],
+            'created_at' => $saved['created_at'],
+        ]) . "\n\n";
+        flush();
     }
 
     private function generateUuid(): string

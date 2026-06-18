@@ -28,4 +28,11 @@
             <span class="sidebar-label">Default Prompt</span>
         </a>
     </li>
+    <li>
+        <a href="/admin/ai/openrouter-models" class="nav-link"
+            data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="OpenRouter Models">
+            <i class="bi bi-cloud-fill"></i>
+            <span class="sidebar-label">OpenRouter Models</span>
+        </a>
+    </li>
 </ul>
