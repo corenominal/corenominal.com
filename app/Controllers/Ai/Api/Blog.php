@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers\Api\Ai;
+namespace App\Controllers\Ai\Api;
 
 class Blog extends BaseController
 {

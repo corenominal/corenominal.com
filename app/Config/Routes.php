@@ -52,24 +52,24 @@ $routes->group('admin/auth', function($routes) {
 // Grouping routes for the AI API controllers
 $routes->group('api/ai', function ($routes) {
     $routes->group('status', function ($routes) {
-        $routes->match(['post', 'options'], 'rewrite', 'Api\Ai\Status::rewrite');
+        $routes->match(['post', 'options'], 'rewrite', 'Ai\Api\Status::rewrite');
     });
     $routes->group('images', function ($routes) {
-        $routes->match(['post', 'options'], 'alttext', 'Api\Ai\Images::alttext');
-        $routes->match(['post', 'options'], 'describe', 'Api\Ai\Images::describe');
+        $routes->match(['post', 'options'], 'alttext', 'Ai\Api\Images::alttext');
+        $routes->match(['post', 'options'], 'describe', 'Ai\Api\Images::describe');
     });
     $routes->group('blog', function ($routes) {
-        $routes->match(['post', 'options'], 'analyse', 'Api\Ai\Blog::analyse');
-        $routes->match(['post', 'options'], 'rewrite', 'Api\Ai\Blog::rewrite');
-        $routes->match(['post', 'options'], 'excerpt', 'Api\Ai\Blog::excerpt');
-        $routes->match(['post', 'options'], 'creative', 'Api\Ai\Blog::creative');
-        $routes->match(['post', 'options'], 'outline', 'Api\Ai\Blog::outline');
+        $routes->match(['post', 'options'], 'analyse', 'Ai\Api\Blog::analyse');
+        $routes->match(['post', 'options'], 'rewrite', 'Ai\Api\Blog::rewrite');
+        $routes->match(['post', 'options'], 'excerpt', 'Ai\Api\Blog::excerpt');
+        $routes->match(['post', 'options'], 'creative', 'Ai\Api\Blog::creative');
+        $routes->match(['post', 'options'], 'outline', 'Ai\Api\Blog::outline');
     });
     $routes->group('tags', function ($routes) {
-        $routes->match(['post', 'options'], 'generate', 'Api\Ai\Tags::generate');
+        $routes->match(['post', 'options'], 'generate', 'Ai\Api\Tags::generate');
     });
     $routes->group('ollama', function ($routes) {
-        $routes->match(['get', 'options'], 'list', 'Api\Ai\Ollama::list');
+        $routes->match(['get', 'options'], 'list', 'Ai\Api\Ollama::list');
     });
 });
 

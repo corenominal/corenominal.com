@@ -1,35 +1,26 @@
 <?php
 
-namespace App\Controllers\Api\Ai;
+namespace App\Controllers\Ai\Api;
 
-class Status extends BaseController
+class Tags extends BaseController
 {
-    public function rewrite(): \CodeIgniter\HTTP\ResponseInterface
+    public function generate(): \CodeIgniter\HTTP\ResponseInterface
     {
-        $body   = $this->request->getJSON(true) ?? [];
-        $text   = trim($body['text'] ?? '');
-        $model  = $body['model'] ?? config('Ollama')->defaultModel;
-        $expand = !empty($body['expand']);
+        $body  = $this->request->getJSON(true) ?? [];
+        $text  = trim($body['text'] ?? '');
+        $model = $body['model'] ?? config('Ollama')->defaultModel;
 
         if (empty($text)) {
             return $this->response->setStatusCode(400)->setJSON(['error' => 'No text provided.']);
         }
 
-        $expandLine = $expand ? "\nFeel free to expand on the given text where it adds clarity." : '';
-
         $prompt = <<<PROMPT
-Rewrite the following in 5 alternative versions.
-Do not use any markdown formatting in the versions.
-Each version should not exceed 500 characters.
-Do not use m dashes or numbering in the response.
-Keep the meaning intact.
-Make it clear, natural, and concise.
-Avoid hype, clichés, and corporate tone.{$expandLine}
+Read the following text and suggest a list of relevant tags that could be used to tag or categorise it on a blog or social media platform. Return between 5 and 15 tags. Each tag must be lowercase, contain no spaces, no hyphens, and no punctuation of any kind. Do not include markdown or any explanation.
 
-Tone: friendly, direct, British English.
-Audience: technical but not expert.
-Response: json, using this exact format: {"suggestions": ["...", "...", "...", "...", "..."]}
-Text: {$text}
+Respond only with valid JSON in this exact format: {"tags": ["tag1", "tag2"]}
+
+Text:
+{$text}
 PROMPT;
 
         $ollamaIp = config('Ollama')->ip;
@@ -58,10 +49,14 @@ PROMPT;
         $data     = json_decode($result, true);
         $response = json_decode($data['response'] ?? '{}', true);
 
-        if (empty($response['suggestions']) || !is_array($response['suggestions'])) {
+        if (empty($response['tags']) || !is_array($response['tags'])) {
             return $this->response->setStatusCode(500)->setJSON(['error' => 'Unexpected response from Ollama.']);
         }
 
-        return $this->response->setJSON(['suggestions' => array_values($response['suggestions'])]);
+        $tags = array_values(array_filter(array_map(function (string $tag): string {
+            return preg_replace('/[^a-z0-9]/', '', strtolower($tag));
+        }, $response['tags'])));
+
+        return $this->response->setJSON(['tags' => $tags]);
     }
 }
