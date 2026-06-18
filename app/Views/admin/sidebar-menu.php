@@ -37,6 +37,14 @@
     </li>
 
     <li>
+        <a href="/admin/ai/chat" class="nav-link"
+            data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="AI Chat">
+            <i class="bi bi-chat-dots"></i>
+            <span class="sidebar-label">AI Chat</span>
+        </a>
+    </li>
+
+    <li>
         <a href="/admin/todo" class="nav-link"
             data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Todo">
             <i class="bi bi-check2-square"></i>

@@ -92,10 +92,10 @@
                 <i class="bi bi-slash-square flex-shrink-0" aria-hidden="true"></i>
                 <span class="sidebar-label">Start Page</span>
             </a>
-            <a href="/admin" class="sidebar-footer-link"
-               data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Admin">
-                <i class="bi bi-gear flex-shrink-0" aria-hidden="true"></i>
-                <span class="sidebar-label">Admin</span>
+            <a href="/admin/ai/chat" class="sidebar-footer-link"
+               data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="AI Chat">
+                <i class="bi bi-chat-dots flex-shrink-0" aria-hidden="true"></i>
+                <span class="sidebar-label">AI Chat</span>
             </a>
             <?php endif; ?>
             <?php if( user_in_group('debug') ): ?>
