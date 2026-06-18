@@ -75,6 +75,13 @@
                     $fmtOut = '$' . rtrim(rtrim(number_format($completionRaw * 1_000_000, 4), '0'), '.');
                     $pricing = esc($fmtIn) . ' / ' . esc($fmtOut) . ' per M tokens';
                 }
+
+                $modality   = $m['architecture']['modality'] ?? '';
+                $inputPart  = strtolower(explode('->', $modality)[0] ?? '');
+                $outputPart = strtolower(explode('->', $modality)[1] ?? '');
+                $hasVision  = str_contains($inputPart, 'image');
+                $hasAudio   = str_contains($inputPart, 'audio');
+                $imgPrice   = (float) ($m['pricing']['image'] ?? 0);
             ?>
             <label class="list-group-item list-group-item-action model-row d-flex align-items-center gap-3 py-2 px-3" data-id="<?= esc($id) ?>">
                 <input
@@ -88,7 +95,19 @@
                     <div class="fw-semibold small text-truncate"><?= esc($name) ?></div>
                     <div class="text-secondary" style="font-size:0.75rem"><?= esc($id) ?><?= $ctx ? ' &middot; ' . esc($ctx) : '' ?></div>
                 </div>
-                <div class="text-secondary text-end flex-shrink-0" style="font-size:0.75rem"><?= $pricing ?></div>
+                <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                    <?php if ($hasVision): ?>
+                    <span class="badge text-bg-secondary" title="Vision<?= $imgPrice > 0 ? ' · $' . rtrim(rtrim(number_format($imgPrice * 1_000, 4), '0'), '.') . ' per K px' : '' ?>">
+                        <i class="bi bi-eye-fill"></i>
+                    </span>
+                    <?php endif; ?>
+                    <?php if ($hasAudio): ?>
+                    <span class="badge text-bg-secondary" title="Audio input">
+                        <i class="bi bi-mic-fill"></i>
+                    </span>
+                    <?php endif; ?>
+                    <span class="text-secondary text-end" style="font-size:0.75rem"><?= $pricing ?></span>
+                </div>
             </label>
             <?php endforeach; ?>
         </div>
