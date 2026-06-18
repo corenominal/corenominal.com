@@ -12,6 +12,7 @@ Website live at https://corenominal.com
 - [Startpage](README-startpage.md)
 - [Notes](README-notes.md)
 - [TODO](README-todo.md)
+- [Ai Chat](README-ai-chat.md)
 - [Authentication](README-authentication.md)
 - [Debug](README-debug.md)
 - [Metrics](README-metrics.md)
