@@ -11893,6 +11893,9 @@ textarea.form-control-lg {
   --bs-navbar-active-color: #000;
 }
 
+[data-bs-theme=dark] {
+  --bs-primary: #fff;
+}
 [data-bs-theme=dark] .btn-primary {
   --bs-btn-color: #000;
   --bs-btn-bg: #fff;

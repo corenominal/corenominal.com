@@ -237,6 +237,8 @@ $accordion-icon-active-color-dark: $white;
 // SCSS variables don't cover dark-mode button inversion or nav active colours,
 // so we patch those via CSS custom properties.
 [data-bs-theme="dark"] {
+  --bs-primary: #{$white};
+
   // Primary button: invert to white-on-black
   .btn-primary {
     --bs-btn-color: #{$black};
