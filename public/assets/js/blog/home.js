@@ -74,7 +74,7 @@
           ${escHtml(post.published_at_formatted)}
         </time>
         <div>
-          <a class="fw-semibold text-body text-decoration-none p-name u-url" href="${endpointBase()}posts/${encodeURIComponent(post.slug)}">
+          <a class="fw-semibold text-body text-decoration-none p-name u-url" href="${endpointBase()}blog/posts/${encodeURIComponent(post.slug)}">
             ${titleHtml}
           </a>
           ${excerptHtml}
