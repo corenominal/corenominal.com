@@ -156,6 +156,12 @@
     <!-- Phase 4: Draft -->
     <div id="phase-draft" class="phase-panel d-none">
 
+        <div class="mb-3">
+            <button id="back-to-outline-btn" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left me-1"></i>Back to Outline
+            </button>
+        </div>
+
         <div id="generating-draft" class="text-secondary small mb-3">
             <span class="spinner-border spinner-border-sm me-2"></span>Generating drafts…
         </div>
@@ -210,6 +216,11 @@
 
     <!-- Phase 5: Polish -->
     <div id="phase-polish" class="phase-panel d-none">
+        <div class="mb-3">
+            <button id="back-to-draft-btn" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left me-1"></i>Back to Drafts
+            </button>
+        </div>
         <div class="mb-3">
             <div class="d-flex align-items-center justify-content-between mb-2">
                 <h5 class="mb-0">Final Text</h5>

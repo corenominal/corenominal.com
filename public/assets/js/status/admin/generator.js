@@ -87,6 +87,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     startBtn.addEventListener('click', startInterview);
     restartBtn.addEventListener('click', restart);
+    document.getElementById('back-to-outline-btn').addEventListener('click', () => showPhase(PHASES.OUTLINE));
+    document.getElementById('back-to-draft-btn').addEventListener('click', () => showPhase(PHASES.DRAFT));
     answerBtn.addEventListener('click', submitAnswer);
     answerInput.addEventListener('keydown', e => {
         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submitAnswer(); }
