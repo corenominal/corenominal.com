@@ -970,13 +970,13 @@ function addCopyButtons(container) {
     container.querySelectorAll('pre').forEach(pre => {
         if (pre.querySelector('.copy-code-btn')) return;
         const btn = document.createElement('button');
-        btn.className = 'btn btn-sm btn-primary copy-code-btn';
+        btn.className = 'copy-code-btn code-block__copy-btn';
         btn.innerHTML = '<i class="bi bi-clipboard"></i>';
         btn.title = 'Copy';
         btn.addEventListener('click', () => {
             const code = pre.querySelector('code')?.textContent ?? pre.textContent;
             navigator.clipboard.writeText(code).then(() => {
-                btn.innerHTML = '<i class="bi bi-check text-dark"></i>';
+                btn.innerHTML = '<i class="bi bi-check text-light"></i>';
                 setTimeout(() => { btn.innerHTML = '<i class="bi bi-clipboard"></i>'; }, 2000);
             });
         });

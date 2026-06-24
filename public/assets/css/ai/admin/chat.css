@@ -255,16 +255,6 @@
 }
 
 /* Copy code button */
-.copy-code-btn {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    padding: 2px 8px;
-    font-size: 0.75rem;
-    opacity: 0;
-    transition: opacity 0.15s ease;
-}
-
 pre:hover .copy-code-btn {
     opacity: 1;
 }
