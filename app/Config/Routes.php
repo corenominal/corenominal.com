@@ -98,6 +98,13 @@ $routes->group('admin/status', function ($routes) {
     $routes->get('/', 'Status\Admin\Home::index');
     $routes->get('export', 'Status\Admin\Export::index');
     $routes->get('export/(:segment)', 'Status\Admin\Export::download/$1');
+    $routes->get('generator', 'Status\Admin\Generator::index');
+});
+
+// Status generator API routes (apifilter applied globally via Filters.php)
+$routes->group('api/status/generator', function ($routes) {
+    $routes->options('(:any)', static function () { return ''; });
+    $routes->post('stream', 'Status\Api\Generator::stream');
 });
 
 // Status API routes (apifilter applied globally via Filters.php)

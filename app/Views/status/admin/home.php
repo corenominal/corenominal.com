@@ -2,8 +2,16 @@
 
 <?= $this->section('content') ?>
 
-<div class="mb-4">
+<div class="mb-4 d-flex align-items-center justify-content-between flex-wrap gap-2">
     <h1 class="h4 mb-0">Status Dashboard</h1>
+    <div class="d-flex gap-2">
+        <a href="<?= site_url('admin/status/generator') ?>" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-stars me-1" aria-hidden="true"></i>Generator
+        </a>
+        <a href="<?= site_url('status') ?>" class="btn btn-sm btn-outline-secondary" target="_blank" rel="noopener">
+            <i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>View Status
+        </a>
+    </div>
 </div>
 
 <!-- Stat cards -->

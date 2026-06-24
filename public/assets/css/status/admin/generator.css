@@ -1,0 +1,33 @@
+.step-indicator {
+    transition: color 0.2s;
+}
+
+.step-indicator.active {
+    color: var(--bs-primary);
+    font-weight: 600;
+}
+
+.step-indicator.done {
+    color: var(--bs-success);
+}
+
+.streaming-text {
+    min-height: 1.5rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.outline-item [contenteditable]:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--bs-primary);
+    border-radius: var(--bs-border-radius-sm);
+}
+
+.outline-move-btn:hover {
+    color: var(--bs-primary) !important;
+}
+
+#final-textarea {
+    resize: vertical;
+    min-height: 10rem;
+}
