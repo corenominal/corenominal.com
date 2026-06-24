@@ -241,6 +241,7 @@ class Chat extends BaseController
     public function stream(): void
     {
         set_time_limit(300);
+        session()->close();
 
         while (ob_get_level() > 0) {
             ob_end_clean();
