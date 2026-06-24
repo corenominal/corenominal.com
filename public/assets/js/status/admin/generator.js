@@ -149,7 +149,7 @@ function restart() {
 // ===== PHASE 1: START INTERVIEW =====
 async function startInterview() {
     const topic        = topicInput.value.trim();
-    const tone         = document.querySelector('input[name="tone"]:checked')?.value || 'Chill';
+    const tone         = document.querySelector('input[name="tone"]:checked')?.value || 'Natural';
     const maxQuestions = parseInt(document.querySelector('input[name="question_count"]:checked')?.value || '3', 10);
 
     if (!topic) {
@@ -427,6 +427,7 @@ Rules:
 - variation_b: rewrite the same idea in plain, simple English — short words, short sentences, as if written by a child. Under ${CHAR_LIMIT} characters. No hashtags.
 - Tone: ${state.tone}. British English. Friendly and direct.
 - Never use: emoji, em dashes, colons, semi-colons, ellipses, exclamation marks, or markdown.
+- Both variations must be written in the first person.
 - Never use fluffy, vague, or advanced vocabulary in either variation.
 - Output raw JSON only — no code blocks, no commentary.${buildVoiceContext()}`,
         },
@@ -489,7 +490,7 @@ async function reviseDraft(variation) {
     const reviseMessages = [
         {
             role: 'system',
-            content: `You revise Mastodon post drafts. ${formatNote} Return only the revised text — no commentary, no JSON, no code blocks. Never use emoji, em dashes, colons, semi-colons, ellipses, exclamation marks, or markdown.${buildVoiceContext()}`,
+            content: `You revise Mastodon post drafts. ${formatNote} Return only the revised text — no commentary, no JSON, no code blocks. Always write in the first person. Never use emoji, em dashes, colons, semi-colons, ellipses, exclamation marks, or markdown.${buildVoiceContext()}`,
         },
         {
             role: 'user',

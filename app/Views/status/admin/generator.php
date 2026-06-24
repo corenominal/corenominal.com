@@ -63,8 +63,8 @@
                 <div class="mb-4">
                     <label class="form-label fw-medium">Tone</label>
                     <div class="d-flex flex-wrap gap-2" id="tone-selector">
-                        <input type="radio" class="btn-check" name="tone" id="tone-chill" value="Chill" checked>
-                        <label class="btn btn-outline-primary btn-sm" for="tone-chill">Chill</label>
+                        <input type="radio" class="btn-check" name="tone" id="tone-natural" value="Natural" checked>
+                        <label class="btn btn-outline-primary btn-sm" for="tone-natural">Natural</label>
 
                         <input type="radio" class="btn-check" name="tone" id="tone-hot" value="Hot take">
                         <label class="btn btn-outline-primary btn-sm" for="tone-hot">Hot take</label>
@@ -77,6 +77,9 @@
 
                         <input type="radio" class="btn-check" name="tone" id="tone-announcement" value="Announcement">
                         <label class="btn btn-outline-primary btn-sm" for="tone-announcement">Announcement</label>
+
+                        <input type="radio" class="btn-check" name="tone" id="tone-question" value="Question">
+                        <label class="btn btn-outline-primary btn-sm" for="tone-question">Question</label>
                     </div>
                 </div>
 
