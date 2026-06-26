@@ -72,7 +72,7 @@
         <div class="sidebar-brand">
             <a href="#" id="sidebarToggle" class="sidebar-logo-link" aria-label="Toggle sidebar" title="Toggle sidebar">
                 <img src="/icon.svg" alt="" width="40" height="40" class="rounded-circle flex-shrink-0">
-                <span class="sidebar-label fw-semibold text-nowrap">corenominal</span>
+                <span class="sidebar-label fw-semibold text-nowrap">Philip Newborough</span>
             </a>
         </div>
 
