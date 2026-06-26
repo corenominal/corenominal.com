@@ -3,13 +3,13 @@
 
     <h1 class="mb-4">About</h1>
 
-    <p>I'm a <?= $age = ((int)date('Y') - 1975) ?> year old tech lover and web developer who spends a lot of time crafting things for the web. When I'm not glued to my desk, you can find me lost in the grimdark future of Warhammer, tackling proud husband/dad/grumpa duties, listening to tech podcasts, or cycling around on my bike.</p>
+    <p>My name is Philip Newborough and I'm a <?= $age = ((int)date('Y') - 1975) ?> year old tech lover and web developer who spends a lot of time crafting things for the web. When I'm not glued to my desk, you can find me lost in the grimdark future of Warhammer, tackling proud husband/dad/grumpa duties, listening to tech podcasts, or cycling around on my bike.</p>
 
     <p>I've been working in web development since the late 1990s, and have been a professional web developer since 2000. I have a passion for building things that are fast, accessible, and easy to use. I love to learn new things, and I'm always looking for ways to improve my skills.</p>
 
     <figure class="mb-3">
-        <img class="img-fluid rounded p-2 border" src="https://corenominal.com/uploads/blog/media/88153c8a-c977-4212-a03a-97680df54e6c.jpg" alt="A vintage 1984 Christmas morning photograph of a young me smiling proudly next to a large, boxed Star Wars 'Return of the Jedi' Millennium Falcon toy">
-        <figcaption class="text-secondary small mt-1">A young me in 1984 with my Star Wars Millennium Falcon toy.</figcaption>
+        <img class="img-fluid rounded p-2 border" src="https://corenominal.com/uploads/blog/media/2b9d5f8b-ed69-42d8-86fa-d58346af8326.jpg" alt="Enjoying a cycling break in the New Forest, Hampshire, UK.">
+        <figcaption class="text-secondary small mt-1">Photo by Becky Newborough.</figcaption>
     </figure>
 
     <p>My first computer was a Commodore 64, and I've been fascinated by technology ever since. I studied mechanical engineering in college and have always been interested in how things work. I purchased my first PC in the early 1990s, and have been coding ever since.</p>
