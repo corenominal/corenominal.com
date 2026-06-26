@@ -3,7 +3,7 @@
         <small>
             <span class="d-block py-3"><img class="img-32 invert-light" src="/assets/img/bone.svg" alt=""></span>
             <br>
-            <span class="flip-horizontal">&copy;</span> <?= date('Y') ?> corenominal. All rights reserved.<br>
+            <span class="flip-horizontal">&copy;</span> <?= date('Y') ?> Philip Newborough. All rights reserved.<br>
             <a class="text-decoration-none me-2" href="<?= config('Urls')->github ?>"><i class="bi bi-github"></i> GitHub</a> <a class="text-decoration-none me-2" href="<?= config('Urls')->readme ?>"><i class="bi bi-file-text-fill"></i> README</a> <a class="text-decoration-none" href="<?= config('Urls')->license ?>"><i class="bi bi-file-earmark-text-fill"></i> License</a>
         </small>
         <?php if( user_in_group('debug') ): ?>
