@@ -1,7 +1,7 @@
 <?= $this->extend('templates/basic-centered') ?>
 <?= $this->section('content') ?>
 
-    <img src="/assets/img/skull.svg" alt="corenominal" class="img-152 mb-5 invert-light" aria-hidden="true">
+    <img src="/icon.svg" alt="corenominal" class="img-152 mb-5 invert" aria-hidden="true">
     <form>
         <h1 class="h3 mb-3">Reset your password</h1>
         <p class="mb-3">Enter your email address and <?= config('Voice')->subject ?>&rsquo;ll send you a link to set a new password.</p>

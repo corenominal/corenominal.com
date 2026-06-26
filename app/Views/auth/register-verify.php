@@ -1,7 +1,7 @@
 <?= $this->extend('templates/basic-centered') ?>
 <?= $this->section('content') ?>
 
-    <img src="/assets/img/skull.svg" alt="corenominal" class="img-152 mb-5 invert-light" aria-hidden="true">
+    <img src="/icon.svg" alt="corenominal" class="img-152 mb-5 invert" aria-hidden="true">
     <h1>Check Your Email</h1>
     <p class="text-body-secondary"><?= config('Voice')->subject ?>&rsquo;ve sent a verification link to your email address. Please click the link to activate your account.</p>
     

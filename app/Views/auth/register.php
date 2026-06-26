@@ -3,7 +3,7 @@
 
     <?php if (! empty($registrationDisabled)): ?>
 
-        <img src="/assets/img/skull.svg" alt="corenominal" class="img-152 mb-5 invert-light" aria-hidden="true">
+        <img src="/icon.svg" alt="corenominal" class="img-152 mb-5 invert" aria-hidden="true">
         <h1>Registration Disabled</h1>
         <p>New user registration is currently disabled. Please check back later or contact the site administrator if you need an account.</p>
 
@@ -12,7 +12,7 @@
     <?php else: ?>
 
         <form>
-            <img src="/assets/img/skull.svg" alt="corenominal" class="img-152 mb-5 invert-light" aria-hidden="true">
+            <img src="/icon.svg" alt="corenominal" class="img-152 mb-5 invert" aria-hidden="true">
             <h1>Create Account</h1>
             <div class="form-floating mb-2">
                 <input type="email" class="form-control" id="floatingEmail" placeholder="name@example.com" required />

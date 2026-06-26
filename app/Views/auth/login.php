@@ -1,7 +1,7 @@
 <?= $this->extend('templates/basic-centered') ?>
 <?= $this->section('content') ?>
 
-    <img src="/assets/img/skull.svg" alt="corenominal" class="img-152 mb-5 invert-light" aria-hidden="true">
+    <img src="/icon.svg" alt="corenominal" class="img-152 mb-5 invert" aria-hidden="true">
     <form>
         <h1 class="h3 mb-3 fw-normal text-uppercase">Login</h1>
         <div class="form-floating">

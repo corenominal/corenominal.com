@@ -4,7 +4,7 @@
     <?php if (!$valid): ?>
         <!-- Invalid or expired reset link -->
         <div id="error-panel">
-            <img src="/assets/img/skull.svg" alt="corenominal" class="img-152 mb-5 invert-light" aria-hidden="true">
+            <img src="/icon.svg" alt="corenominal" class="img-152 mb-5 invert" aria-hidden="true">
             <h1 class="h3 mb-3 fw-normal">Link invalid</h1>
             <p><?= $message ?></p>
             <a href="/auth" class="btn btn-primary py-2 mt-2">Back to login</a>
@@ -12,7 +12,7 @@
     <?php else: ?>
         <!-- Valid reset token — show the new password form -->
         <form>
-            <img src="/assets/img/skull.svg" alt="corenominal" class="img-152 mb-5 invert-light" aria-hidden="true">
+            <img src="/icon.svg" alt="corenominal" class="img-152 mb-5 invert" aria-hidden="true">
             <h1 class="h3 mb-3 fw-normal">Set a new password</h1>
             <div class="form-floating">
                 <input type="password" class="form-control mb-2" id="floatingPassword" placeholder="New password" required autocomplete="new-password" />
