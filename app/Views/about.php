@@ -3,6 +3,28 @@
 
     <h1 class="mb-4">About</h1>
 
+    <p>
+        <button type="button" class="border-0 bg-transparent p-0 text-body text-decoration-underline"
+                data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="bottom"
+                data-bs-title="Agnostic"
+                data-bs-content="Someone who believes the existence of god or ultimate truth is unknown - neither affirmed nor denied.">Agnostic</button>
+        |
+        <button type="button" class="border-0 bg-transparent p-0 text-body text-decoration-underline"
+                data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="bottom"
+                data-bs-title="Humanist"
+                data-bs-content="Someone who prioritises human welfare, reason, and ethics, believing people can lead meaningful and moral lives without religious doctrine.">Humanist</button>
+        |
+        <button type="button" class="border-0 bg-transparent p-0 text-body text-decoration-underline"
+                data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="bottom"
+                data-bs-title="Allyship Matters"
+                data-bs-content="A commitment to actively supporting and advocating for marginalised or underrepresented communities - solidarity across differences makes society better for everyone.">Allyship Matters</button>
+    </p>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => new bootstrap.Popover(el));
+    });
+    </script>
+
     <p>My name is Philip Newborough and I'm a <?= $age = ((int)date('Y') - 1975) ?> year old tech lover and web developer who spends a lot of time crafting things for the web. When I'm not glued to my desk, you can find me lost in the grimdark future of Warhammer, tackling proud husband/dad/grumpa duties, listening to tech podcasts, or cycling around on my bike.</p>
 
     <p>I've been working in web development since the late 1990s, and have been a professional web developer since 2000. I have a passion for building things that are fast, accessible, and easy to use. I love to learn new things, and I'm always looking for ways to improve my skills.</p>
