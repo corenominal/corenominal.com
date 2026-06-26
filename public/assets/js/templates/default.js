@@ -45,7 +45,7 @@
         <div class="offcanvas-header px-3 py-2">
             <a href="#" class="d-flex align-items-center gap-2 text-decoration-none text-body-emphasis">
                 <img src="/icon.svg" alt="Logo" width="40" height="40" class="rounded-circle">
-                <span class="fw-semibold">corenominal</span>
+                <span class="fw-semibold">Philip Newborough</span>
             </a>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
