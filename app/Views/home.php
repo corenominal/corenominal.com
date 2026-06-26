@@ -1,7 +1,7 @@
 <?= $this->extend('templates/default') ?>
 <?= $this->section('content') ?>
 
-    <h1 class="mb-4">Hello, World!</h1>
+    <h1>Hello, World!</h1>
 
     <p class="lead">Welcome to my website. I'm a tech enthusiast and web developer. When I'm not sat in front of my computer, I can be found reading Warhammer 40,000 fiction, performing proud husband/dad/grumpa duties, listening to tech podcasts, or riding my bike.</p>
 
