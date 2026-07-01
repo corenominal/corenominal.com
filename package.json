@@ -9,7 +9,7 @@
   "scripts": {
     "copy-bootstrap-js": "mkdir -p public/assets/js/vendor && cp node_modules/bootstrap/dist/js/bootstrap.bundle.min.js public/assets/js/vendor/",
     "copy-bootstrap-icons": "mkdir -p public/assets/css/vendor/fonts && cp node_modules/bootstrap-icons/font/fonts/* public/assets/css/vendor/fonts/ && cp node_modules/bootstrap-icons/font/bootstrap-icons.css public/assets/css/vendor/",
-    "copy-inter": "mkdir -p public/assets/css/vendor/fonts &&cp node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2 node_modules/@fontsource-variable/inter/files/inter-latin-wght-italic.woff2 public/assets/css/vendor/fonts/",
+    "copy-inter": "mkdir -p public/assets/css/vendor/fonts && cp node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2 node_modules/@fontsource-variable/inter/files/inter-latin-wght-italic.woff2 public/assets/css/vendor/fonts/",
     "sass": "bash misc/shell-scripts/sass-compile.sh"
   }
 }
