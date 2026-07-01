@@ -1,11 +1,11 @@
 <?php echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n"; ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/">
     <channel>
-        <title><?= esc($siteName) ?></title>
-        <link><?= esc($siteUrl) ?></link>
-        <description>Status updates from <?= esc($siteName) ?></description>
+        <title><?= esc((string)$siteName) ?></title>
+        <link><?= esc((string)$siteUrl) ?></link>
+        <description>Status updates from <?= esc((string)$siteName) ?></description>
         <language>en-gb</language>
-        <atom:link href="<?= esc($feedUrl) ?>" rel="self" type="application/rss+xml" />
+        <atom:link href="<?= esc((string)$feedUrl) ?>" rel="self" type="application/rss+xml" />
         <?php foreach ($statuses as $status): ?>
         <?php
             $pubDate = date(DATE_RSS, strtotime($status['created_at']));
