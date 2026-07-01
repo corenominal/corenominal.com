@@ -13,6 +13,10 @@
     <!-- Manifest -->
     <link rel="manifest" href="<?= esc($manifest) ?>">
     <?php endif; ?>
+    <!-- RSS feeds -->
+    <link rel="alternate" type="application/rss+xml" title="<?= esc((string)config('App')->siteName) ?> - Blog" href="/blog/feed/rss">
+    <link rel="alternate" type="application/rss+xml" title="<?= esc((string)config('App')->siteName) ?> - Status" href="/status/feed/rss">
+    <link rel="alternate" type="application/rss+xml" title="<?= esc((string)config('App')->siteName) ?> - Bookmarks" href="/bookmarks/feed/rss">
     <!-- Social verification -->
     <?= social_verification_tags() ?>
     <!-- Open Graph -->
