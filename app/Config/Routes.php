@@ -284,6 +284,24 @@ $routes->group('api/bikes', function ($routes) {
     $routes->post('(:num)/photos/reorder', 'Bikes\Api\BikePhotos::reorder/$1');
 });
 
+// Admin rides routes (adminfilter applied globally via Filters.php)
+$routes->group('admin/rides', function ($routes) {
+    $routes->get('/', 'Rides\Admin\Home::index');
+    $routes->post('delete', 'Rides\Admin\Home::delete');
+    $routes->get('create', 'Rides\Admin\RideForm::create');
+    $routes->get('(:num)/edit', 'Rides\Admin\RideForm::edit/$1');
+});
+
+// API rides routes (apifilter applied globally via Filters.php)
+$routes->group('api/rides', function ($routes) {
+    $routes->options('(:any)', static function () { return ''; });
+    $routes->post('upload', 'Rides\Api\Rides::upload');
+    $routes->put('(:num)', 'Rides\Api\Rides::update/$1');
+    $routes->post('(:num)/photos', 'Rides\Api\RidePhotos::upload/$1');
+    $routes->delete('(:num)/photos/(:num)', 'Rides\Api\RidePhotos::delete/$1/$2');
+    $routes->post('(:num)/photos/reorder', 'Rides\Api\RidePhotos::reorder/$1');
+});
+
 // Admin todo routes (adminfilter applied globally via Filters.php)
 $routes->group('admin/todo', function ($routes) {
     $routes->get('/', 'Todo\Admin\Home::index');

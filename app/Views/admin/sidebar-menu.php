@@ -36,6 +36,14 @@
         </a>
     </li>
 
+    <li class="">
+        <a href="/admin/rides" class="nav-link"
+            data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Rides">
+            <i class="bi bi-map"></i>
+            <span class="sidebar-label">Rides</span>
+        </a>
+    </li>
+
     <li class="mb-4">
         <a href="/admin/bikes" class="nav-link"
             data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Bikes">

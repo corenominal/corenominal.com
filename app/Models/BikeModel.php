@@ -17,7 +17,7 @@ class BikeModel extends Model
 
     protected $allowedFields = [
         'name', 'brand', 'model', 'year', 'components',
-        'total_km', 'status', 'notes',
+        'total_km', 'ridden_km', 'status', 'notes',
     ];
 
     protected $validationRules = [

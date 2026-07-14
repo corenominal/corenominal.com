@@ -122,7 +122,7 @@
 
                     <!-- Total km -->
                     <div class="mb-3">
-                        <label for="field-total-km" class="form-label fw-medium">Total Distance Ridden (km)</label>
+                        <label for="field-total-km" class="form-label fw-medium">Starting Distance (km)</label>
                         <input
                             type="number"
                             id="field-total-km"
@@ -133,8 +133,13 @@
                             step="0.1"
                             autocomplete="off"
                         >
-                        <div class="form-text">A manually-updated running total. Update this whenever you like.</div>
+                        <div class="form-text">Manually-entered distance from before ride tracking began. Rides assigned to this bike are added on top.</div>
                         <div class="invalid-feedback" id="error-total_km"></div>
+                        <?php if ($action === 'edit'): ?>
+                            <?php $riddenKm = (float) ($bike['ridden_km'] ?? 0); ?>
+                            <div class="small text-secondary mt-2">Tracked via rides: <?= number_format($riddenKm, 1) ?> km</div>
+                            <div class="small fw-medium">Total Distance: <?= number_format((float) ($bike['total_km'] ?? 0) + $riddenKm, 1) ?> km</div>
+                        <?php endif; ?>
                     </div>
 
                     <!-- Components -->
