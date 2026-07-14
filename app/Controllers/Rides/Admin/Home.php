@@ -17,6 +17,7 @@ class Home extends BaseController
         $stats = [
             'total'          => (new RideModel())->countAllResults(),
             'total_distance' => (new RideModel())->selectSum('distance_km')->first()['distance_km'] ?? 0,
+            'this_week'      => (new RideModel())->where('started_at >=', date('Y-m-d 00:00:00', strtotime('monday this week')))->selectSum('distance_km')->first()['distance_km'] ?? 0,
             'this_month'     => (new RideModel())->where('started_at >=', date('Y-m-01 00:00:00'))->selectSum('distance_km')->first()['distance_km'] ?? 0,
             'this_year'      => (new RideModel())->where('started_at >=', date('Y-01-01 00:00:00'))->selectSum('distance_km')->first()['distance_km'] ?? 0,
         ];

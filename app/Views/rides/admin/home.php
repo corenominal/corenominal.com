@@ -12,8 +12,8 @@
     </div>
 
     <!-- Stat cards -->
-    <div class="row g-3 mb-4">
-        <div class="col-6 col-md-3">
+    <div class="row row-cols-2 row-cols-md-5 g-3 mb-4">
+        <div class="col">
             <div class="card h-100 bg-body-secondary border-0">
                 <div class="card-body">
                     <div class="fs-3 fw-bold"><?= number_format($stats['total']) ?></div>
@@ -21,7 +21,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-6 col-md-3">
+        <div class="col">
             <div class="card h-100 bg-body-secondary border-0">
                 <div class="card-body">
                     <div class="fs-3 fw-bold"><?= number_format((float) $stats['total_distance'], 1) ?> km</div>
@@ -29,7 +29,15 @@
                 </div>
             </div>
         </div>
-        <div class="col-6 col-md-3">
+        <div class="col">
+            <div class="card h-100 bg-body-secondary border-0">
+                <div class="card-body">
+                    <div class="fs-3 fw-bold"><?= number_format((float) $stats['this_week'], 1) ?> km</div>
+                    <div class="text-secondary small">This Week</div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
             <div class="card h-100 bg-body-secondary border-0">
                 <div class="card-body">
                     <div class="fs-3 fw-bold"><?= number_format((float) $stats['this_month'], 1) ?> km</div>
@@ -37,7 +45,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-6 col-md-3">
+        <div class="col">
             <div class="card h-100 bg-body-secondary border-0">
                 <div class="card-body">
                     <div class="fs-3 fw-bold"><?= number_format((float) $stats['this_year'], 1) ?> km</div>
