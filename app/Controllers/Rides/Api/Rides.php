@@ -37,8 +37,8 @@ class Rides extends BaseController
         }
 
         $ext = strtolower($file->getClientExtension() ?: pathinfo($file->getName(), PATHINFO_EXTENSION));
-        if ($ext !== 'fit') {
-            return $this->response->setStatusCode(400)->setJSON(['status' => 'error', 'message' => 'Invalid file type. Only .fit files are accepted.']);
+        if (! in_array($ext, ['fit', 'zip'], true)) {
+            return $this->response->setStatusCode(400)->setJSON(['status' => 'error', 'message' => 'Invalid file type. Only .fit or .zip files are accepted.']);
         }
 
         $destDir = WRITEPATH . 'uploads/rides/fit/';
@@ -47,14 +47,25 @@ class Rides extends BaseController
         }
 
         $filename = Uuid::uuid4()->toString() . '.fit';
-
-        try {
-            $file->move($destDir, $filename);
-        } catch (\Exception) {
-            return $this->response->setStatusCode(500)->setJSON(['status' => 'error', 'message' => 'Failed to save uploaded file.']);
-        }
-
         $destPath = $destDir . $filename;
+
+        if ($ext === 'zip') {
+            try {
+                $fitContents = $this->extractFitFromZip($file->getTempName());
+            } catch (\RuntimeException $e) {
+                return $this->response->setStatusCode(422)->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
+            }
+
+            if (file_put_contents($destPath, $fitContents) === false) {
+                return $this->response->setStatusCode(500)->setJSON(['status' => 'error', 'message' => 'Failed to save extracted file.']);
+            }
+        } else {
+            try {
+                $file->move($destDir, $filename);
+            } catch (\Exception) {
+                return $this->response->setStatusCode(500)->setJSON(['status' => 'error', 'message' => 'Failed to save uploaded file.']);
+            }
+        }
 
         try {
             $rideFields = $this->parseFitFile($destPath);
@@ -182,6 +193,38 @@ class Rides extends BaseController
             'distance_km' => ($distanceKm !== '' && $distanceKm !== null) ? (float) $distanceKm : 0,
             'ride_type'   => in_array($rideType, self::RIDE_TYPES, true) ? $rideType : 'leisure',
         ];
+    }
+
+    /**
+     * Extracts the first .fit entry found in a zip archive (Garmin Connect
+     * sometimes exports activities as a zip instead of a raw .fit).
+     */
+    private function extractFitFromZip(string $zipPath): string
+    {
+        $zip = new \ZipArchive();
+
+        if ($zip->open($zipPath) !== true) {
+            throw new \RuntimeException('Unable to open zip archive.');
+        }
+
+        for ($i = 0; $i < $zip->numFiles; $i++) {
+            $name = $zip->getNameIndex($i);
+
+            if ($name !== false && strtolower(pathinfo($name, PATHINFO_EXTENSION)) === 'fit') {
+                $contents = $zip->getFromIndex($i);
+                $zip->close();
+
+                if ($contents === false) {
+                    throw new \RuntimeException('Unable to read .fit file from zip archive.');
+                }
+
+                return $contents;
+            }
+        }
+
+        $zip->close();
+
+        throw new \RuntimeException('No .fit file found inside the zip archive.');
     }
 
     /**

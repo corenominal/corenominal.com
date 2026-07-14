@@ -26,11 +26,12 @@
         <div class="card-body">
             <p class="text-secondary small">
                 Export the original activity file from Garmin Connect (Activity &rarr; &hellip; &rarr; Export Original)
-                and upload it here. Title, notes, bike assignment and photos can be added afterwards.
+                and upload it here. A .zip works too &mdash; if Garmin gives you one, it's unzipped automatically.
+                Title, notes, bike assignment and photos can be added afterwards.
             </p>
 
             <label for="field-fit-upload" class="form-label fw-medium">Garmin .fit file</label>
-            <input type="file" id="field-fit-upload" class="form-control" accept=".fit">
+            <input type="file" id="field-fit-upload" class="form-control" accept=".fit,.zip">
             <div class="invalid-feedback" id="error-fit"></div>
 
             <label for="field-ride-type" class="form-label fw-medium mt-3">Ride Type</label>
