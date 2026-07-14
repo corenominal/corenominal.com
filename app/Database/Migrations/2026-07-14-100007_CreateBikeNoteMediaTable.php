@@ -1,0 +1,79 @@
+<?php
+
+namespace App\Database\Migrations;
+
+use CodeIgniter\Database\Migration;
+use CodeIgniter\Database\RawSql;
+
+class CreateBikeNoteMediaTable extends Migration
+{
+    public function up(): void
+    {
+        $this->forge->addField([
+            'id' => [
+                'type'           => 'INT',
+                'constraint'     => 10,
+                'unsigned'       => true,
+                'auto_increment' => true,
+            ],
+            'bike_note_id' => [
+                'type'       => 'INT',
+                'constraint' => 10,
+                'unsigned'   => true,
+            ],
+            'file_name' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 255,
+            ],
+            'file_ext' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 20,
+                'null'       => true,
+            ],
+            'mime_type' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 100,
+                'null'       => true,
+            ],
+            'width' => [
+                'type'       => 'INT',
+                'constraint' => 11,
+                'null'       => true,
+            ],
+            'height' => [
+                'type'       => 'INT',
+                'constraint' => 11,
+                'null'       => true,
+            ],
+            'filesize' => [
+                'type'       => 'INT',
+                'constraint' => 11,
+                'unsigned'   => true,
+                'null'       => true,
+            ],
+            'sort_order' => [
+                'type'       => 'INT',
+                'constraint' => 11,
+                'unsigned'   => true,
+                'default'    => 0,
+            ],
+            'created_at' => [
+                'type'    => 'DATETIME',
+                'default' => new RawSql('CURRENT_TIMESTAMP'),
+            ],
+            'updated_at' => [
+                'type'    => 'DATETIME',
+                'default' => new RawSql('CURRENT_TIMESTAMP'),
+            ],
+        ]);
+
+        $this->forge->addPrimaryKey('id');
+        $this->forge->addKey('bike_note_id');
+        $this->forge->createTable('bike_note_media');
+    }
+
+    public function down(): void
+    {
+        $this->forge->dropTable('bike_note_media');
+    }
+}

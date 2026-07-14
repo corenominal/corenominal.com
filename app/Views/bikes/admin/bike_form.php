@@ -239,11 +239,80 @@
 
                 </div>
             </div>
+
+            <!-- Notes -->
+            <?php if ($action === 'edit'): ?>
+                <div class="card mt-4">
+                    <div class="card-header py-3 d-flex align-items-center justify-content-between">
+                        <h2 class="h6 mb-0 fw-semibold"><i class="bi bi-journal-text me-2 text-secondary" aria-hidden="true"></i>Notes</h2>
+                        <a href="<?= site_url('admin/bikes/' . $bike['id'] . '/notes/create') ?>" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-plus-circle-fill me-1" aria-hidden="true"></i>Add Note
+                        </a>
+                    </div>
+                    <div class="card-body">
+
+                        <?php if ($notes): ?>
+                            <div id="notes-list" class="list-group list-group-flush">
+                                <?php foreach ($notes as $note): ?>
+                                    <?php
+                                    $noteTitle = $note['title'] ?? '';
+                                    if ($noteTitle === '') {
+                                        $snippet   = trim(strip_tags((string) ($note['body_html'] ?? '')));
+                                        $noteTitle = mb_strlen($snippet) > 80 ? mb_substr($snippet, 0, 80) . '…' : $snippet;
+                                    }
+                                    ?>
+                                    <div class="list-group-item d-flex align-items-start justify-content-between gap-3 px-0 note-item" data-note-id="<?= (int) $note['id'] ?>">
+                                        <div class="min-width-0">
+                                            <a href="<?= site_url('admin/bikes/' . $bike['id'] . '/notes/' . $note['id'] . '/edit') ?>" class="text-body fw-medium text-decoration-none">
+                                                <?= esc($noteTitle !== '' ? $noteTitle : 'Untitled note') ?>
+                                            </a>
+                                            <div class="small text-secondary">
+                                                <?= esc(date('j M Y, g:ia', strtotime((string) $note['created_at']))) ?>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex gap-1 flex-shrink-0">
+                                            <a href="<?= site_url('admin/bikes/' . $bike['id'] . '/notes/' . $note['id'] . '/edit') ?>" class="btn btn-sm btn-outline-primary" title="Edit">
+                                                <i class="bi bi-pencil" aria-hidden="true"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-sm btn-outline-primary btn-note-delete" data-note-id="<?= (int) $note['id'] ?>" title="Delete">
+                                                <i class="bi bi-trash3" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php else: ?>
+                            <p class="text-secondary small mb-0">No notes yet.</p>
+                        <?php endif; ?>
+
+                    </div>
+                </div>
+            <?php endif; ?>
+
         </div>
         <!-- /Right column -->
 
     </div>
 </form>
+
+<!-- Delete note confirmation modal -->
+<div class="modal fade" id="modal-delete-note" tabindex="-1" aria-labelledby="modal-delete-note-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title fs-5" id="modal-delete-note-label">Delete Note</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this note? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="btn-confirm-delete-note">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Delete photo confirmation modal -->
 <div class="modal fade" id="modal-delete-photo" tabindex="-1" aria-labelledby="modal-delete-photo-label" aria-hidden="true">

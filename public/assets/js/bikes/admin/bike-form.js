@@ -266,4 +266,51 @@ document.addEventListener('DOMContentLoaded', function () {
 			showPhotoAlert('danger', 'A network error occurred. Please try again.');
 		});
 	});
+
+	// ── Notes list (edit mode only) ────────────────────────────────────────────
+	const notesList = document.getElementById('notes-list');
+	const deleteNoteModalEl = document.getElementById('modal-delete-note');
+	if (!notesList || !deleteNoteModalEl) return;
+
+	const deleteNoteModal = new bootstrap.Modal(deleteNoteModalEl);
+	const btnConfirmDeleteNote = document.getElementById('btn-confirm-delete-note');
+	let pendingNoteId = null;
+
+	notesList.addEventListener('click', function (e) {
+		const deleteBtn = e.target.closest('.btn-note-delete');
+		if (!deleteBtn) return;
+
+		pendingNoteId = deleteBtn.dataset.noteId;
+		deleteNoteModal.show();
+	});
+
+	btnConfirmDeleteNote.addEventListener('click', function () {
+		if (!pendingNoteId) return;
+
+		btnConfirmDeleteNote.disabled = true;
+
+		fetch('/api/bikes/' + bikeId + '/notes/' + pendingNoteId, {
+			method: 'DELETE',
+			headers: { apikey: apiKey },
+		})
+		.then(function (res) { return res.json(); })
+		.then(function (data) {
+			btnConfirmDeleteNote.disabled = false;
+			deleteNoteModal.hide();
+
+			if (data.status === 'success') {
+				const item = notesList.querySelector('.note-item[data-note-id="' + pendingNoteId + '"]');
+				if (item) item.remove();
+			} else {
+				showAlert('danger', data.message || 'Failed to delete note.');
+			}
+
+			pendingNoteId = null;
+		})
+		.catch(function () {
+			btnConfirmDeleteNote.disabled = false;
+			deleteNoteModal.hide();
+			showAlert('danger', 'A network error occurred. Please try again.');
+		});
+	});
 });

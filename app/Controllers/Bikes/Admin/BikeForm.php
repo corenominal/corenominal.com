@@ -4,6 +4,7 @@ namespace App\Controllers\Bikes\Admin;
 
 use App\Controllers\BaseController;
 use App\Models\BikeModel;
+use App\Models\BikeNoteModel;
 use App\Models\BikePhotoModel;
 
 class BikeForm extends BaseController
@@ -19,6 +20,7 @@ class BikeForm extends BaseController
             'action'           => 'create',
             'bike'             => null,
             'photos'           => [],
+            'notes'            => [],
         ]);
     }
 
@@ -35,6 +37,11 @@ class BikeForm extends BaseController
             ->orderBy('sort_order', 'ASC')
             ->findAll();
 
+        $notes = (new BikeNoteModel())
+            ->where('bike_id', $id)
+            ->orderBy('created_at', 'DESC')
+            ->findAll();
+
         return view('bikes/admin/bike_form', [
             'title'            => 'Edit Bike',
             'js'               => ['bikes/admin/bike-form'],
@@ -44,6 +51,7 @@ class BikeForm extends BaseController
             'action'           => 'edit',
             'bike'             => $bike,
             'photos'           => $photos,
+            'notes'            => $notes,
         ]);
     }
 }

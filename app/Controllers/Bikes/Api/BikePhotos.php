@@ -188,7 +188,9 @@ class BikePhotos extends BaseController
         $dstImg = \imagecreatetruecolor($dstW, $dstH);
 
         if (in_array($mime, ['image/png', 'image/webp', 'image/gif'], true)) {
-            \imagealphablend($dstImg, false);
+            if (function_exists('imagealphablend')) {
+                \imagealphablend($dstImg, false);
+            }
             \imagesavealpha($dstImg, true);
             $transparent = \imagecolorallocatealpha($dstImg, 0, 0, 0, 127);
             \imagefill($dstImg, 0, 0, $transparent);

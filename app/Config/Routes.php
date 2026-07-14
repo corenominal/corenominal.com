@@ -272,6 +272,8 @@ $routes->group('admin/bikes', function ($routes) {
     $routes->post('delete', 'Bikes\Admin\Home::delete');
     $routes->get('create', 'Bikes\Admin\BikeForm::create');
     $routes->get('(:num)/edit', 'Bikes\Admin\BikeForm::edit/$1');
+    $routes->get('(:num)/notes/create', 'Bikes\Admin\NoteForm::create/$1');
+    $routes->get('(:num)/notes/(:num)/edit', 'Bikes\Admin\NoteForm::edit/$1/$2');
 });
 
 // API bikes routes (apifilter applied globally via Filters.php)
@@ -282,6 +284,13 @@ $routes->group('api/bikes', function ($routes) {
     $routes->post('(:num)/photos', 'Bikes\Api\BikePhotos::upload/$1');
     $routes->delete('(:num)/photos/(:num)', 'Bikes\Api\BikePhotos::delete/$1/$2');
     $routes->post('(:num)/photos/reorder', 'Bikes\Api\BikePhotos::reorder/$1');
+    $routes->post('notes/preview', 'Bikes\Api\BikeNotes::preview');
+    $routes->post('(:num)/notes', 'Bikes\Api\BikeNotes::create/$1');
+    $routes->put('(:num)/notes/(:num)', 'Bikes\Api\BikeNotes::update/$1/$2');
+    $routes->delete('(:num)/notes/(:num)', 'Bikes\Api\BikeNotes::delete/$1/$2');
+    $routes->post('(:num)/notes/(:num)/media', 'Bikes\Api\BikeNoteMedia::upload/$1/$2');
+    $routes->delete('(:num)/notes/(:num)/media/(:num)', 'Bikes\Api\BikeNoteMedia::delete/$1/$2/$3');
+    $routes->post('(:num)/notes/(:num)/media/reorder', 'Bikes\Api\BikeNoteMedia::reorder/$1/$2');
 });
 
 // Admin rides routes (adminfilter applied globally via Filters.php)
