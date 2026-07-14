@@ -104,4 +104,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
 		renderElevationChart(points);
 	}
+
+	const photoModalEl = document.getElementById('photo-modal');
+
+	if (photoModalEl) {
+		const photoModal = new bootstrap.Modal(photoModalEl);
+		const photoModalImg = document.getElementById('photo-modal-img');
+
+		document.querySelectorAll('.btn-photo-open').forEach(function (btn) {
+			btn.addEventListener('click', function () {
+				photoModalImg.src = btn.dataset.fullSrc;
+				photoModal.show();
+			});
+		});
+
+		photoModalEl.addEventListener('hidden.bs.modal', function () {
+			photoModalImg.src = '';
+		});
+	}
 });

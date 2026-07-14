@@ -119,7 +119,12 @@
         <div class="row g-2">
             <?php foreach ($photos as $photo): ?>
                 <div class="col-4 col-md-3">
-                    <a href="<?= site_url('uploads/rides/media/' . $photo['file_name']) ?>" target="_blank" rel="noopener noreferrer">
+                    <button
+                        type="button"
+                        class="btn p-0 border-0 w-100 btn-photo-open"
+                        data-full-src="<?= site_url('uploads/rides/media/' . $photo['file_name']) ?>"
+                        aria-label="View photo full size"
+                    >
                         <img
                             src="<?= site_url('uploads/rides/media/' . $photo['file_name']) ?>"
                             alt=""
@@ -128,9 +133,24 @@
                             loading="lazy"
                             decoding="async"
                         >
-                    </a>
+                    </button>
                 </div>
             <?php endforeach; ?>
+        </div>
+    </div>
+</div>
+
+<!-- Photo modal -->
+<div class="modal fade" id="photo-modal" tabindex="-1" aria-labelledby="photo-modal-label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content bg-transparent border-0">
+            <div class="modal-header border-0">
+                <h2 class="modal-title visually-hidden" id="photo-modal-label">Photo</h2>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0 text-center">
+                <img id="photo-modal-img" src="" alt="" class="img-fluid rounded">
+            </div>
         </div>
     </div>
 </div>
