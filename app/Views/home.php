@@ -3,7 +3,7 @@
 
     <h1>Hello, World!</h1>
 
-    <p class="lead">Welcome to my website. I'm a tech enthusiast and web developer. When I'm not sat in front of my computer, I can be found reading Warhammer 40,000 fiction, performing proud husband/dad/grumpa duties, listening to tech podcasts, or riding my bike.</p>
+    <p class="lead">Welcome to my website. I'm a tech enthusiast and web developer. When I'm not sat in front of my computer, I can be found reading Warhammer 40,000 fiction, performing proud husband/dad/grumpa duties, listening to tech podcasts, or <a href="/rides">riding my bike</a>.</p>
 
     <h2 class="h4 mt-5">Blog</h2>
 

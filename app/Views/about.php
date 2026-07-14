@@ -25,7 +25,7 @@
     });
     </script>
 
-    <p>My name is Philip Newborough and I'm a <?= $age = ((int)date('Y') - 1975) ?> year old tech lover and web developer who spends a lot of time crafting things for the web. When I'm not glued to my desk, you can find me lost in the grimdark future of Warhammer, tackling proud husband/dad/grumpa duties, listening to tech podcasts, or cycling around on my bike.</p>
+    <p>My name is Philip Newborough and I'm a <?= $age = ((int)date('Y') - 1975) ?> year old tech lover and web developer who spends a lot of time crafting things for the web. When I'm not glued to my desk, you can find me lost in the grimdark future of Warhammer, tackling proud husband/dad/grumpa duties, listening to tech podcasts, or <a href="/rides">cycling around on my bike</a>.</p>
 
     <p>I've been working in web development since the late 1990s, and have been a professional web developer since 2000. I have a passion for building things that are fast, accessible, and easy to use. I love to learn new things, and I'm always looking for ways to improve my skills.</p>
 

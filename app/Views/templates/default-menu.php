@@ -28,6 +28,13 @@
         </a>
     </li>
     <li>
+        <a href="/rides" class="nav-link"
+            data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Rides">
+            <i class="bi bi-bicycle"></i>
+            <span class="sidebar-label">Rides</span>
+        </a>
+    </li>
+    <li>
         <a href="/about" class="nav-link"
             data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="About">
             <i class="bi bi-info-circle"></i>

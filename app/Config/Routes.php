@@ -293,6 +293,13 @@ $routes->group('api/bikes', function ($routes) {
     $routes->post('(:num)/notes/(:num)/media/reorder', 'Bikes\Api\BikeNoteMedia::reorder/$1/$2');
 });
 
+// Public rides routes
+$routes->group('rides', function ($routes) {
+    $routes->get('/', 'Rides\Home::index');
+    $routes->get('load', 'Rides\Home::loadMore');
+    $routes->get('(:num)', 'Rides\Home::show/$1');
+});
+
 // Admin rides routes (adminfilter applied globally via Filters.php)
 $routes->group('admin/rides', function ($routes) {
     $routes->get('/', 'Rides\Admin\Home::index');
