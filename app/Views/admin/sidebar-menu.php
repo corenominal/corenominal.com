@@ -36,6 +36,14 @@
         </a>
     </li>
 
+    <li class="mb-4">
+        <a href="/admin/bikes" class="nav-link"
+            data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Bikes">
+            <i class="bi bi-bicycle"></i>
+            <span class="sidebar-label">Bikes</span>
+        </a>
+    </li>
+
     <li>
         <a href="/admin/ai/chat" class="nav-link"
             data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="AI Chat">
