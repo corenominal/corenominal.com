@@ -91,11 +91,19 @@
         <!-- Sidebar footer -->
         <div class="p-2">
             <?php if( user_in_group('administrators') ): ?>
-            <a href="/admin/startpage" class="sidebar-footer-link"
+            <?php if(str_starts_with(uri_string(), 'admin')): ?>
+                <a href="/" class="sidebar-footer-link"
+               data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Home Page">
+                <i class="bi bi-house flex-shrink-0" aria-hidden="true"></i>
+                <span class="sidebar-label">Home Page</span>
+                </a>
+            <?php else: ?>
+                <a href="/admin/startpage" class="sidebar-footer-link"
                data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Start Page">
                 <i class="bi bi-slash-square flex-shrink-0" aria-hidden="true"></i>
                 <span class="sidebar-label">Start Page</span>
-            </a>
+                </a>
+            <?php endif; ?>
             <a href="/admin/ai/chat" class="sidebar-footer-link"
                data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="AI Chat">
                 <i class="bi bi-chat-dots flex-shrink-0" aria-hidden="true"></i>
