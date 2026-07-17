@@ -221,7 +221,12 @@
                             <?php endif; ?>
                         </div>
                         <?php if ($ride['fit_file_name']): ?>
-                            <div class="text-secondary small mt-3 mb-0">Source: <code><?= esc($ride['fit_file_name']) ?></code></div>
+                            <div class="d-flex align-items-center justify-content-between mt-3">
+                                <div class="text-secondary small mb-0">Source: <code><?= esc($ride['fit_file_name']) ?></code></div>
+                                <button type="button" id="btn-reparse" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-arrow-clockwise me-1" aria-hidden="true"></i>Re-parse from source
+                                </button>
+                            </div>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -237,6 +242,7 @@
                             <div class="mt-3" style="height: 160px;">
                                 <canvas id="ride-elevation-chart"></canvas>
                             </div>
+                            <div id="ride-heart-rate-chart-container" class="mt-3" style="height: 140px;"></div>
                             <script type="application/json" id="ride-trackpoints"><?= $ride['trackpoints_json'] ?></script>
                         <?php else: ?>
                             <p class="text-secondary small mb-0">No GPS data available for this ride (indoor/trainer ride?).</p>

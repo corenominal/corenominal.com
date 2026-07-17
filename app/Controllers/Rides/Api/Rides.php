@@ -137,6 +137,56 @@ class Rides extends BaseController
         ]);
     }
 
+    /**
+     * POST /api/rides/:id/reparse
+     * Re-reads the ride's originally-uploaded .fit file from disk and refreshes
+     * all parsed/derived fields (stats + trackpoints). User-editable fields
+     * (title, notes, bike_id, distance_km) are left untouched.
+     */
+    public function reparse(?int $id = null)
+    {
+        if ($check = $this->requireAdmin()) {
+            return $check;
+        }
+
+        $rideModel = new RideModel();
+        $ride      = $rideModel->find($id);
+
+        if (! $ride) {
+            return $this->response->setStatusCode(404)->setJSON(['status' => 'error', 'message' => 'Ride not found.']);
+        }
+
+        if (empty($ride['fit_file_name'])) {
+            return $this->response->setStatusCode(422)->setJSON(['status' => 'error', 'message' => 'No source .fit file available for this ride.']);
+        }
+
+        $path = WRITEPATH . 'uploads/rides/fit/' . $ride['fit_file_name'];
+
+        if (! is_file($path)) {
+            return $this->response->setStatusCode(422)->setJSON(['status' => 'error', 'message' => 'The original .fit file is no longer available on disk.']);
+        }
+
+        try {
+            $rideFields = $this->parseFitFile($path);
+        } catch (\Throwable $e) {
+            return $this->response->setStatusCode(422)->setJSON([
+                'status'  => 'error',
+                'message' => 'Unable to parse this FIT file: ' . $e->getMessage(),
+            ]);
+        }
+
+        // Never overwrite fields the user can edit by hand — only refresh
+        // derived/parsed data (stats, trackpoints).
+        unset($rideFields['title'], $rideFields['distance_km']);
+
+        $rideModel->update($id, $rideFields);
+
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Ride data refreshed.',
+        ]);
+    }
+
     private function requireAdmin(): ?ResponseInterface
     {
         if (empty($GLOBALS['is_admin'])) {
@@ -311,9 +361,9 @@ class Rides extends BaseController
     }
 
     /**
-     * Builds the compact trackpoints array ([lat, lng, elevation, time_offset_seconds])
+     * Builds the compact trackpoints array ([lat, lng, elevation, time_offset_seconds, heart_rate])
      * from FIT record messages. Returns null when there is no usable GPS data
-     * (e.g. an indoor trainer ride).
+     * (e.g. an indoor trainer ride). heart_rate is null for rides with no HR sensor.
      */
     private function buildTrackpoints(array $records): ?string
     {
@@ -345,6 +395,7 @@ class Rides extends BaseController
                 round($lng * $semicirclesToDegrees, 6),
                 $elevation !== null ? round($elevation, 1) : null,
                 $offset,
+                $record->getHeartRate(),
             ];
         }
 

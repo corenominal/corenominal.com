@@ -152,7 +152,38 @@ document.addEventListener('DOMContentLoaded', function () {
 		window.history.replaceState({}, '', window.location.pathname);
 	}
 
-	// ── Elevation chart ──────────────────────────────────────────────────────
+	// ── Re-parse from source ─────────────────────────────────────────────────
+	const btnReparse = document.getElementById('btn-reparse');
+
+	if (btnReparse) {
+		btnReparse.addEventListener('click', function () {
+			hideAlert();
+			btnReparse.disabled = true;
+
+			fetch('/api/rides/' + rideId + '/reparse', {
+				method: 'POST',
+				headers: { apikey: apiKey },
+			})
+			.then(function (res) {
+				return res.json().then(function (data) { return { status: res.status, data }; });
+			})
+			.then(function ({ status, data }) {
+				if (status === 200) {
+					window.location.reload();
+					return;
+				}
+
+				btnReparse.disabled = false;
+				showAlert('danger', data.message || 'Failed to re-parse ride.');
+			})
+			.catch(function () {
+				btnReparse.disabled = false;
+				showAlert('danger', 'A network error occurred. Please check your connection and try again.');
+			});
+		});
+	}
+
+	// ── Elevation & heart rate charts ────────────────────────────────────────
 	function haversineKm(lat1, lon1, lat2, lon2) {
 		const R = 6371;
 		const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -163,22 +194,34 @@ document.addEventListener('DOMContentLoaded', function () {
 		return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 	}
 
-	function renderElevationChart(points) {
-		const canvas = document.getElementById('ride-elevation-chart');
-		if (!canvas || points.length < 2 || typeof Chart === 'undefined') return;
-
+	function buildDistances(points) {
 		let cumulativeKm = 0;
-		const chartPoints = points.map(function (p, i) {
+		return points.map(function (p, i) {
 			if (i > 0) {
 				cumulativeKm += haversineKm(points[i - 1][0], points[i - 1][1], p[0], p[1]);
 			}
-			return { x: Math.round(cumulativeKm * 100) / 100, y: p[2] };
+			return Math.round(cumulativeKm * 100) / 100;
+		});
+	}
+
+	function chartThemeColors() {
+		const styles = getComputedStyle(document.documentElement);
+		return {
+			bodyColor: styles.getPropertyValue('--bs-body-color').trim() || '#212529',
+			borderColor: styles.getPropertyValue('--bs-border-color').trim() || '#dee2e6',
+			secondaryColor: styles.getPropertyValue('--bs-secondary-color').trim() || '#6c757d',
+		};
+	}
+
+	function renderElevationChart(points, distances) {
+		const canvas = document.getElementById('ride-elevation-chart');
+		if (!canvas || points.length < 2 || typeof Chart === 'undefined') return;
+
+		const chartPoints = points.map(function (p, i) {
+			return { x: distances[i], y: p[2] };
 		});
 
-		const styles = getComputedStyle(document.documentElement);
-		const bodyColor = styles.getPropertyValue('--bs-body-color').trim() || '#212529';
-		const borderColor = styles.getPropertyValue('--bs-border-color').trim() || '#dee2e6';
-		const secondaryColor = styles.getPropertyValue('--bs-secondary-color').trim() || '#6c757d';
+		const { bodyColor, borderColor, secondaryColor } = chartThemeColors();
 
 		new Chart(canvas, {
 			type: 'line',
@@ -207,6 +250,63 @@ document.addEventListener('DOMContentLoaded', function () {
 					},
 					y: {
 						title: { display: true, text: 'Elevation (m)', color: secondaryColor },
+						ticks: { color: secondaryColor },
+						grid: { color: borderColor },
+					},
+				},
+				plugins: {
+					legend: { display: false },
+				},
+			},
+		});
+	}
+
+	function renderHeartRateChart(points, distances) {
+		const container = document.getElementById('ride-heart-rate-chart-container');
+		if (!container || points.length < 2 || typeof Chart === 'undefined') return;
+
+		const hasHeartRate = points.some(function (p) { return p[4] !== null && p[4] !== undefined; });
+		if (!hasHeartRate) {
+			container.innerHTML = '<p class="text-secondary small mb-0">No heart rate data available for this ride.</p>';
+			return;
+		}
+
+		const canvas = document.createElement('canvas');
+		container.innerHTML = '';
+		container.appendChild(canvas);
+
+		const chartPoints = points.map(function (p, i) {
+			return { x: distances[i], y: p[4] !== undefined ? p[4] : null };
+		});
+
+		const { borderColor, secondaryColor } = chartThemeColors();
+
+		new Chart(canvas, {
+			type: 'line',
+			data: {
+				datasets: [{
+					data: chartPoints,
+					fill: false,
+					borderColor: '#dc3545',
+					borderWidth: 1.5,
+					pointRadius: 0,
+					tension: 0.15,
+					spanGaps: true,
+				}],
+			},
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				interaction: { intersect: false, mode: 'index' },
+				scales: {
+					x: {
+						type: 'linear',
+						title: { display: true, text: 'Distance (km)', color: secondaryColor },
+						ticks: { color: secondaryColor },
+						grid: { color: borderColor },
+					},
+					y: {
+						title: { display: true, text: 'Heart Rate (bpm)', color: secondaryColor },
 						ticks: { color: secondaryColor },
 						grid: { color: borderColor },
 					},
@@ -256,7 +356,9 @@ document.addEventListener('DOMContentLoaded', function () {
 			map.fitBounds(polyline.getBounds(), { padding: [20, 20] });
 		}
 
-		renderElevationChart(points);
+		const distances = buildDistances(points);
+		renderElevationChart(points, distances);
+		renderHeartRateChart(points, distances);
 	}
 
 	// ── Photo gallery ────────────────────────────────────────────────────────

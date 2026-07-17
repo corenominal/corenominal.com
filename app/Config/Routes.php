@@ -313,6 +313,7 @@ $routes->group('api/rides', function ($routes) {
     $routes->options('(:any)', static function () { return ''; });
     $routes->post('upload', 'Rides\Api\Rides::upload');
     $routes->put('(:num)', 'Rides\Api\Rides::update/$1');
+    $routes->post('(:num)/reparse', 'Rides\Api\Rides::reparse/$1');
     $routes->post('(:num)/photos', 'Rides\Api\RidePhotos::upload/$1');
     $routes->delete('(:num)/photos/(:num)', 'Rides\Api\RidePhotos::delete/$1/$2');
     $routes->post('(:num)/photos/reorder', 'Rides\Api\RidePhotos::reorder/$1');
