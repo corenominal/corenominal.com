@@ -104,6 +104,7 @@
         <div class="mt-3" style="height: 160px;">
             <canvas id="ride-elevation-chart"></canvas>
         </div>
+        <div id="ride-heart-rate-chart-container" class="mt-3" style="height: 140px;"></div>
         <script type="application/json" id="ride-trackpoints"><?= $ride['trackpoints_json'] ?></script>
     </div>
 </div>
