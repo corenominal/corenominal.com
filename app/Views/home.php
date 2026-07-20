@@ -121,6 +121,21 @@
     </div>
     <?php endif; ?>
 
+    <h2 class="h4 mt-5">Rides</h2>
+
+    <p class="mb-3">I like to get out on my bike when I can. You can see all my rides on my <a href="/rides">rides page</a>. My latest ride is below:</p>
+
+    <?= view('rides/partials/latest_ride_card', [
+        'ride'     => $latestRide,
+        'cover'    => $latestRideCover,
+        'bikeName' => $latestRideBikeName,
+    ]) ?>
+    <div class="d-flex flex-column flex-lg-row gap-3 mt-3 mb-5">
+        <a class="btn btn-outline-primary w-100 w-lg-50" href="/rides">
+            <i class="bi bi-arrow-right-circle me-1" aria-hidden="true"></i>View all rides
+        </a>
+    </div>
+
 <!-- Image preview modal -->
 <div class="modal fade" id="timeline-image-modal" tabindex="-1" aria-labelledby="timeline-image-modal-label" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl">

@@ -2,9 +2,12 @@
 
 namespace App\Controllers;
 
+use App\Models\BikeModel;
 use App\Models\BookmarkModel;
 use App\Models\GitHubActivityModel;
 use App\Models\PostModel;
+use App\Models\RideModel;
+use App\Models\RidePhotoModel;
 
 class Home extends BaseController
 {
@@ -16,7 +19,7 @@ class Home extends BaseController
             return redirect()->to('/auth/register');
         }
 
-        helper(['status', 'bookmark']);
+        helper(['status', 'bookmark', 'rides']);
 
         // Get the latest status post
         $model  = model('StatusModel');
@@ -53,6 +56,36 @@ class Home extends BaseController
         }
         $data['githubHeatmap']   = $heatmap;
         $data['githubActivity']  = $githubGrouped;
+
+        $latestRide = (new RideModel())
+            ->orderBy('started_at', 'DESC')
+            ->orderBy('id', 'DESC')
+            ->first();
+
+        $latestRideCover    = null;
+        $latestRideBikeName = null;
+
+        if ($latestRide !== null) {
+            $photo = (new RidePhotoModel())
+                ->where('ride_id', $latestRide['id'])
+                ->orderBy('sort_order', 'ASC')
+                ->first();
+            $latestRideCover = $photo['file_name'] ?? null;
+
+            if (! empty($latestRide['bike_id'])) {
+                $bike = (new BikeModel())->find($latestRide['bike_id']);
+                if ($bike) {
+                    $latestRideBikeName = $bike['name'] !== null && $bike['name'] !== ''
+                        ? $bike['name']
+                        : trim($bike['brand'] . ' ' . $bike['model']);
+                }
+            }
+        }
+
+        $data['latestRide']         = $latestRide;
+        $data['latestRideCover']    = $latestRideCover;
+        $data['latestRideBikeName'] = $latestRideBikeName;
+
         $data['js']              = ['home'];
         $data['css']             = ['status/timeline', 'github-heatmap'];
         $data['title']           = 'Tech Enthusiast and Web Developer';
