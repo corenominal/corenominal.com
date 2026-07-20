@@ -136,3 +136,8 @@ html.sidebar-template, body.sidebar-template {
         padding-top: 56px;
     }
 }
+
+/* ── Stat bar dividers ─────────────────────────────── */
+.stat-bar > .col:not(:last-child) {
+    border-right: 1px solid var(--bs-border-color);
+}

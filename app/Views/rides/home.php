@@ -24,53 +24,37 @@
     </div>
 
     <!-- Stat cards -->
-    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-3 mb-4">
-        <div class="col">
-            <div class="card h-100 bg-body-secondary border-0">
-                <div class="card-body">
-                    <div class="fs-3 fw-bold"><?= number_format($stats['total']) ?></div>
-                    <div class="text-secondary small">Total Rides</div>
-                </div>
+    <div class="card bg-body-secondary border-0 mb-4">
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-0 stat-bar">
+            <div class="col text-center p-3">
+                <i class="bi bi-bicycle fs-5 text-secondary d-block mb-1" aria-hidden="true"></i>
+                <div class="fs-4 fw-bold text-nowrap"><?= number_format($stats['total']) ?></div>
+                <div class="text-secondary small">Total Rides</div>
             </div>
-        </div>
-        <div class="col">
-            <div class="card h-100 bg-body-secondary border-0">
-                <div class="card-body">
-                    <div class="fs-3 fw-bold"><?= number_format((float) $stats['total_distance'], 1) ?> km</div>
-                    <div class="text-secondary small">Total Distance</div>
-                </div>
+            <div class="col text-center p-3">
+                <i class="bi bi-rulers fs-5 text-secondary d-block mb-1" aria-hidden="true"></i>
+                <div class="fs-4 fw-bold text-nowrap"><?= number_format((float) $stats['total_distance'], 1) ?> km</div>
+                <div class="text-secondary small">Total Distance</div>
             </div>
-        </div>
-        <div class="col">
-            <div class="card h-100 bg-body-secondary border-0">
-                <div class="card-body">
-                    <div class="fs-3 fw-bold"><?= number_format((float) $stats['this_week'], 1) ?> km</div>
-                    <div class="text-secondary small">This Week</div>
-                </div>
+            <div class="col text-center p-3">
+                <i class="bi bi-calendar-week fs-5 text-secondary d-block mb-1" aria-hidden="true"></i>
+                <div class="fs-4 fw-bold text-nowrap"><?= number_format((float) $stats['this_week'], 1) ?> km</div>
+                <div class="text-secondary small">This Week</div>
             </div>
-        </div>
-        <div class="col">
-            <div class="card h-100 bg-body-secondary border-0">
-                <div class="card-body">
-                    <div class="fs-3 fw-bold"><?= number_format((float) $stats['this_month'], 1) ?> km</div>
-                    <div class="text-secondary small">This Month</div>
-                </div>
+            <div class="col text-center p-3">
+                <i class="bi bi-calendar-month fs-5 text-secondary d-block mb-1" aria-hidden="true"></i>
+                <div class="fs-4 fw-bold text-nowrap"><?= number_format((float) $stats['this_month'], 1) ?> km</div>
+                <div class="text-secondary small">This Month</div>
             </div>
-        </div>
-        <div class="col">
-            <div class="card h-100 bg-body-secondary border-0">
-                <div class="card-body">
-                    <div class="fs-3 fw-bold"><?= number_format((float) $stats['this_year'], 1) ?> km</div>
-                    <div class="text-secondary small">This Year</div>
-                </div>
+            <div class="col text-center p-3">
+                <i class="bi bi-calendar3 fs-5 text-secondary d-block mb-1" aria-hidden="true"></i>
+                <div class="fs-4 fw-bold text-nowrap"><?= number_format((float) $stats['this_year'], 1) ?> km</div>
+                <div class="text-secondary small">This Year</div>
             </div>
-        </div>
-        <div class="col">
-            <div class="card h-100 bg-body-secondary border-0">
-                <div class="card-body">
-                    <div class="fs-3 fw-bold"><?= $stats['recording_since'] ? esc(date('M Y', strtotime($stats['recording_since']))) : '&mdash;' ?></div>
-                    <div class="text-secondary small">Recording Since</div>
-                </div>
+            <div class="col text-center p-3">
+                <i class="bi bi-clock-history fs-5 text-secondary d-block mb-1" aria-hidden="true"></i>
+                <div class="fs-4 fw-bold text-nowrap"><?= $stats['recording_since'] ? esc(date('M Y', strtotime($stats['recording_since']))) : '&mdash;' ?></div>
+                <div class="text-secondary small">Recording Since</div>
             </div>
         </div>
     </div>
